@@ -8,7 +8,7 @@ project(lab1)
 set(CMAKE_CXX_STANDARD 20)
 
 # Источники
-file(GLOB SOURCES main.cpp)
+file(GLOB SOURCES *.cpp)
 
 # Основной исполняемый файл для стандартной сборки
 add_executable(${PROJECT_NAME} ${SOURCES})
