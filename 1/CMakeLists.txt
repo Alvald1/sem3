@@ -5,14 +5,16 @@ set(CMAKE_CXX_COMPILER clang++)
 project(lab1)
 
 # Настройка стандарта
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 
 # Источники
-file(GLOB SOURCES *.cpp)
+file(GLOB SOURCES main.cpp detail.cpp)
+
+find_package(GTest CONFIG REQUIRED)
 
 # Основной исполняемый файл для стандартной сборки
 add_executable(${PROJECT_NAME} ${SOURCES})
-target_compile_options(${PROJECT_NAME} PRIVATE -Wextra -Wall)
+target_compile_options(${PROJECT_NAME} PRIVATE -Wextra -Wall -Werror)
 
 # Цель для отладочной сборки
 add_executable(debug_target ${SOURCES})
