@@ -9,6 +9,8 @@ set(CMAKE_CXX_STANDARD 23)
 
 # Источники
 
+file(GLOB ALL *.cpp)
+
 file(GLOB SOURCES main.cpp detail.cpp)
 
 file(GLOB TESTING detail.cpp unit_tests.cpp)
@@ -60,7 +62,7 @@ add_custom_target(gprof
 
 # Запуск статического анализа
 add_custom_target(static
-    COMMAND clang++ --analyze -Xanalyzer -analyzer-output=html  ${SOURCES}
+    COMMAND clang++ -std=c++2b --analyze -Xanalyzer -analyzer-output=html  ${ALL}
     COMMENT "Running static analysis"
 )
 
