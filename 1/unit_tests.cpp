@@ -20,7 +20,7 @@ TEST(DetailInfoTest, EncodeWithParametersWorks) {
     EXPECT_EQ(encoded, "{'id':'003','name':'PartB','count':25}");
 }
 
-// Test the decode() function with valid input
+// Test the decode() function with valid input std::string
 TEST(DetailInfoTest, DecodeFunctionWorks) {
     Detail_info detail;
     string input = "{'id':'004','name':'PartC','count':75}";
@@ -31,12 +31,66 @@ TEST(DetailInfoTest, DecodeFunctionWorks) {
     EXPECT_EQ(detail.encode(), "{'id':'004','name':'PartC','count':75}");
 }
 
-// Test the decode() function with invalid input
+// Test the decode() function with valid input const char*
+TEST(DetailInfoTest, DecodeFunctionWorks2) {
+    Detail_info detail;
+    const char* input = "{'id':'004','name':'PartC','count':75}";
+
+    bool result = detail.decode(input);
+
+    EXPECT_EQ(result, 0); // Success
+    EXPECT_EQ(detail.encode(), "{'id':'004','name':'PartC','count':75}");
+}
+
+// Test the decode() function with valid input const char* + size
+TEST(DetailInfoTest, DecodeFunctionWorks3) {
+    Detail_info detail;
+    const char* tmp = "{'id':'004','name':'PartC','count':75}";
+    std::size_t size = strlen(tmp);
+    char* input = new char[size];
+    std::copy(tmp, tmp + size, input);
+
+    bool result = detail.decode(input, size);
+
+    delete[] input;
+
+    EXPECT_EQ(result, 0); // Success
+    EXPECT_EQ(detail.encode(), "{'id':'004','name':'PartC','count':75}");
+}
+
+// Test the decode() function with invalid input std::string
 TEST(DetailInfoTest, DecodeFunctionInvalidInput) {
     Detail_info detail;
     string invalidInput = "{'invalid':'004','name':'PartC','count':'seventy-five'}";
 
     bool result = detail.decode(invalidInput);
+
+    EXPECT_EQ(result, 1); // Failure
+}
+
+// Test the decode() function with invalid input const char*
+
+TEST(DetailInfoTest, DecodeFunctionInvalidInput2) {
+    Detail_info detail;
+    const char* invalidInput = "{'id':'004','name':'PartC','count':'seventy-five'}";
+
+    bool result = detail.decode(invalidInput);
+
+    EXPECT_EQ(result, 1); // Failure
+}
+
+// Test the decode() function with invalid input const char* + size
+
+TEST(DetailInfoTest, DecodeFunctionInvalidInput3) {
+    Detail_info detail;
+    const char* tmp = "{'id':'004','name':'PartC','count':'seventy-five'}";
+    std::size_t size = strlen(tmp);
+    char* invalidInput = new char[size];
+    std::copy(tmp, tmp + size, invalidInput);
+
+    bool result = detail.decode(invalidInput, size);
+
+    delete[] invalidInput;
 
     EXPECT_EQ(result, 1); // Failure
 }
