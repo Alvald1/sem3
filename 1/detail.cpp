@@ -43,6 +43,16 @@ Detail_info::decode(const string& str) {
     return 0;
 }
 
+bool
+Detail_info::decode(const char* str) {
+    return this->decode(string(str));
+}
+
+bool
+Detail_info::decode(const char* str, std::size_t size) {
+    return this->decode(string(str, size));
+}
+
 void
 Detail_info::print() {
     cout << "id: " << this->id << endl;

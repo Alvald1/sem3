@@ -11,7 +11,6 @@ class Detail_info {
     string name;
     std::size_t count;
 
-  protected:
     void init(const string& id, const string& name, std::size_t count);
 
   public:
@@ -20,6 +19,8 @@ class Detail_info {
     string encode(const string& id, const string& name, std::size_t count);
 
     bool decode(const string& str);
+    bool decode(const char* str);
+    bool decode(const char* str, std::size_t size);
 
     void print();
 
