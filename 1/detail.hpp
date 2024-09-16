@@ -3,6 +3,8 @@
 
 #include <string>
 
+typedef enum _errors { BAD_JSON } errors;
+
 using std::string;
 
 class Detail_info {

@@ -38,7 +38,7 @@ Detail_info::decode(const string& str) {
 
         this->init(id, name, count);
     } else {
-        throw std::format_error("Bad json string: " + str);
+        throw BAD_JSON;
     }
 }
 

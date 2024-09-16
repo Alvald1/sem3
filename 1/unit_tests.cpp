@@ -25,9 +25,8 @@ TEST(DetailInfoTest, DecodeFunctionWorks) {
     Detail_info detail;
     string input = "{'id':'004','name':'PartC','count':75}";
 
-    bool result = detail.decode(input);
+    detail.decode(input);
 
-    EXPECT_EQ(result, 0); // Success
     EXPECT_EQ(detail.encode(), "{'id':'004','name':'PartC','count':75}");
 }
 
@@ -36,9 +35,8 @@ TEST(DetailInfoTest, DecodeFunctionWorks2) {
     Detail_info detail;
     const char* input = "{'id':'004','name':'PartC','count':75}";
 
-    bool result = detail.decode(input);
+    detail.decode(input);
 
-    EXPECT_EQ(result, 0); // Success
     EXPECT_EQ(detail.encode(), "{'id':'004','name':'PartC','count':75}");
 }
 
@@ -50,11 +48,10 @@ TEST(DetailInfoTest, DecodeFunctionWorks3) {
     char* input = new char[size];
     std::copy(tmp, tmp + size, input);
 
-    bool result = detail.decode(input, size);
+    detail.decode(input, size);
 
     delete[] input;
 
-    EXPECT_EQ(result, 0); // Success
     EXPECT_EQ(detail.encode(), "{'id':'004','name':'PartC','count':75}");
 }
 
@@ -63,9 +60,7 @@ TEST(DetailInfoTest, DecodeFunctionInvalidInput) {
     Detail_info detail;
     string invalidInput = "{'invalid':'004','name':'PartC','count':'seventy-five'}";
 
-    bool result = detail.decode(invalidInput);
-
-    EXPECT_EQ(result, 1); // Failure
+    EXPECT_THROW(detail.decode(invalidInput), errors);
 }
 
 // Test the decode() function with invalid input const char*
@@ -74,9 +69,7 @@ TEST(DetailInfoTest, DecodeFunctionInvalidInput2) {
     Detail_info detail;
     const char* invalidInput = "{'id':'004','name':'PartC','count':'seventy-five'}";
 
-    bool result = detail.decode(invalidInput);
-
-    EXPECT_EQ(result, 1); // Failure
+    EXPECT_THROW(detail.decode(invalidInput), errors);
 }
 
 // Test the decode() function with invalid input const char* + size
@@ -88,11 +81,9 @@ TEST(DetailInfoTest, DecodeFunctionInvalidInput3) {
     char* invalidInput = new char[size];
     std::copy(tmp, tmp + size, invalidInput);
 
-    bool result = detail.decode(invalidInput, size);
+    EXPECT_THROW(detail.decode(invalidInput), errors);
 
     delete[] invalidInput;
-
-    EXPECT_EQ(result, 1); // Failure
 }
 
 // Test the default constructor

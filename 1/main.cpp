@@ -41,6 +41,8 @@ main() {
                     break;
                 }
             }
+        } catch (errors) {
+            cout << "Bad json string" << endl;
         } catch (const std::exception& e) {
             std::cerr << e.what() << endl;
             return 1;
@@ -53,12 +55,12 @@ main() {
 void
 decode(Detail_info& detail) {
     string str;
-    str = get_str("json: ");
     try {
+        str = get_str("json: ");
         detail.decode(str);
         detail.print();
-    } catch (const std::exception& e) {
-        cout << e.what() << endl;
+    } catch (...) {
+        throw;
     }
 }
 
