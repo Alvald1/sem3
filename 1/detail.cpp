@@ -27,7 +27,7 @@ Detail_info::encode(const string& id, const string& name, std::size_t count) {
     return this->encode();
 }
 
-bool
+void
 Detail_info::decode(const string& str) {
     std::regex pattern(R"(\{'id':'([^']*)','name':'([^']*)','count':(\d+)\})");
     std::smatch matches;
@@ -38,17 +38,16 @@ Detail_info::decode(const string& str) {
 
         this->init(id, name, count);
     } else {
-        return 1;
+        throw std::format_error("Bad json string: " + str);
     }
-    return 0;
 }
 
-bool
+void
 Detail_info::decode(const char* str) {
     return this->decode(string(str));
 }
 
-bool
+void
 Detail_info::decode(const char* str, std::size_t size) {
     return this->decode(string(str, size));
 }

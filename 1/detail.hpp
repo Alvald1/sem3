@@ -18,9 +18,9 @@ class Detail_info {
 
     string encode(const string& id, const string& name, std::size_t count);
 
-    bool decode(const string& str);
-    bool decode(const char* str);
-    bool decode(const char* str, std::size_t size);
+    void decode(const string& str);
+    void decode(const char* str);
+    void decode(const char* str, std::size_t size);
 
     void print();
 
