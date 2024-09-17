@@ -1,10 +1,18 @@
+/**
+ * @file unit_tests.cpp
+ * @brief Unit tests for the Detail_info class using Google Test framework.
+ */
+
 #include <gtest/gtest.h>
 #include <string>
 #include "detail.hpp"
 
 using std::string;
 
-// Test the encode() function without parameters
+/**
+ * @test DetailInfoTest.EncodeFunctionWorks
+ * @brief Tests the encode() function without parameters.
+ */
 TEST(DetailInfoTest, EncodeFunctionWorks) {
     Detail_info detail("002", "PartA", 50);
     string encoded = detail.encode();
@@ -12,7 +20,10 @@ TEST(DetailInfoTest, EncodeFunctionWorks) {
     EXPECT_EQ(encoded, "{'id':'002','name':'PartA','count':50}");
 }
 
-// Test the encode() function with parameters
+/**
+ * @test DetailInfoTest.EncodeWithParametersWorks
+ * @brief Tests the encode() function with parameters.
+ */
 TEST(DetailInfoTest, EncodeWithParametersWorks) {
     Detail_info detail;
     string encoded = detail.encode("003", "PartB", 25);
@@ -20,7 +31,10 @@ TEST(DetailInfoTest, EncodeWithParametersWorks) {
     EXPECT_EQ(encoded, "{'id':'003','name':'PartB','count':25}");
 }
 
-// Test the decode() function with valid input std::string
+/**
+ * @test DetailInfoTest.DecodeFunctionWorks
+ * @brief Tests the decode() function with valid input std::string.
+ */
 TEST(DetailInfoTest, DecodeFunctionWorks) {
     Detail_info detail;
     string input = "{'id':'004','name':'PartC','count':75}";
@@ -30,7 +44,10 @@ TEST(DetailInfoTest, DecodeFunctionWorks) {
     EXPECT_EQ(detail.encode(), "{'id':'004','name':'PartC','count':75}");
 }
 
-// Test the decode() function with valid input const char*
+/**
+ * @test DetailInfoTest.DecodeFunctionWorks2
+ * @brief Tests the decode() function with valid input const char*.
+ */
 TEST(DetailInfoTest, DecodeFunctionWorks2) {
     Detail_info detail;
     const char* input = "{'id':'004','name':'PartC','count':75}";
@@ -40,7 +57,10 @@ TEST(DetailInfoTest, DecodeFunctionWorks2) {
     EXPECT_EQ(detail.encode(), "{'id':'004','name':'PartC','count':75}");
 }
 
-// Test the decode() function with valid input const char* + size
+/**
+ * @test DetailInfoTest.DecodeFunctionWorks3
+ * @brief Tests the decode() function with valid input const char* and size.
+ */
 TEST(DetailInfoTest, DecodeFunctionWorks3) {
     Detail_info detail;
     const char* tmp = "{'id':'004','name':'PartC','count':75}";
@@ -55,7 +75,11 @@ TEST(DetailInfoTest, DecodeFunctionWorks3) {
     EXPECT_EQ(detail.encode(), "{'id':'004','name':'PartC','count':75}");
 }
 
-// Test the decode() function with invalid input std::string
+/**
+ * @test DetailInfoTest.DecodeFunctionInvalidInput
+ * @brief Tests the decode() function with invalid input std::string.
+ * @throws errors
+ */
 TEST(DetailInfoTest, DecodeFunctionInvalidInput) {
     Detail_info detail;
     string invalidInput = "{'invalid':'004','name':'PartC','count':'seventy-five'}";
@@ -63,8 +87,11 @@ TEST(DetailInfoTest, DecodeFunctionInvalidInput) {
     EXPECT_THROW(detail.decode(invalidInput), errors);
 }
 
-// Test the decode() function with invalid input const char*
-
+/**
+ * @test DetailInfoTest.DecodeFunctionInvalidInput2
+ * @brief Tests the decode() function with invalid input const char*.
+ * @throws errors
+ */
 TEST(DetailInfoTest, DecodeFunctionInvalidInput2) {
     Detail_info detail;
     const char* invalidInput = "{'id':'004','name':'PartC','count':'seventy-five'}";
@@ -72,8 +99,11 @@ TEST(DetailInfoTest, DecodeFunctionInvalidInput2) {
     EXPECT_THROW(detail.decode(invalidInput), errors);
 }
 
-// Test the decode() function with invalid input const char* + size
-
+/**
+ * @test DetailInfoTest.DecodeFunctionInvalidInput3
+ * @brief Tests the decode() function with invalid input const char* and size.
+ * @throws errors
+ */
 TEST(DetailInfoTest, DecodeFunctionInvalidInput3) {
     Detail_info detail;
     const char* tmp = "{'id':'004','name':'PartC','count':'seventy-five'}";
@@ -86,21 +116,30 @@ TEST(DetailInfoTest, DecodeFunctionInvalidInput3) {
     delete[] invalidInput;
 }
 
-// Test the default constructor
+/**
+ * @test DetailInfoTest.DefaultConstructorWorks
+ * @brief Tests the default constructor.
+ */
 TEST(DetailInfoTest, DefaultConstructorWorks) {
     Detail_info detail;
 
     EXPECT_EQ(detail.encode(), "{'id':'','name':'','count':0}");
 }
 
-// Test the constructor with parameters
+/**
+ * @test DetailInfoTest.ParameterizedConstructorWorks
+ * @brief Tests the constructor with parameters.
+ */
 TEST(DetailInfoTest, ParameterizedConstructorWorks) {
     Detail_info detail("005", "PartD", 150);
 
     EXPECT_EQ(detail.encode(), "{'id':'005','name':'PartD','count':150}");
 }
 
-// Test the constructor with encoded string
+/**
+ * @test DetailInfoTest.ConstructorWithEncodedStringWorks
+ * @brief Tests the constructor with encoded string input.
+ */
 TEST(DetailInfoTest, ConstructorWithEncodedStringWorks) {
     string input = "{'id':'006','name':'PartE','count':30}";
     Detail_info detail(input);
@@ -108,7 +147,10 @@ TEST(DetailInfoTest, ConstructorWithEncodedStringWorks) {
     EXPECT_EQ(detail.encode(), "{'id':'006','name':'PartE','count':30}");
 }
 
-// Test the print function (for completeness)
+/**
+ * @test DetailInfoTest.PrintFunctionWorks
+ * @brief Tests the print() function.
+ */
 TEST(DetailInfoTest, PrintFunctionWorks) {
     Detail_info detail("007", "PartF", 200);
     testing::internal::CaptureStdout();

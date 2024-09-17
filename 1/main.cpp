@@ -1,8 +1,11 @@
+/**
+ * @file main.cpp
+ * @brief Main entry point for the Detail_info encoding and decoding application.
+ */
+
+#include "main.hpp"
 #include <iostream>
 #include <limits>
-#include <string.h>
-
-#include "detail.hpp"
 
 using std::cin;
 using std::cout;
@@ -11,14 +14,10 @@ using std::string;
 
 #define PROMPT "(d) - decode\n(e) - encode\n"
 
-string get_str(const char*);
-
-template <typename T>
-T get_num(const char*, T min = std::numeric_limits<T>::lowest(), T max = std::numeric_limits<T>::max());
-
-void decode(Detail_info&);
-void encode(Detail_info&);
-
+/**
+ * @brief Main function. Provides a prompt to either encode or decode a Detail_info object.
+ * @return Returns 0 on success, 1 on failure.
+ */
 int
 main() {
     char state;
@@ -52,6 +51,11 @@ main() {
     return 0;
 }
 
+/**
+ * @brief Decodes the input string into a Detail_info object and prints the result.
+ * @param detail A reference to the Detail_info object to be populated.
+ * @throws std::runtime_error if input fails or decoding is unsuccessful.
+ */
 void
 decode(Detail_info& detail) {
     string str;
@@ -64,6 +68,11 @@ decode(Detail_info& detail) {
     }
 }
 
+/**
+ * @brief Encodes user input into a JSON-like string and prints it.
+ * @param detail A reference to the Detail_info object to be encoded.
+ * @throws std::runtime_error if input fails or encoding is unsuccessful.
+ */
 void
 encode(Detail_info& detail) {
     string id, name;
@@ -79,6 +88,12 @@ encode(Detail_info& detail) {
     }
 }
 
+/**
+ * @brief Prompts the user to input a string value.
+ * @param prompt The prompt to be displayed to the user.
+ * @return The user input as a string.
+ * @throws std::runtime_error if the input fails (EOF or error).
+ */
 string
 get_str(const char* prompt) {
     string var;
@@ -93,6 +108,15 @@ get_str(const char* prompt) {
     }
 }
 
+/**
+ * @brief Prompts the user to input a numeric value within a specified range.
+ * @tparam T The type of the numeric value (e.g., int, float, std::size_t).
+ * @param prompt The prompt to be displayed to the user.
+ * @param min The minimum acceptable value.
+ * @param max The maximum acceptable value.
+ * @return The user input as a numeric value of type T.
+ * @throws std::runtime_error if the input fails or the value is out of range.
+ */
 template <typename T>
 T
 get_num(const char* prompt, T min, T max) {
