@@ -1,5 +1,3 @@
 build
 .vscode
-html
-latex
-Doxyfile
+docs
