@@ -1,4 +1,4 @@
-file(GLOB TESTING ../detail.cpp unit_tests.cpp)
+file(GLOB TESTING)
 
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})

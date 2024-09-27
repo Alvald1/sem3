@@ -2,13 +2,13 @@ cmake_minimum_required(VERSION 3.10)
 
 # Устанавливаем компилятор до вызова project
 set(CMAKE_CXX_COMPILER clang++)
-project(lab1)
+project(lab2)
 
 # Настройка стандарта
 set(CMAKE_CXX_STANDARD 23)
 
 # Источники
-file(GLOB SOURCES main.cpp detail.cpp)
+file(GLOB SOURCES main.cpp)
 
 file(GLOB ALL *.cpp)
 
