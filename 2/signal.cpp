@@ -55,3 +55,8 @@ Signal::Signal(const std::string& str) {
         throw std::invalid_argument("Invalid input string: " + result);
     }
 }
+
+void
+Signal::inversion() {
+    level_ = (level_ == 0) ? 1 : 0;
+}

@@ -47,3 +47,10 @@ TEST(SignalTest, shouldThrowInvalidArgumentWhenGivenEmptyString) {
     std::string empty_string = "";
     EXPECT_THROW({ Signal signal(empty_string); }, std::invalid_argument);
 }
+
+// Inverting the signal level from 0 to 1
+TEST(Inversion, should_set_level_to_1_when_initial_level_is_0) {
+    Signal signal;
+    signal.inversion();
+    EXPECT_EQ(signal.get_level(), 1);
+}
