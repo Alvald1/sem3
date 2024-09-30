@@ -1,5 +1,6 @@
 #include "signal.hpp"
 
+#include <limits>
 #include <regex>
 
 Signal::Signal(int level, int duration) {
@@ -59,4 +60,15 @@ Signal::Signal(const std::string& str) {
 void
 Signal::inversion() {
     level_ = (level_ == 0) ? 1 : 0;
+}
+
+void
+Signal::increase(int value) {
+    if (value < 0) {
+        throw std::invalid_argument("Increase value must be a positive integer.");
+    }
+    if (duration_ > std::numeric_limits<int>::max() - value) {
+        throw std::overflow_error("Result of addition would overflow.");
+    }
+    duration_ += value;
 }

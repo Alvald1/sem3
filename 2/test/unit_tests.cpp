@@ -54,3 +54,31 @@ TEST(Inversion, should_set_level_to_1_when_initial_level_is_0) {
     signal.inversion();
     EXPECT_EQ(signal.get_level(), 1);
 }
+
+TEST(Inversion, should_set_level_to_0_when_initial_level_is_1) {
+    Signal signal(1, 0);
+    signal.inversion();
+    EXPECT_EQ(signal.get_level(), 0);
+}
+
+// increase duration_ by a positive integer value
+TEST(Increase, should_increase_duration_when_value_is_positive) {
+    Signal signal;
+    int initial_duration = signal.get_duration();
+    int increase_value = 5;
+    signal.increase(increase_value);
+    EXPECT_EQ(signal.get_duration(), initial_duration + increase_value);
+}
+
+// throw invalid_argument when value is negative
+TEST(Increase, should_throw_invalid_argument_when_value_is_negative) {
+    Signal signal;
+    int negative_value = -5;
+    EXPECT_THROW(signal.increase(negative_value), std::invalid_argument);
+}
+
+// throw overflow_error when addition of value to duration_ exceeds max int limit
+TEST(Increase, IncreaseOverflow) {
+    Signal signal(0, std::numeric_limits<int>::max() - 5);
+    EXPECT_THROW(signal.increase(10), std::overflow_error);
+}
