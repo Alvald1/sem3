@@ -2,40 +2,40 @@
 #include "../signal.hpp"
 
 // Test the constructor and getters
-TEST(SignalTest, ConstructorAndGetters) {
+TEST(Constructor, ConstructorAndGetters) {
     Signal signal(1, 10);
     EXPECT_EQ(signal.get_level(), 1);
     EXPECT_EQ(signal.get_duration(), 10);
 }
 
 // Test setting valid duration
-TEST(SignalTest, SetValidDuration) {
+TEST(Set_get, SetValidDuration) {
     Signal signal(1, 10);
     signal.set_duration(20);
     EXPECT_EQ(signal.get_duration(), 20);
 }
 
 // Test setting invalid duration
-TEST(SignalTest, SetInvalidDuration) {
+TEST(Set_get, SetInvalidDuration) {
     Signal signal(1, 10);
     EXPECT_THROW(signal.set_duration(-5), std::invalid_argument);
 }
 
 // Test setting valid level
-TEST(SignalTest, SetValidLevel) {
+TEST(Set_get, SetValidLevel) {
     Signal signal(1, 10);
     signal.set_level(0);
     EXPECT_EQ(signal.get_level(), 0);
 }
 
 // Test setting invalid level
-TEST(SignalTest, SetInvalidLevel) {
+TEST(Set_get, SetInvalidLevel) {
     Signal signal(1, 10);
     EXPECT_THROW(signal.set_level(2), std::invalid_argument);
 }
 
 // Initializes Signal object with valid binary string "0" or "1"
-TEST(SignalTest, shouldInitializeSignalObjectWhenGivenValidBinaryString) {
+TEST(Constructor, shouldInitializeSignalObjectWhenGivenValidBinaryString) {
     std::string valid_binary_string = "000111";
     Signal signal(valid_binary_string);
     EXPECT_EQ(signal.get_duration(), valid_binary_string.length());
@@ -43,7 +43,7 @@ TEST(SignalTest, shouldInitializeSignalObjectWhenGivenValidBinaryString) {
 }
 
 // Handles empty string input
-TEST(SignalTest, shouldThrowInvalidArgumentWhenGivenEmptyString) {
+TEST(Constructor, shouldThrowInvalidArgumentWhenGivenEmptyString) {
     std::string empty_string = "";
     EXPECT_THROW({ Signal signal(empty_string); }, std::invalid_argument);
 }
