@@ -8,7 +8,7 @@ project(lab2)
 set(CMAKE_CXX_STANDARD 23)
 
 # Источники
-file(GLOB SOURCES main.cpp)
+file(GLOB SOURCES signal.cpp)
 
 file(GLOB ALL *.cpp)
 
