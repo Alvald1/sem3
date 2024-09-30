@@ -1,3 +1,5 @@
+#include <limits>
+
 #include <gtest/gtest.h>
 #include "../signal.hpp"
 
@@ -81,4 +83,23 @@ TEST(Increase, should_throw_invalid_argument_when_value_is_negative) {
 TEST(Increase, IncreaseOverflow) {
     Signal signal(0, std::numeric_limits<int>::max() - 5);
     EXPECT_THROW(signal.increase(10), std::overflow_error);
+}
+
+// Decrease duration_ by a positive integer less than duration_
+TEST(Decrease, should_decrease_duration_when_value_is_a_positive_integer_less_than_duration_) {
+    Signal signal(0, 10);
+    signal.decrease(5);
+    EXPECT_EQ(signal.get_duration(), 5);
+}
+
+// Decrease duration_ by a value greater than duration_
+TEST(Decrease, DecreaseByValueGreaterThanDuration) {
+    Signal signal(0, 10);
+    EXPECT_THROW(signal.decrease(15), std::underflow_error);
+}
+
+// Decrease duration_ by a negative integer
+TEST(Decrease, DecreaseByNegativeInteger) {
+    Signal signal(0, 10);
+    EXPECT_THROW(signal.decrease(-5), std::invalid_argument);
 }

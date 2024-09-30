@@ -72,3 +72,14 @@ Signal::increase(int value) {
     }
     duration_ += value;
 }
+
+void
+Signal::decrease(int value) {
+    if (value < 0) {
+        throw std::invalid_argument("Decrease value must be a positive integer.");
+    }
+    if (duration_ < value) {
+        throw std::underflow_error("Result of subtraction would underflow.");
+    }
+    duration_ -= value;
+}
