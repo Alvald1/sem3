@@ -21,7 +21,7 @@ class Signal {
     void increase(int);
     void decrease(int);
 
-    void format_print(std::ofstream) const;
+    void format_print(std::wostream&) const;
 
   private:
     int level_ = 0, duration_ = 0;

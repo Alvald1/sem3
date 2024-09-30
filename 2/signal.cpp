@@ -83,3 +83,9 @@ Signal::decrease(int value) {
     }
     duration_ -= value;
 }
+
+void
+Signal::format_print(std::wostream& out) const {
+    wchar_t symbol = level_ == 0 ? L'_' : L'‾';
+    out << std::wstring(duration_, symbol) << std::endl;
+}

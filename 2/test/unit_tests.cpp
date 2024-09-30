@@ -103,3 +103,27 @@ TEST(Decrease, DecreaseByNegativeInteger) {
     Signal signal(0, 10);
     EXPECT_THROW(signal.decrease(-5), std::invalid_argument);
 }
+
+// Correctly formats and prints a string based on duration_ and level_ = 1
+TEST(FormatPrint, shouldCorrectlyFormatAndPrintStringWhenDurationAndLevelAreSet_1) {
+    Signal signal("111");
+    std::wostringstream out;
+    signal.format_print(out);
+    EXPECT_EQ(out.str(), std::wstring(L"‾‾‾\n"));
+}
+
+// Correctly formats and prints a string based on duration_ and level_ = 0
+TEST(FormatPrint, shouldCorrectlyFormatAndPrintStringWhenDurationAndLevelAreSet_0) {
+    Signal signal("000");
+    std::wostringstream out;
+    signal.format_print(out);
+    EXPECT_EQ(out.str(), std::wstring(L"___\n"));
+}
+
+// Handles duration_ set to zero
+TEST(FormatPrint, shouldHandleZeroDurationCorrectly) {
+    Signal signal(0, 0);
+    std::wostringstream out;
+    signal.format_print(out);
+    EXPECT_EQ(out.str(), std::wstring(L"\n"));
+}
