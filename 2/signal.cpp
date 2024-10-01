@@ -9,7 +9,7 @@ Signal::Signal(int level, int duration) {
 }
 
 Signal::Signal(const std::string& str) {
-    std::regex pattern("^(0+|1+)\\d*");
+    std::regex pattern("^(0+|1+).*");
     std::smatch matches;
     std::string result;
     if (std::regex_match(str, matches, pattern)) {

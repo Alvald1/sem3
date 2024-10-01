@@ -44,6 +44,14 @@ TEST(constructor, should_initialize_signal_object_when_given_valid_binary_string
     EXPECT_EQ(signal.get_level(), valid_binary_string[0] - '0');
 }
 
+// Initializes Signal object with valid binary string "0" or "1" or any
+TEST(constructor, should_initialize_signal_object_when_given_valid_binary_string_2) {
+    std::string valid_binary_string = "111aaa";
+    Signal signal(valid_binary_string);
+    EXPECT_EQ(signal.get_duration(), valid_binary_string.length());
+    EXPECT_EQ(signal.get_level(), valid_binary_string[0] - '0');
+}
+
 // Handles empty string input
 TEST(constructor, should_throw_invalid_argument_when_given_empty_string) {
     std::string empty_string = "";
