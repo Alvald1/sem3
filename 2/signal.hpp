@@ -17,6 +17,7 @@ class Signal {
     void set_duration(int);
 
     void inversion();
+    void operator~();
 
     void increase(int);
     void decrease(int);
@@ -25,9 +26,6 @@ class Signal {
 
   private:
     int level_ = 0, duration_ = 0;
-
-    static void valid_level(int);
-    static void valid_duration(int);
 };
 
 #endif

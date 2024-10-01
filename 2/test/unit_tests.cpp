@@ -4,40 +4,40 @@
 #include "../signal.hpp"
 
 // Test the constructor and getters
-TEST(Constructor, ConstructorAndGetters) {
+TEST(constructor, constructor_and_getters) {
     Signal signal(1, 10);
     EXPECT_EQ(signal.get_level(), 1);
     EXPECT_EQ(signal.get_duration(), 10);
 }
 
 // Test setting valid duration
-TEST(Set_get, SetValidDuration) {
+TEST(set_get, set_valid_duration) {
     Signal signal(1, 10);
     signal.set_duration(20);
     EXPECT_EQ(signal.get_duration(), 20);
 }
 
 // Test setting invalid duration
-TEST(Set_get, SetInvalidDuration) {
+TEST(set_get, set_invalid_duration) {
     Signal signal(1, 10);
     EXPECT_THROW(signal.set_duration(-5), std::invalid_argument);
 }
 
 // Test setting valid level
-TEST(Set_get, SetValidLevel) {
+TEST(set_get, set_valid_level) {
     Signal signal(1, 10);
     signal.set_level(0);
     EXPECT_EQ(signal.get_level(), 0);
 }
 
 // Test setting invalid level
-TEST(Set_get, SetInvalidLevel) {
+TEST(set_get, set_invalid_level) {
     Signal signal(1, 10);
     EXPECT_THROW(signal.set_level(2), std::invalid_argument);
 }
 
 // Initializes Signal object with valid binary string "0" or "1"
-TEST(Constructor, shouldInitializeSignalObjectWhenGivenValidBinaryString) {
+TEST(constructor, should_initialize_signal_object_when_given_valid_binary_string) {
     std::string valid_binary_string = "000111";
     Signal signal(valid_binary_string);
     EXPECT_EQ(signal.get_duration(), valid_binary_string.length());
@@ -45,26 +45,27 @@ TEST(Constructor, shouldInitializeSignalObjectWhenGivenValidBinaryString) {
 }
 
 // Handles empty string input
-TEST(Constructor, shouldThrowInvalidArgumentWhenGivenEmptyString) {
+TEST(constructor, should_throw_invalid_argument_when_given_empty_string) {
     std::string empty_string = "";
     EXPECT_THROW({ Signal signal(empty_string); }, std::invalid_argument);
 }
 
 // Inverting the signal level from 0 to 1
-TEST(Inversion, should_set_level_to_1_when_initial_level_is_0) {
+TEST(inversion, should_set_level_to_1_when_initial_level_is_0) {
     Signal signal;
     signal.inversion();
     EXPECT_EQ(signal.get_level(), 1);
 }
 
-TEST(Inversion, should_set_level_to_0_when_initial_level_is_1) {
-    Signal signal(1, 0);
-    signal.inversion();
+// Operator ~ should correctly invert the signal
+TEST(inversion, should_invert_the_signal_when_operator_is_used) {
+    Signal signal(1, 1);
+    ~signal;
     EXPECT_EQ(signal.get_level(), 0);
 }
 
 // increase duration_ by a positive integer value
-TEST(Increase, should_increase_duration_when_value_is_positive) {
+TEST(increase, should_increase_duration_when_value_is_positive) {
     Signal signal;
     int initial_duration = signal.get_duration();
     int increase_value = 5;
@@ -73,39 +74,39 @@ TEST(Increase, should_increase_duration_when_value_is_positive) {
 }
 
 // throw invalid_argument when value is negative
-TEST(Increase, should_throw_invalid_argument_when_value_is_negative) {
+TEST(increase, should_throw_invalid_argument_when_value_is_negative) {
     Signal signal;
     int negative_value = -5;
     EXPECT_THROW(signal.increase(negative_value), std::invalid_argument);
 }
 
 // throw overflow_error when addition of value to duration_ exceeds max int limit
-TEST(Increase, IncreaseOverflow) {
+TEST(increase, increase_overflow) {
     Signal signal(0, std::numeric_limits<int>::max() - 5);
     EXPECT_THROW(signal.increase(10), std::overflow_error);
 }
 
 // Decrease duration_ by a positive integer less than duration_
-TEST(Decrease, should_decrease_duration_when_value_is_a_positive_integer_less_than_duration_) {
+TEST(decrease, should_decrease_duration_when_value_is_a_positive_integer_less_than_duration) {
     Signal signal(0, 10);
     signal.decrease(5);
     EXPECT_EQ(signal.get_duration(), 5);
 }
 
 // Decrease duration_ by a value greater than duration_
-TEST(Decrease, DecreaseByValueGreaterThanDuration) {
+TEST(decrease, decrease_by_value_greater_than_duration) {
     Signal signal(0, 10);
     EXPECT_THROW(signal.decrease(15), std::underflow_error);
 }
 
 // Decrease duration_ by a negative integer
-TEST(Decrease, DecreaseByNegativeInteger) {
+TEST(decrease, decrease_by_negative_integer) {
     Signal signal(0, 10);
     EXPECT_THROW(signal.decrease(-5), std::invalid_argument);
 }
 
 // Correctly formats and prints a string based on duration_ and level_ = 1
-TEST(FormatPrint, shouldCorrectlyFormatAndPrintStringWhenDurationAndLevelAreSet_1) {
+TEST(format_print, should_correctly_format_and_print_string_when_duration_and_level_are_set_1) {
     Signal signal("111");
     std::wostringstream out;
     signal.format_print(out);
@@ -113,7 +114,7 @@ TEST(FormatPrint, shouldCorrectlyFormatAndPrintStringWhenDurationAndLevelAreSet_
 }
 
 // Correctly formats and prints a string based on duration_ and level_ = 0
-TEST(FormatPrint, shouldCorrectlyFormatAndPrintStringWhenDurationAndLevelAreSet_0) {
+TEST(format_print, should_correctly_format_and_print_string_when_duration_and_level_are_set_0) {
     Signal signal("000");
     std::wostringstream out;
     signal.format_print(out);
@@ -121,7 +122,7 @@ TEST(FormatPrint, shouldCorrectlyFormatAndPrintStringWhenDurationAndLevelAreSet_
 }
 
 // Handles duration_ set to zero
-TEST(FormatPrint, shouldHandleZeroDurationCorrectly) {
+TEST(format_print, should_handle_zero_duration_correctly) {
     Signal signal(0, 0);
     std::wostringstream out;
     signal.format_print(out);
