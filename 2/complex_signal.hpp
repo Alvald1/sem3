@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "allocator.hpp"
 #include "signal.hpp"
 
 class Complex_Signal {
@@ -30,6 +31,7 @@ class Complex_Signal {
     void format_print(std::wostream& out) const;
 
   private:
+    Allocator signal;
 };
 
 #endif
