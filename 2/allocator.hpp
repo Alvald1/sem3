@@ -11,7 +11,7 @@ class Allocator {
     void expand();
 
     int size_, capacity_;
-    char* buffer;
+    Signal* buffer;
 };
 
 #endif
