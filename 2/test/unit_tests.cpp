@@ -40,16 +40,22 @@ TEST(set_get, set_invalid_level) {
 TEST(constructor, should_initialize_signal_object_when_given_valid_binary_string) {
     std::string valid_binary_string = "000111";
     Signal signal(valid_binary_string);
-    EXPECT_EQ(signal.get_duration(), valid_binary_string.length());
-    EXPECT_EQ(signal.get_level(), valid_binary_string[0] - '0');
+    EXPECT_EQ(signal.get_duration(), 3);
+    EXPECT_EQ(signal.get_level(), 0);
 }
 
 // Initializes Signal object with valid binary string "0" or "1" or any
 TEST(constructor, should_initialize_signal_object_when_given_valid_binary_string_2) {
     std::string valid_binary_string = "111aaa";
     Signal signal(valid_binary_string);
-    EXPECT_EQ(signal.get_duration(), valid_binary_string.length());
-    EXPECT_EQ(signal.get_level(), valid_binary_string[0] - '0');
+    EXPECT_EQ(signal.get_duration(), 3);
+    EXPECT_EQ(signal.get_level(), 1);
+}
+
+// Initializes Signal object with invalid string
+TEST(constructor, should_initialize_signal_object_when_given_invalid_string) {
+    std::string invalid_binary_string = "qq111aaa";
+    EXPECT_THROW({ Signal signal(invalid_binary_string); }, std::invalid_argument);
 }
 
 // Handles empty string input
@@ -70,6 +76,13 @@ TEST(inversion, should_invert_the_signal_when_operator_is_used) {
     Signal signal(1, 1);
     ~signal;
     EXPECT_EQ(signal.get_level(), 0);
+}
+
+// Operator ~ should correctly double invert the signal
+TEST(inversion, should_invert_the_signal_when_operator_is_used_double) {
+    Signal signal(1, 1);
+    ~~signal;
+    EXPECT_EQ(signal.get_level(), 1);
 }
 
 // increase duration_ by a positive integer value
@@ -129,7 +142,7 @@ TEST(format_print, should_correctly_format_and_print_string_when_duration_and_le
     EXPECT_EQ(out.str(), std::wstring(L"___\n"));
 }
 
-// Handles duration_ set to zero
+// Handles duration_ set to zro
 TEST(format_print, should_handle_zero_duration_correctly) {
     Signal signal(0, 0);
     std::wostringstream out;

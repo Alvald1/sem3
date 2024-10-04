@@ -17,7 +17,7 @@ class Signal {
     void set_duration(int);
 
     void inversion();
-    void operator~();
+    Signal& operator~();
 
     void increase(int);
     void decrease(int);

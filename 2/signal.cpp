@@ -13,11 +13,11 @@ Signal::Signal(const std::string& str) {
     std::smatch matches;
     std::string result;
     if (std::regex_match(str, matches, pattern)) {
-        result = matches[0];
+        result = matches[1];
         set_duration(result.length());
         set_level(std::stoi(result.substr(0, 1)));
     } else {
-        throw std::invalid_argument("Invalid input string: " + result);
+        throw std::invalid_argument("Invalid input string: " + str);
     }
 }
 
@@ -52,9 +52,10 @@ Signal::inversion() {
     level_ ^= 1;
 }
 
-void
+Signal&
 Signal::operator~() {
     inversion();
+    return *this;
 }
 
 void
