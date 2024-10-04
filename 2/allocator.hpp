@@ -1,6 +1,8 @@
 #ifndef LAB2_2_ALLOCATOR_HPP
 #define LAB2_2_ALLOCATOR_HPP
 
+#include "signal.hpp"
+
 class Allocator {
   public:
     Allocator(int n);
@@ -10,7 +12,6 @@ class Allocator {
 
     int size_, capacity_;
     char* buffer;
-    const int chunk_size = 8;
 };
 
 #endif
