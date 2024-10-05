@@ -1,7 +1,7 @@
 #ifndef LAB2_2_ALLOCATOR_HPP
 #define LAB2_2_ALLOCATOR_HPP
 
-#include "signal.hpp"
+#include "../signal/signal.hpp"
 
 class Allocator {
   public:

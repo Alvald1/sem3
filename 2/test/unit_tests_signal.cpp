@@ -1,7 +1,7 @@
 #include <limits>
 
 #include <gtest/gtest.h>
-#include "../signal.hpp"
+#include "../signal/signal.hpp"
 
 // Test the constructor and getters
 TEST(constructor, constructor_and_getters) {

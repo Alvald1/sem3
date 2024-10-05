@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.13)
 
 # Устанавливаем компилятор до вызова project
 set(CMAKE_CXX_COMPILER clang++)
@@ -8,33 +8,32 @@ project(lab2)
 set(CMAKE_CXX_STANDARD 23)
 
 # Источники
-file(GLOB SOURCES signal.cpp)
+file(GLOB ALL allocator/allocator.cpp signal/signal.cpp complex_signal/complex_signal.cpp)
 
-file(GLOB ALL *.cpp)
-
+file(GLOB MAIN main.cpp)
 
 # Цель для основной сборки
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} ${MAIN})
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Werror -Wextra)
 
 # Цель для отладочной сборки
-add_executable(debug  ${SOURCES})
+add_executable(debug ${MAIN})
 set_target_properties(debug PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_debug)
-target_compile_options(debug PRIVATE -g)
+target_compile_options(debug PRIVATE -g -O0)
 
 # Цель для AddressSanitizer
-add_executable(asan  ${SOURCES})
-target_compile_options(asan PRIVATE -g "-fsanitize=address" "-fsanitize=undefined" -Wextra -Wall -Werror)
-target_link_options(asan PRIVATE "-fsanitize=address" "-fsanitize=undefined")
+add_executable(asan ${MAIN})
 set_target_properties(asan PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_asan)
+target_compile_options(asan PRIVATE -g "-fsanitize=address" "-fsanitize=undefined" -Wextra -Wall -Werror)
+target_link_options(asan PRIVATE -g "-fsanitize=address" "-fsanitize=undefined" -Wextra -Wall -Werror)
 
 
 # Цель для MemorySanitizer
-add_executable(msan  ${SOURCES})
+add_executable(msan ${MAIN})
 set_target_properties(msan PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_msan)
-target_compile_options(msan PRIVATE -g -Wextra -Wall -Werror "-fsanitize=memory" "-fsanitize=undefined")
-target_link_options(msan PRIVATE "-fsanitize=memory" "-fsanitize=undefined")
+target_compile_options(msan PRIVATE -g "-fsanitize=memory" "-fsanitize=undefined" -Wextra -Wall -Werror)
+target_link_options(msan PRIVATE -g "-fsanitize=memory" "-fsanitize=undefined" -Wextra -Wall -Werror)
 
 
 # Запуск Valgrind
@@ -51,3 +50,6 @@ add_custom_target(static
 )
 
 add_subdirectory(test)
+add_subdirectory(allocator)
+add_subdirectory(signal)
+add_subdirectory(complex_signal)

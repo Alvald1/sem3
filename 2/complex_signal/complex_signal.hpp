@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "allocator.hpp"
-#include "signal.hpp"
+#include "../allocator/allocator.hpp"
+#include "../signal/signal.hpp"
 
 class Complex_Signal {
   public:

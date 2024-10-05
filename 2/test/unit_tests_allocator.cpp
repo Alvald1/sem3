@@ -1,7 +1,7 @@
 #include <limits>
 
 #include <gtest/gtest.h>
-#include "../allocator.hpp"
+#include "../allocator/allocator.hpp"
 
 // Test the constructor with valid value
 TEST(constractor, valid_value) {
