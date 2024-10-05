@@ -8,7 +8,7 @@ class Allocator {
     Allocator(int n);
     ~Allocator();
 
-    void expand();
+    void resize(int);
 
     int size_, capacity_;
     Signal* buffer;
