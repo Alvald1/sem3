@@ -1,7 +1,9 @@
 #include <iostream>
 
+#include "complex_signal/complex_signal.hpp"
+
 int
 main() {
-    std::cout << "Hellow world!" << std::endl;
+    Complex_Signal complex_signal("a1110000");
     return 0;
 }

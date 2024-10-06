@@ -1,4 +1,4 @@
-file(GLOB SOURCE allocator.cpp allocator.hpp)
+file(GLOB SOURCE complex_signal.cpp complex_signal.hpp)
 
 # Цель для основной сборки
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCE})

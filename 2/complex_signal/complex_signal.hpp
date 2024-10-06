@@ -10,8 +10,7 @@ class Complex_Signal {
   public:
     Complex_Signal() = default;
     Complex_Signal(int level, int duration);
-    Complex_Signal(std::string str);
-    Complex_Signal(const Signal& signal);
+    Complex_Signal(const std::string& str);
 
     void inverstion();
     Complex_Signal& operator~();
@@ -31,7 +30,7 @@ class Complex_Signal {
     void format_print(std::wostream& out) const;
 
   private:
-    Allocator signal;
+    Allocator signals;
 };
 
 #endif
