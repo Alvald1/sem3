@@ -6,11 +6,14 @@ enable_testing()
 
 file(GLOB TEST unit_tests_signal.cpp unit_tests_allocator.cpp)
 
+set(CXXFLAGS -fprofile-instr-generate -fcoverage-mapping -g -O0)
+set(LDFLAGS -fprofile-instr-generate)
+
 # Запуск тестов и сбор покрытия
 add_executable(test_target ${TEST})
 set_target_properties(test_target PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_test)
-target_compile_options(test_target PRIVATE -fprofile-instr-generate -fcoverage-mapping -g -O0)
-target_link_options(test_target PRIVATE -fprofile-instr-generate -fcoverage-mapping -g -O0)
+target_compile_options(test_target PRIVATE ${CXXFLAGS})
+target_link_options(test_target PRIVATE ${LDFLAGS})
 target_link_libraries(test_target ${GTEST_LIBRARIES} gtest_main pthread)
 
 add_custom_target(cov)
