@@ -5,6 +5,7 @@
 
 class Allocator {
   public:
+    Allocator();
     Allocator(int n);
     ~Allocator();
 

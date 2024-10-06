@@ -10,6 +10,13 @@ TEST(constractor, valid_value) {
     EXPECT_EQ(allocator.capacity_, 10);
 }
 
+TEST(constractor, default) {
+    Allocator allocator;
+    EXPECT_EQ(allocator.size_, 0);
+    EXPECT_EQ(allocator.capacity_, 0);
+    EXPECT_EQ(allocator.buffer, nullptr);
+}
+
 // Test the constructor with invalid value zero
 TEST(constractor, invalid_value_zero) { EXPECT_THROW(Allocator allocator(0), std::invalid_argument); }
 
@@ -38,6 +45,12 @@ TEST(resize, valid_value_no_expand_3) {
     Allocator allocator(10);
     allocator.size_ = 1;
     allocator.resize(0);
+    EXPECT_EQ(allocator.capacity_, 10);
+}
+
+TEST(resize, default_constuctor) {
+    Allocator allocator;
+    allocator.resize(10);
     EXPECT_EQ(allocator.capacity_, 10);
 }
 
