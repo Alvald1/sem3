@@ -25,12 +25,13 @@ class Complex_Signal {
     void erase(int position, int duration);
 
     int operator[](int position) const;
-    int& operator[](int position);
 
     void format_print(std::wostream& out) const;
 
   private:
     Allocator signals;
+
+    int bin_search(int) const;
 };
 
 #endif
