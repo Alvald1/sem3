@@ -119,3 +119,26 @@ TEST(complex_signal_operator, move) {
     EXPECT_EQ(complex_signal_move[5], 1);
     EXPECT_EQ(complex_signal_move[6], 0);
 }
+
+// Test the inversion
+TEST(complex_signal_inversion, inversion) {
+    Complex_Signal complex_signal("001110");
+    complex_signal.inverstion();
+    EXPECT_EQ(complex_signal[1], 1);
+    EXPECT_EQ(complex_signal[2], 1);
+    EXPECT_EQ(complex_signal[3], 0);
+    EXPECT_EQ(complex_signal[4], 0);
+    EXPECT_EQ(complex_signal[5], 0);
+    EXPECT_EQ(complex_signal[6], 1);
+}
+
+TEST(complex_signal_operator, inversion) {
+    Complex_Signal complex_signal("001110");
+    ~complex_signal;
+    EXPECT_EQ(complex_signal[1], 1);
+    EXPECT_EQ(complex_signal[2], 1);
+    EXPECT_EQ(complex_signal[3], 0);
+    EXPECT_EQ(complex_signal[4], 0);
+    EXPECT_EQ(complex_signal[5], 0);
+    EXPECT_EQ(complex_signal[6], 1);
+}

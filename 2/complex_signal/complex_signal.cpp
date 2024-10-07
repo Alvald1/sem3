@@ -33,7 +33,7 @@ Complex_Signal::Complex_Signal(const std::string& str) {
 
 Complex_Signal::Complex_Signal(const Complex_Signal& other) { signals = Allocator(other.signals); }
 
-Complex_Signal::Complex_Signal(Complex_Signal&& other) { signals = Allocator(std::move(other.signals)); }
+Complex_Signal::Complex_Signal(Complex_Signal&& other) noexcept { signals = Allocator(std::move(other.signals)); }
 
 Complex_Signal&
 Complex_Signal::operator=(const Complex_Signal& other) {
@@ -68,4 +68,15 @@ Complex_Signal::bin_search(int position) const {
         }
     }
     return L;
+}
+
+void
+Complex_Signal::inverstion() {
+    std::for_each(signals.buffer_, signals.buffer_ + signals.size_, [](Signals& signal) { signal.signal.inversion(); });
+}
+
+Complex_Signal&
+Complex_Signal::operator~() {
+    inverstion();
+    return *this;
 }
