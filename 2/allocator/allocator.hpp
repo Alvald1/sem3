@@ -14,6 +14,9 @@ class Allocator {
     Allocator(int n);
     ~Allocator();
 
+    Allocator(const Allocator&);
+    Allocator(Allocator&&) noexcept;
+
     void resize(int);
 
     int size_, capacity_;

@@ -4,11 +4,7 @@
 #include <math.h>
 #include <string>
 
-Allocator::Allocator() {
-    size_ = 1;
-    capacity_ = 1;
-    buffer = new Signals[capacity_];
-}
+Allocator::Allocator() : size_(1), capacity_(1) { buffer = new Signals[capacity_]; }
 
 Allocator::Allocator(int n) {
     if (n <= 0) {
@@ -20,6 +16,16 @@ Allocator::Allocator(int n) {
 }
 
 Allocator::~Allocator() { delete[] buffer; }
+
+Allocator::Allocator(const Allocator& other) : size_(other.size_), capacity_(other.capacity_) {
+    buffer = new Signals[capacity_];
+    std::copy(other.buffer, other.buffer + capacity_, buffer);
+}
+
+Allocator::Allocator(Allocator&& other) noexcept
+    : size_(other.size_), capacity_(other.capacity_), buffer(other.buffer) {
+    other.buffer = nullptr;
+}
 
 void
 Allocator::resize(int n) {
@@ -34,7 +40,7 @@ Allocator::resize(int n) {
     new_capacity = capacity_ * multyplier;
     if (multyplier > 1) {
         Signals* new_buffer = new Signals[new_capacity];
-        std::copy(buffer, buffer + capacity_, new_buffer);
+        std::move(buffer, buffer + capacity_, new_buffer);
         delete[] buffer;
         buffer = new_buffer;
         capacity_ = new_capacity;
