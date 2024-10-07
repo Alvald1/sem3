@@ -33,6 +33,20 @@ Complex_Signal::Complex_Signal(const std::string& str) {
 
 Complex_Signal::Complex_Signal(const Complex_Signal& other) { signals = Allocator(other.signals); }
 
+Complex_Signal::Complex_Signal(Complex_Signal&& other) { signals = Allocator(std::move(other.signals)); }
+
+Complex_Signal&
+Complex_Signal::operator=(const Complex_Signal& other) {
+    signals = Allocator(other.signals);
+    return *this;
+}
+
+Complex_Signal&
+Complex_Signal::operator=(Complex_Signal&& other) noexcept {
+    signals = Allocator(std::move(other.signals));
+    return *this;
+}
+
 int
 Complex_Signal::operator[](int position) const {
     if (position <= 0 || position > signals.buffer_[signals.size_ - 1].time) {
