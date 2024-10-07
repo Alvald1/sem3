@@ -132,6 +132,7 @@ TEST(complex_signal_inversion, inversion) {
     EXPECT_EQ(complex_signal[6], 1);
 }
 
+// Test the inversion operator
 TEST(complex_signal_operator, inversion) {
     Complex_Signal complex_signal("001110");
     ~complex_signal;
@@ -141,4 +142,44 @@ TEST(complex_signal_operator, inversion) {
     EXPECT_EQ(complex_signal[4], 0);
     EXPECT_EQ(complex_signal[5], 0);
     EXPECT_EQ(complex_signal[6], 1);
+}
+
+// Test the addition operator
+TEST(complex_signal_operator, addition_valid) {
+    Complex_Signal complex_signal("001");
+    Complex_Signal complex_signal2("010");
+    complex_signal += complex_signal2;
+    EXPECT_EQ(complex_signal[1], 0);
+    EXPECT_EQ(complex_signal[2], 0);
+    EXPECT_EQ(complex_signal[3], 1);
+    EXPECT_EQ(complex_signal[4], 0);
+    EXPECT_EQ(complex_signal[5], 1);
+    EXPECT_EQ(complex_signal[6], 0);
+}
+
+// Test the addition operator yourself
+TEST(complex_signal_operator, addition_yourself) {
+    Complex_Signal complex_signal("001");
+    complex_signal += complex_signal;
+    EXPECT_EQ(complex_signal[1], 0);
+    EXPECT_EQ(complex_signal[2], 0);
+    EXPECT_EQ(complex_signal[3], 1);
+    EXPECT_EQ(complex_signal[4], 0);
+    EXPECT_EQ(complex_signal[5], 0);
+    EXPECT_EQ(complex_signal[6], 1);
+}
+
+// Test the addition operator sequentially
+TEST(complex_signal_operator, addition_sequentially) {
+    Complex_Signal complex_signal("001");
+    complex_signal += complex_signal += complex_signal;
+    EXPECT_EQ(complex_signal[1], 0);
+    EXPECT_EQ(complex_signal[2], 0);
+    EXPECT_EQ(complex_signal[3], 1);
+    EXPECT_EQ(complex_signal[4], 0);
+    EXPECT_EQ(complex_signal[5], 0);
+    EXPECT_EQ(complex_signal[6], 1);
+    EXPECT_EQ(complex_signal[7], 0);
+    EXPECT_EQ(complex_signal[8], 0);
+    EXPECT_EQ(complex_signal[9], 1);
 }

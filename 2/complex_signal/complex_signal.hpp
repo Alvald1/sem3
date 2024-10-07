@@ -21,10 +21,9 @@ class Complex_Signal {
     void inverstion();
     Complex_Signal& operator~();
 
-    void add(const Complex_Signal& other_signal);
-    Complex_Signal& operator+=(const Complex_Signal& other_signal);
+    Complex_Signal& operator+=(const Complex_Signal& other);
 
-    void insert(Complex_Signal& other_signal, int position);
+    void insert(Complex_Signal& other, int position);
 
     Complex_Signal& operator*(int multiplier);
 

@@ -80,3 +80,17 @@ Complex_Signal::operator~() {
     inverstion();
     return *this;
 }
+
+Complex_Signal&
+Complex_Signal::operator+=(const Complex_Signal& other) {
+    Complex_Signal new_signal;
+    new_signal.signals.resize(signals.size_ + other.signals.size_);
+    int duration = signals.buffer_[signals.size_ - 1].time;
+    std::move(signals.buffer_, signals.buffer_ + signals.size_, new_signal.signals.buffer_);
+    std::copy(other.signals.buffer_ + 1, other.signals.buffer_ + other.signals.size_,
+              new_signal.signals.buffer_ + signals.size_);
+    new_signal.signals.size_ = signals.size_ + other.signals.size_ - 1;
+    std::for_each(new_signal.signals.buffer_ + signals.size_, new_signal.signals.buffer_ + new_signal.signals.size_,
+                  [duration](Signals& signal) { signal.time += duration; });
+    return *this = std::move(new_signal);
+}
