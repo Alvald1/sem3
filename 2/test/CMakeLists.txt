@@ -4,7 +4,7 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 enable_testing()
 
-file(GLOB TEST unit_tests_signal.cpp unit_tests_allocator.cpp)
+file(GLOB TEST unit_tests_signal.cpp unit_tests_allocator.cpp unit_tests_complex_signal.cpp)
 
 set(CXXFLAGS -fprofile-instr-generate -fcoverage-mapping -g -O0)
 set(LDFLAGS -fprofile-instr-generate)

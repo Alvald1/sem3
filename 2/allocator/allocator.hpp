@@ -3,6 +3,11 @@
 
 #include "../signal/signal.hpp"
 
+typedef struct _signals {
+    Signal signal;
+    int time;
+} Signals;
+
 class Allocator {
   public:
     Allocator();
@@ -12,7 +17,7 @@ class Allocator {
     void resize(int);
 
     int size_, capacity_;
-    Signal* buffer;
+    Signals* buffer;
 };
 
 #endif
