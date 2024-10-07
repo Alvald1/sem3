@@ -4,7 +4,7 @@
 #include <math.h>
 #include <string>
 
-Allocator::Allocator() : size_(1), capacity_(1) { buffer = new Signals[capacity_]; }
+Allocator::Allocator() : size_(1), capacity_(1) { buffer_ = new Signals[capacity_]; }
 
 Allocator::Allocator(int n) {
     if (n <= 0) {
@@ -12,30 +12,30 @@ Allocator::Allocator(int n) {
     }
     size_ = 1;
     capacity_ = n + 1;
-    buffer = new Signals[capacity_ + 1];
+    buffer_ = new Signals[capacity_ + 1];
 }
 
-Allocator::~Allocator() { delete[] buffer; }
+Allocator::~Allocator() { delete[] buffer_; }
 
 Allocator::Allocator(const Allocator& other) : size_(other.size_), capacity_(other.capacity_) {
-    buffer = new Signals[capacity_];
-    std::copy(other.buffer, other.buffer + size_, buffer);
+    buffer_ = new Signals[capacity_];
+    std::copy(other.buffer_, other.buffer_ + size_, buffer_);
 }
 
 Allocator::Allocator(Allocator&& other) noexcept
-    : size_(other.size_), capacity_(other.capacity_), buffer(other.buffer) {
-    other.buffer = nullptr;
+    : size_(other.size_), capacity_(other.capacity_), buffer_(other.buffer_) {
+    other.buffer_ = nullptr;
 }
 
 Allocator&
 Allocator::operator=(const Allocator& other) {
     if (this != &other) {
-        Signals* new_buffer = new Signals[other.capacity_];
+        Signals* new_buffer_ = new Signals[other.capacity_];
         capacity_ = other.capacity_;
         size_ = other.size_;
-        delete[] buffer;
-        buffer = new_buffer;
-        std::copy(other.buffer, other.buffer + size_, buffer);
+        delete[] buffer_;
+        buffer_ = new_buffer_;
+        std::copy(other.buffer_, other.buffer_ + size_, buffer_);
     }
     return *this;
 }
@@ -44,7 +44,8 @@ Allocator&
 Allocator::operator=(Allocator&& other) noexcept {
     std::swap(capacity_, other.capacity_);
     std::swap(size_, other.size_);
-    std::swap(buffer, other.buffer);
+    std::swap(buffer_, other.buffer_);
+    return *this;
 }
 
 void
@@ -59,10 +60,10 @@ Allocator::resize(int n) {
     }
     new_capacity = capacity_ * multyplier;
     if (multyplier > 1) {
-        Signals* new_buffer = new Signals[new_capacity];
-        std::move(buffer, buffer + size_, new_buffer);
-        delete[] buffer;
-        buffer = new_buffer;
+        Signals* new_buffer_ = new Signals[new_capacity];
+        std::move(buffer_, buffer_ + size_, new_buffer_);
+        delete[] buffer_;
+        buffer_ = new_buffer_;
         capacity_ = new_capacity;
     }
 }

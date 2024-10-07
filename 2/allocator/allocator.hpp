@@ -23,7 +23,7 @@ class Allocator {
     void resize(int);
 
     int size_, capacity_;
-    Signals* buffer;
+    Signals* buffer_;
 };
 
 #endif

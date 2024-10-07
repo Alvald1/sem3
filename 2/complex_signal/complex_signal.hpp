@@ -11,6 +11,8 @@ class Complex_Signal {
     Complex_Signal() = default;
     Complex_Signal(int level, int duration);
     Complex_Signal(const std::string& str);
+    Complex_Signal(const Complex_Signal& other);
+    Complex_Signal(Complex_Signal&& other);
 
     void inverstion();
     Complex_Signal& operator~();
