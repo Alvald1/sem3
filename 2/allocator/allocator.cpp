@@ -19,12 +19,32 @@ Allocator::~Allocator() { delete[] buffer; }
 
 Allocator::Allocator(const Allocator& other) : size_(other.size_), capacity_(other.capacity_) {
     buffer = new Signals[capacity_];
-    std::copy(other.buffer, other.buffer + capacity_, buffer);
+    std::copy(other.buffer, other.buffer + size_, buffer);
 }
 
 Allocator::Allocator(Allocator&& other) noexcept
     : size_(other.size_), capacity_(other.capacity_), buffer(other.buffer) {
     other.buffer = nullptr;
+}
+
+Allocator&
+Allocator::operator=(const Allocator& other) {
+    if (this != &other) {
+        Signals* new_buffer = new Signals[other.capacity_];
+        capacity_ = other.capacity_;
+        size_ = other.size_;
+        delete[] buffer;
+        buffer = new_buffer;
+        std::copy(other.buffer, other.buffer + size_, buffer);
+    }
+    return *this;
+}
+
+Allocator&
+Allocator::operator=(Allocator&& other) noexcept {
+    std::swap(capacity_, other.capacity_);
+    std::swap(size_, other.size_);
+    std::swap(buffer, other.buffer);
 }
 
 void
@@ -40,7 +60,7 @@ Allocator::resize(int n) {
     new_capacity = capacity_ * multyplier;
     if (multyplier > 1) {
         Signals* new_buffer = new Signals[new_capacity];
-        std::move(buffer, buffer + capacity_, new_buffer);
+        std::move(buffer, buffer + size_, new_buffer);
         delete[] buffer;
         buffer = new_buffer;
         capacity_ = new_capacity;

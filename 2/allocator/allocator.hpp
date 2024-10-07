@@ -17,6 +17,9 @@ class Allocator {
     Allocator(const Allocator&);
     Allocator(Allocator&&) noexcept;
 
+    Allocator& operator=(const Allocator&);
+    Allocator& operator=(Allocator&&) noexcept;
+
     void resize(int);
 
     int size_, capacity_;
