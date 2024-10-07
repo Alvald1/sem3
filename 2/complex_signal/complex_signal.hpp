@@ -23,7 +23,7 @@ class Complex_Signal {
 
     Complex_Signal& operator+=(const Complex_Signal& other);
 
-    void insert(Complex_Signal& other, int position);
+    void insert(const Complex_Signal& other, int position);
 
     Complex_Signal& operator*(int multiplier);
 
@@ -36,7 +36,8 @@ class Complex_Signal {
   private:
     Allocator signals;
 
-    int bin_search(int) const;
+    int bin_search(int position) const;
+    int split(int index, int position, int size);
 };
 
 #endif

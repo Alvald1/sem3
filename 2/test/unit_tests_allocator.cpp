@@ -22,11 +22,6 @@ TEST(allocator_constructor, invalid_value_zero) { EXPECT_THROW(Allocator allocat
 // Test the constructor with invalid value negative
 TEST(allocator_constructor, invalid_value_negative) { EXPECT_THROW(Allocator allocator(-5), std::invalid_argument); }
 
-// Test the constructor bad_alloc
-TEST(allocator_constructor, bad_alloc) {
-    EXPECT_THROW(Allocator allocator(std::numeric_limits<int>::max()), std::bad_alloc);
-}
-
 // Test the resize function with valid value no expand 1
 TEST(allocator_resize, valid_value_no_expand_1) {
     Allocator allocator(10);

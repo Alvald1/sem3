@@ -94,3 +94,37 @@ Complex_Signal::operator+=(const Complex_Signal& other) {
                   [duration](Signals& signal) { signal.time += duration; });
     return *this = std::move(new_signal);
 }
+
+void
+Complex_Signal::insert(const Complex_Signal& other, int position) {
+    if (position <= 0 || position > signals.buffer_[signals.size_ - 1].time) {
+        throw std::invalid_argument("Invalid position: " + std::to_string(position));
+    }
+    int index = bin_search(position);
+    int flag = split(index, position, other.signals.size_);
+    std::copy(other.signals.buffer_ + 1, other.signals.buffer_ + other.signals.size_, signals.buffer_ + index + flag);
+    signals.size_ += other.signals.size_ - 1 + flag;
+    int duration = signals.buffer_[index - 1 + flag].time;
+    std::for_each(signals.buffer_ + index + flag, signals.buffer_ + other.signals.size_ + 1,
+                  [duration](Signals& signal) { signal.time += duration; });
+    duration = other.signals.buffer_[other.signals.size_ - 1].time;
+    std::for_each(signals.buffer_ + index + other.signals.size_ - 1 + flag, signals.buffer_ + signals.size_ + flag,
+                  [duration](Signals& signal) { signal.time += duration; });
+}
+
+int
+Complex_Signal::split(int index, int position, int size) {
+    if (position == signals.buffer_[index - 1].time + 1) {
+        signals.resize(size - 1);
+        std::move(signals.buffer_ + index, signals.buffer_ + signals.size_, signals.buffer_ + index + size - 1);
+        return 0;
+    }
+    int remains = position - signals.buffer_[index - 1].time - 1;
+    int shift = signals.buffer_[index].signal.get_duration() - remains;
+    signals.resize(size);
+    std::move(signals.buffer_ + index, signals.buffer_ + signals.size_ + 1, signals.buffer_ + index + size);
+    signals.buffer_[index].signal.set_duration(remains);
+    signals.buffer_[index].time = position - 1;
+    signals.buffer_[index + size].signal.set_duration(shift);
+    return 1;
+}
