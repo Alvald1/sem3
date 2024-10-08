@@ -184,6 +184,19 @@ TEST(complex_signal_operator, addition_sequentially) {
     EXPECT_EQ(complex_signal[9], 1);
 }
 
+// Test the insertion with insert yourself
+TEST(complex_signal_insert, insert_yourself) {
+    Complex_Signal complex_signal("001");
+    complex_signal.insert(complex_signal, 2);
+    EXPECT_EQ(complex_signal[1], 0);
+    EXPECT_EQ(complex_signal[2], 0);
+    EXPECT_EQ(complex_signal[3], 0);
+    EXPECT_EQ(complex_signal[4], 1);
+    EXPECT_EQ(complex_signal[5], 0);
+    EXPECT_EQ(complex_signal[6], 1);
+}
+
+// Test the insertion with split
 TEST(complex_signal_insert, insert_split) {
     Complex_Signal complex_signal("001");
     Complex_Signal complex_signal2("010");
@@ -196,6 +209,7 @@ TEST(complex_signal_insert, insert_split) {
     EXPECT_EQ(complex_signal[6], 1);
 }
 
+// Test the insertion with insert before
 TEST(complex_signal_insert, insert_before) {
     Complex_Signal complex_signal("001");
     Complex_Signal complex_signal2("010");
@@ -208,7 +222,8 @@ TEST(complex_signal_insert, insert_before) {
     EXPECT_EQ(complex_signal[6], 1);
 }
 
-TEST(complex_signal_insert, insert_start) {
+// Test the insertion with insert begining
+TEST(complex_signal_insert, insert_begining) {
     Complex_Signal complex_signal("001");
     Complex_Signal complex_signal2("010");
     complex_signal.insert(complex_signal2, 1);
@@ -220,14 +235,16 @@ TEST(complex_signal_insert, insert_start) {
     EXPECT_EQ(complex_signal[6], 1);
 }
 
+// Test the insertion with invalid zero
 TEST(complex_signal_insert, insert_invalid_zero) {
     Complex_Signal complex_signal("001");
     Complex_Signal complex_signal2("010");
     EXPECT_THROW(complex_signal.insert(complex_signal2, 0), std::invalid_argument);
 }
 
+// Test the insertion with invalid large
 TEST(complex_signal_insert, insert_invalid_large) {
     Complex_Signal complex_signal("001");
     Complex_Signal complex_signal2("010");
-    EXPECT_THROW(complex_signal.insert(complex_signal2, 10), std::invalid_argument);
+    EXPECT_THROW(complex_signal.insert(complex_signal2, 3), std::invalid_argument);
 }
