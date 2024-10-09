@@ -4,15 +4,13 @@
 #include <math.h>
 #include <string>
 
-Allocator::Allocator() : size_(1), capacity_(1) { buffer_ = new Signals[capacity_]; }
-
 Allocator::Allocator(int n) {
     if (n <= 0) {
         throw std::invalid_argument("Invalid argument");
     }
-    size_ = 1;
-    capacity_ = n + 1;
-    buffer_ = new Signals[capacity_ + 1];
+    size_ = 0;
+    capacity_ = n;
+    buffer_ = new Signals[capacity_];
 }
 
 Allocator::~Allocator() { delete[] buffer_; }
@@ -51,15 +49,19 @@ Allocator::operator=(Allocator&& other) noexcept {
 void
 Allocator::resize(int n) {
     int new_capacity{}, multyplier{};
-    if (n < 0) {
+    if (n <= 0) {
         throw std::invalid_argument("Invalid argument");
     }
-    multyplier = std::ceil(double(n + size_) / capacity_);
-    if (capacity_ > std::numeric_limits<int>::max() / multyplier) {
-        throw std::overflow_error("Capacity overflow");
+    if (capacity_ == 0) {
+        new_capacity = n;
+    } else {
+        multyplier = std::ceil(double(n + size_) / capacity_);
+        if (capacity_ > std::numeric_limits<int>::max() / multyplier) {
+            throw std::overflow_error("Capacity overflow");
+        }
+        new_capacity = capacity_ * multyplier;
     }
-    new_capacity = capacity_ * multyplier;
-    if (multyplier > 1) {
+    if (capacity_ == 0 || multyplier > 1) {
         Signals* new_buffer_ = new Signals[new_capacity];
         std::move(buffer_, buffer_ + size_, new_buffer_);
         delete[] buffer_;

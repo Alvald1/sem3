@@ -6,14 +6,15 @@
 // Test the constructor with valid value
 TEST(allocator_constructor, valid_value) {
     Allocator allocator(10);
-    EXPECT_EQ(allocator.size_, 1);
-    EXPECT_EQ(allocator.capacity_, 11);
+    EXPECT_EQ(allocator.size_, 0);
+    EXPECT_EQ(allocator.capacity_, 10);
 }
 
 TEST(allocator_constructor, default) {
     Allocator allocator;
-    EXPECT_EQ(allocator.size_, 1);
-    EXPECT_EQ(allocator.capacity_, 1);
+    EXPECT_EQ(allocator.size_, 0);
+    EXPECT_EQ(allocator.capacity_, 0);
+    EXPECT_EQ(allocator.buffer_, nullptr);
 }
 
 // Test the constructor with invalid value zero
@@ -26,27 +27,27 @@ TEST(allocator_constructor, invalid_value_negative) { EXPECT_THROW(Allocator all
 TEST(allocator_resize, valid_value_no_expand_1) {
     Allocator allocator(10);
     allocator.resize(5);
-    EXPECT_EQ(allocator.capacity_, 11);
+    EXPECT_EQ(allocator.capacity_, 10);
 }
 
 // Test the resize function with valid value no expand 2
 TEST(allocator_resize, valid_value_no_expand_2) {
     Allocator allocator(10);
-    allocator.resize(0);
-    EXPECT_EQ(allocator.capacity_, 11);
+    allocator.resize(1);
+    EXPECT_EQ(allocator.capacity_, 10);
 }
 
 TEST(allocator_resize, default_constuctor) {
     Allocator allocator;
     allocator.resize(10);
-    EXPECT_EQ(allocator.capacity_, 11);
+    EXPECT_EQ(allocator.capacity_, 10);
 }
 
 // Test the resize function with valid value expand
 TEST(allocator_resize, valid_value_expand_1) {
     Allocator allocator(10);
     allocator.resize(15);
-    EXPECT_EQ(allocator.capacity_, 22);
+    EXPECT_EQ(allocator.capacity_, 20);
 }
 
 // Test the resize function with valid value expand 2
@@ -54,7 +55,7 @@ TEST(allocator_resize, valid_value_expand_2) {
     Allocator allocator(10);
     allocator.size_ = 6;
     allocator.resize(6);
-    EXPECT_EQ(allocator.capacity_, 22);
+    EXPECT_EQ(allocator.capacity_, 20);
 }
 
 // Test the resize function with invalid value negative
@@ -73,16 +74,16 @@ TEST(allocator_resize, overflow) {
 TEST(allocator_constructor, copy_constructor) {
     Allocator allocator(10);
     Allocator allocator2(allocator);
-    EXPECT_EQ(allocator2.size_, 1);
-    EXPECT_EQ(allocator2.capacity_, 11);
+    EXPECT_EQ(allocator2.size_, 0);
+    EXPECT_EQ(allocator2.capacity_, 10);
 }
 
 // Test the move constructor
 TEST(allocator_constructor, move_constructor) {
     Allocator allocator(10);
     Allocator allocator2(std::move(allocator));
-    EXPECT_EQ(allocator2.size_, 1);
-    EXPECT_EQ(allocator2.capacity_, 11);
+    EXPECT_EQ(allocator2.size_, 0);
+    EXPECT_EQ(allocator2.capacity_, 10);
 }
 
 // Test the copy assignment operator
@@ -90,16 +91,16 @@ TEST(allocator_operator, copy) {
     Allocator allocator(10);
     Allocator allocator2;
     allocator2 = allocator;
-    EXPECT_EQ(allocator2.size_, 1);
-    EXPECT_EQ(allocator2.capacity_, 11);
+    EXPECT_EQ(allocator2.size_, 0);
+    EXPECT_EQ(allocator2.capacity_, 10);
 }
 
 // Test the copy assignment operator yourself
 TEST(allocator_operator, copy_yourself) {
     Allocator allocator(10);
     allocator = allocator;
-    EXPECT_EQ(allocator.size_, 1);
-    EXPECT_EQ(allocator.capacity_, 11);
+    EXPECT_EQ(allocator.size_, 0);
+    EXPECT_EQ(allocator.capacity_, 10);
 }
 
 // Test the move assignment operator
@@ -107,6 +108,6 @@ TEST(allocator_operator, move) {
     Allocator allocator(10);
     Allocator allocator2;
     allocator2 = std::move(allocator);
-    EXPECT_EQ(allocator2.size_, 1);
-    EXPECT_EQ(allocator2.capacity_, 11);
+    EXPECT_EQ(allocator2.size_, 0);
+    EXPECT_EQ(allocator2.capacity_, 10);
 }

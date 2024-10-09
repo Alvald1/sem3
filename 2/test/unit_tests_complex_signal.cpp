@@ -6,28 +6,28 @@
 // Test the constructor level and duration
 TEST(complex_signal_constructor, level_duration) {
     Complex_Signal complex_signal(1, 10);
-    EXPECT_EQ(complex_signal[1], 1);
-    EXPECT_EQ(complex_signal[10], 1);
+    EXPECT_EQ(complex_signal[0], 1);
+    EXPECT_EQ(complex_signal[9], 1);
 }
 
 // Test the constructor with a valid binary string
 TEST(complex_signal_constructor, valid_string) {
     Complex_Signal complex_signal("001110");
+    EXPECT_EQ(complex_signal[0], 0);
     EXPECT_EQ(complex_signal[1], 0);
-    EXPECT_EQ(complex_signal[2], 0);
+    EXPECT_EQ(complex_signal[2], 1);
     EXPECT_EQ(complex_signal[3], 1);
     EXPECT_EQ(complex_signal[4], 1);
-    EXPECT_EQ(complex_signal[5], 1);
-    EXPECT_EQ(complex_signal[6], 0);
+    EXPECT_EQ(complex_signal[5], 0);
 }
 
 // Test the constructor with a valid binary string 2
 TEST(complex_signal_constructor, valid_string_2) {
     Complex_Signal complex_signal("001a110");
+    EXPECT_EQ(complex_signal[0], 0);
     EXPECT_EQ(complex_signal[1], 0);
-    EXPECT_EQ(complex_signal[2], 0);
-    EXPECT_EQ(complex_signal[3], 1);
-    EXPECT_THROW(complex_signal[4], std::invalid_argument);
+    EXPECT_EQ(complex_signal[2], 1);
+    EXPECT_THROW(complex_signal[3], std::out_of_range);
 }
 
 // Test the constructor with an invalid binary string
@@ -43,43 +43,44 @@ TEST(complex_signal_constructor, invalid_string_2) {
 // Test operator square brackets with valid positions
 TEST(complex_signal_operator, square_brackets_valid_position) {
     Complex_Signal complex_signal("001110");
+    EXPECT_EQ(complex_signal[0], 0);
     EXPECT_EQ(complex_signal[1], 0);
-    EXPECT_EQ(complex_signal[2], 0);
+    EXPECT_EQ(complex_signal[2], 1);
     EXPECT_EQ(complex_signal[3], 1);
     EXPECT_EQ(complex_signal[4], 1);
-    EXPECT_EQ(complex_signal[5], 1);
-    EXPECT_EQ(complex_signal[6], 0);
+    EXPECT_EQ(complex_signal[5], 0);
 }
 
 // Test operator square brackets with invalid positions
 TEST(complex_signal_operator, square_brackets_invalid_position) {
-    Complex_Signal complex_signal("001110");
-    EXPECT_THROW(complex_signal[0], std::invalid_argument);
-    EXPECT_THROW(complex_signal[7], std::invalid_argument);
+    Complex_Signal complex_signal("001110"), complex_signal_empty;
+    EXPECT_THROW(complex_signal_empty[2], std::out_of_range);
+    EXPECT_THROW(complex_signal[-1], std::out_of_range);
+    EXPECT_THROW(complex_signal[10], std::out_of_range);
 }
 
 // Test the copy constructor
 TEST(complex_signal_constructor, copy) {
     Complex_Signal complex_signal("001110");
     Complex_Signal complex_signal_copy(complex_signal);
+    EXPECT_EQ(complex_signal_copy[0], 0);
     EXPECT_EQ(complex_signal_copy[1], 0);
-    EXPECT_EQ(complex_signal_copy[2], 0);
+    EXPECT_EQ(complex_signal_copy[2], 1);
     EXPECT_EQ(complex_signal_copy[3], 1);
     EXPECT_EQ(complex_signal_copy[4], 1);
-    EXPECT_EQ(complex_signal_copy[5], 1);
-    EXPECT_EQ(complex_signal_copy[6], 0);
+    EXPECT_EQ(complex_signal_copy[5], 0);
 }
 
 // Test the move constructor
 TEST(complex_signal_constructor, move) {
     Complex_Signal complex_signal("001110");
     Complex_Signal complex_signal_move(std::move(complex_signal));
+    EXPECT_EQ(complex_signal_move[0], 0);
     EXPECT_EQ(complex_signal_move[1], 0);
-    EXPECT_EQ(complex_signal_move[2], 0);
+    EXPECT_EQ(complex_signal_move[2], 1);
     EXPECT_EQ(complex_signal_move[3], 1);
     EXPECT_EQ(complex_signal_move[4], 1);
-    EXPECT_EQ(complex_signal_move[5], 1);
-    EXPECT_EQ(complex_signal_move[6], 0);
+    EXPECT_EQ(complex_signal_move[5], 0);
 }
 
 // Test the copy assignment operator
@@ -87,24 +88,24 @@ TEST(complex_signal_operator, copy) {
     Complex_Signal complex_signal("001110");
     Complex_Signal complex_signal_copy;
     complex_signal_copy = complex_signal;
+    EXPECT_EQ(complex_signal_copy[0], 0);
     EXPECT_EQ(complex_signal_copy[1], 0);
-    EXPECT_EQ(complex_signal_copy[2], 0);
+    EXPECT_EQ(complex_signal_copy[2], 1);
     EXPECT_EQ(complex_signal_copy[3], 1);
     EXPECT_EQ(complex_signal_copy[4], 1);
-    EXPECT_EQ(complex_signal_copy[5], 1);
-    EXPECT_EQ(complex_signal_copy[6], 0);
+    EXPECT_EQ(complex_signal_copy[5], 0);
 }
 
 // Test the copy assignment operator
 TEST(complex_signal_operator, copy_yourself) {
     Complex_Signal complex_signal("001110");
     complex_signal = complex_signal;
+    EXPECT_EQ(complex_signal[0], 0);
     EXPECT_EQ(complex_signal[1], 0);
-    EXPECT_EQ(complex_signal[2], 0);
+    EXPECT_EQ(complex_signal[2], 1);
     EXPECT_EQ(complex_signal[3], 1);
     EXPECT_EQ(complex_signal[4], 1);
-    EXPECT_EQ(complex_signal[5], 1);
-    EXPECT_EQ(complex_signal[6], 0);
+    EXPECT_EQ(complex_signal[5], 0);
 }
 
 // Test the move assignment operator
@@ -112,36 +113,36 @@ TEST(complex_signal_operator, move) {
     Complex_Signal complex_signal("001110");
     Complex_Signal complex_signal_move;
     complex_signal_move = std::move(complex_signal);
+    EXPECT_EQ(complex_signal_move[0], 0);
     EXPECT_EQ(complex_signal_move[1], 0);
-    EXPECT_EQ(complex_signal_move[2], 0);
+    EXPECT_EQ(complex_signal_move[2], 1);
     EXPECT_EQ(complex_signal_move[3], 1);
     EXPECT_EQ(complex_signal_move[4], 1);
-    EXPECT_EQ(complex_signal_move[5], 1);
-    EXPECT_EQ(complex_signal_move[6], 0);
+    EXPECT_EQ(complex_signal_move[5], 0);
 }
 
 // Test the inversion
 TEST(complex_signal_inversion, inversion) {
     Complex_Signal complex_signal("001110");
     complex_signal.inverstion();
+    EXPECT_EQ(complex_signal[0], 1);
     EXPECT_EQ(complex_signal[1], 1);
-    EXPECT_EQ(complex_signal[2], 1);
+    EXPECT_EQ(complex_signal[2], 0);
     EXPECT_EQ(complex_signal[3], 0);
     EXPECT_EQ(complex_signal[4], 0);
-    EXPECT_EQ(complex_signal[5], 0);
-    EXPECT_EQ(complex_signal[6], 1);
+    EXPECT_EQ(complex_signal[5], 1);
 }
 
 // Test the inversion operator
 TEST(complex_signal_operator, inversion) {
     Complex_Signal complex_signal("001110");
     ~complex_signal;
+    EXPECT_EQ(complex_signal[0], 1);
     EXPECT_EQ(complex_signal[1], 1);
-    EXPECT_EQ(complex_signal[2], 1);
+    EXPECT_EQ(complex_signal[2], 0);
     EXPECT_EQ(complex_signal[3], 0);
     EXPECT_EQ(complex_signal[4], 0);
-    EXPECT_EQ(complex_signal[5], 0);
-    EXPECT_EQ(complex_signal[6], 1);
+    EXPECT_EQ(complex_signal[5], 1);
 }
 
 // Test the addition operator
@@ -149,102 +150,117 @@ TEST(complex_signal_operator, addition_valid) {
     Complex_Signal complex_signal("001");
     Complex_Signal complex_signal2("010");
     complex_signal += complex_signal2;
+    EXPECT_EQ(complex_signal[0], 0);
     EXPECT_EQ(complex_signal[1], 0);
-    EXPECT_EQ(complex_signal[2], 0);
-    EXPECT_EQ(complex_signal[3], 1);
-    EXPECT_EQ(complex_signal[4], 0);
-    EXPECT_EQ(complex_signal[5], 1);
-    EXPECT_EQ(complex_signal[6], 0);
+    EXPECT_EQ(complex_signal[2], 1);
+    EXPECT_EQ(complex_signal[3], 0);
+    EXPECT_EQ(complex_signal[4], 1);
+    EXPECT_EQ(complex_signal[5], 0);
 }
 
 // Test the addition operator yourself
 TEST(complex_signal_operator, addition_yourself) {
     Complex_Signal complex_signal("001");
     complex_signal += complex_signal;
+    EXPECT_EQ(complex_signal[0], 0);
     EXPECT_EQ(complex_signal[1], 0);
-    EXPECT_EQ(complex_signal[2], 0);
-    EXPECT_EQ(complex_signal[3], 1);
+    EXPECT_EQ(complex_signal[2], 1);
+    EXPECT_EQ(complex_signal[3], 0);
     EXPECT_EQ(complex_signal[4], 0);
-    EXPECT_EQ(complex_signal[5], 0);
-    EXPECT_EQ(complex_signal[6], 1);
+    EXPECT_EQ(complex_signal[5], 1);
 }
 
 // Test the addition operator sequentially
 TEST(complex_signal_operator, addition_sequentially) {
     Complex_Signal complex_signal("001");
     complex_signal += complex_signal += complex_signal;
+    EXPECT_EQ(complex_signal[0], 0);
     EXPECT_EQ(complex_signal[1], 0);
-    EXPECT_EQ(complex_signal[2], 0);
-    EXPECT_EQ(complex_signal[3], 1);
+    EXPECT_EQ(complex_signal[2], 1);
+    EXPECT_EQ(complex_signal[3], 0);
     EXPECT_EQ(complex_signal[4], 0);
+    EXPECT_EQ(complex_signal[5], 1);
+    EXPECT_EQ(complex_signal[6], 0);
+    EXPECT_EQ(complex_signal[7], 0);
+    EXPECT_EQ(complex_signal[8], 1);
+}
+
+// Test the insertion with split
+TEST(complex_signal_insert, insert_split_2) {
+    Complex_Signal complex_signal("00111");
+    Complex_Signal complex_signal2("010");
+    complex_signal.insert(complex_signal2, 3);
+    EXPECT_EQ(complex_signal[0], 0);
+    EXPECT_EQ(complex_signal[1], 0);
+    EXPECT_EQ(complex_signal[2], 1);
+    EXPECT_EQ(complex_signal[3], 0);
+    EXPECT_EQ(complex_signal[4], 1);
     EXPECT_EQ(complex_signal[5], 0);
     EXPECT_EQ(complex_signal[6], 1);
-    EXPECT_EQ(complex_signal[7], 0);
-    EXPECT_EQ(complex_signal[8], 0);
-    EXPECT_EQ(complex_signal[9], 1);
+    EXPECT_EQ(complex_signal[7], 1);
 }
 
 // Test the insertion with insert yourself
 TEST(complex_signal_insert, insert_yourself) {
     Complex_Signal complex_signal("001");
-    complex_signal.insert(complex_signal, 2);
+    complex_signal.insert(complex_signal, 1);
+    EXPECT_EQ(complex_signal[0], 0);
     EXPECT_EQ(complex_signal[1], 0);
     EXPECT_EQ(complex_signal[2], 0);
-    EXPECT_EQ(complex_signal[3], 0);
-    EXPECT_EQ(complex_signal[4], 1);
-    EXPECT_EQ(complex_signal[5], 0);
-    EXPECT_EQ(complex_signal[6], 1);
+    EXPECT_EQ(complex_signal[3], 1);
+    EXPECT_EQ(complex_signal[4], 0);
+    EXPECT_EQ(complex_signal[5], 1);
 }
 
 // Test the insertion with split
 TEST(complex_signal_insert, insert_split) {
     Complex_Signal complex_signal("001");
     Complex_Signal complex_signal2("010");
-    complex_signal.insert(complex_signal2, 2);
+    complex_signal.insert(complex_signal2, 1);
+    EXPECT_EQ(complex_signal[0], 0);
     EXPECT_EQ(complex_signal[1], 0);
-    EXPECT_EQ(complex_signal[2], 0);
-    EXPECT_EQ(complex_signal[3], 1);
+    EXPECT_EQ(complex_signal[2], 1);
+    EXPECT_EQ(complex_signal[3], 0);
     EXPECT_EQ(complex_signal[4], 0);
-    EXPECT_EQ(complex_signal[5], 0);
-    EXPECT_EQ(complex_signal[6], 1);
+    EXPECT_EQ(complex_signal[5], 1);
 }
 
 // Test the insertion with insert before
 TEST(complex_signal_insert, insert_before) {
     Complex_Signal complex_signal("001");
     Complex_Signal complex_signal2("010");
-    complex_signal.insert(complex_signal2, 3);
+    complex_signal.insert(complex_signal2, 2);
+    EXPECT_EQ(complex_signal[0], 0);
     EXPECT_EQ(complex_signal[1], 0);
     EXPECT_EQ(complex_signal[2], 0);
-    EXPECT_EQ(complex_signal[3], 0);
-    EXPECT_EQ(complex_signal[4], 1);
-    EXPECT_EQ(complex_signal[5], 0);
-    EXPECT_EQ(complex_signal[6], 1);
+    EXPECT_EQ(complex_signal[3], 1);
+    EXPECT_EQ(complex_signal[4], 0);
+    EXPECT_EQ(complex_signal[5], 1);
 }
 
 // Test the insertion with insert begining
 TEST(complex_signal_insert, insert_begining) {
     Complex_Signal complex_signal("001");
     Complex_Signal complex_signal2("010");
-    complex_signal.insert(complex_signal2, 1);
-    EXPECT_EQ(complex_signal[1], 0);
-    EXPECT_EQ(complex_signal[2], 1);
+    complex_signal.insert(complex_signal2, 0);
+    EXPECT_EQ(complex_signal[0], 0);
+    EXPECT_EQ(complex_signal[1], 1);
+    EXPECT_EQ(complex_signal[2], 0);
     EXPECT_EQ(complex_signal[3], 0);
     EXPECT_EQ(complex_signal[4], 0);
-    EXPECT_EQ(complex_signal[5], 0);
-    EXPECT_EQ(complex_signal[6], 1);
-}
-
-// Test the insertion with invalid zero
-TEST(complex_signal_insert, insert_invalid_zero) {
-    Complex_Signal complex_signal("001");
-    Complex_Signal complex_signal2("010");
-    EXPECT_THROW(complex_signal.insert(complex_signal2, 0), std::invalid_argument);
+    EXPECT_EQ(complex_signal[5], 1);
 }
 
 // Test the insertion with invalid large
 TEST(complex_signal_insert, insert_invalid_large) {
     Complex_Signal complex_signal("001");
     Complex_Signal complex_signal2("010");
-    EXPECT_THROW(complex_signal.insert(complex_signal2, 3), std::invalid_argument);
+    EXPECT_THROW(complex_signal.insert(complex_signal2, 10), std::out_of_range);
+}
+
+// Test the insertion with invalid zero
+TEST(complex_signal_insert, insert_invalid_negative) {
+    Complex_Signal complex_signal("001");
+    Complex_Signal complex_signal2("010");
+    EXPECT_THROW(complex_signal.insert(complex_signal2, -1), std::out_of_range);
 }

@@ -3,14 +3,14 @@
 
 #include "../signal/signal.hpp"
 
-typedef struct _signals {
+struct Signals {
     Signal signal;
     int time;
-} Signals;
+};
 
 class Allocator {
   public:
-    Allocator();
+    Allocator() = default;
     Allocator(int n);
     ~Allocator();
 
@@ -22,8 +22,8 @@ class Allocator {
 
     void resize(int);
 
-    int size_, capacity_;
-    Signals* buffer_;
+    int size_ = 0, capacity_ = 0;
+    Signals* buffer_ = nullptr;
 };
 
 #endif

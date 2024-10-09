@@ -12,11 +12,11 @@ class Complex_Signal {
     Complex_Signal(int level, int duration);
     Complex_Signal(const std::string& str);
 
-    Complex_Signal(const Complex_Signal& other);
-    Complex_Signal(Complex_Signal&& other) noexcept;
+    Complex_Signal(const Complex_Signal& other) = default;
+    Complex_Signal(Complex_Signal&& other) noexcept = default;
 
-    Complex_Signal& operator=(const Complex_Signal&);
-    Complex_Signal& operator=(Complex_Signal&&) noexcept;
+    Complex_Signal& operator=(const Complex_Signal&) = default;
+    Complex_Signal& operator=(Complex_Signal&&) noexcept = default;
 
     void inverstion();
     Complex_Signal& operator~();
