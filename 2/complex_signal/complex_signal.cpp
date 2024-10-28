@@ -1,8 +1,21 @@
-#include "complex_signal.hpp"
+/**
+ * @file complex_signal.cpp
+ * @brief Реализация класса Complex_Signal для работы с последовательностями сигналов.
+ *
+ * Класс Complex_Signal предоставляет методы для управления сложными сигналами,
+ * включая их инверсию, вставку, форматированный вывод и бинарный поиск.
+ */
 
+#include "complex_signal.hpp"
 #include <algorithm>
 #include <regex>
 
+/**
+ * @brief Конструктор Complex_Signal, создающий сигнал с заданным уровнем и длительностью.
+ *
+ * @param level Уровень сигнала (0 или 1).
+ * @param duration Длительность сигнала.
+ */
 Complex_Signal::Complex_Signal(int level, int duration) {
     Signal signal(level, duration);
     signals.resize(1);
@@ -11,6 +24,12 @@ Complex_Signal::Complex_Signal(int level, int duration) {
     ++signals.size_;
 }
 
+/**
+ * @brief Конструктор Complex_Signal, создающий объект из строки сигнала.
+ *
+ * @param str Строка, содержащая последовательность сигналов из нулей и единиц.
+ * @throws std::invalid_argument если строка содержит недопустимые символы.
+ */
 Complex_Signal::Complex_Signal(const std::string& str) {
     std::regex re("(1+|0+)");
     std::smatch match;
@@ -36,6 +55,13 @@ Complex_Signal::Complex_Signal(const std::string& str) {
     }
 }
 
+/**
+ * @brief Оператор [] для получения уровня сигнала в заданной позиции.
+ *
+ * @param position Позиция сигнала.
+ * @return Уровень сигнала (0 или 1).
+ * @throws std::out_of_range если позиция недопустима.
+ */
 int
 Complex_Signal::operator[](int position) const {
     if (signals.size_ == 0 || position < 0 || position >= signals.buffer_[signals.size_ - 1].time) {
@@ -45,6 +71,12 @@ Complex_Signal::operator[](int position) const {
     return signals.buffer_[index].signal.get_level();
 }
 
+/**
+ * @brief Бинарный поиск позиции сигнала.
+ *
+ * @param position Позиция для поиска.
+ * @return Индекс сигнала на данной позиции.
+ */
 int
 Complex_Signal::bin_search(int position) const {
     int R = signals.size_ - 1, L = 0, M;
@@ -59,17 +91,31 @@ Complex_Signal::bin_search(int position) const {
     return L;
 }
 
+/**
+ * @brief Инвертирует все сигналы в Complex_Signal.
+ */
 void
 Complex_Signal::inverstion() {
     std::for_each(signals.buffer_, signals.buffer_ + signals.size_, [](Signals& sig) { sig.signal.inversion(); });
 }
 
+/**
+ * @brief Оператор инверсии ~ для инверсии всех сигналов.
+ * 
+ * @return Ссылка на инвертированный Complex_Signal.
+ */
 Complex_Signal&
 Complex_Signal::operator~() {
     inverstion();
     return *this;
 }
 
+/**
+ * @brief Оператор += для добавления другого Complex_Signal к текущему.
+ * 
+ * @param other Другой Complex_Signal для добавления.
+ * @return Ссылка на текущий объект после добавления.
+ */
 Complex_Signal&
 Complex_Signal::operator+=(const Complex_Signal& other) {
     Complex_Signal new_signal;
@@ -84,6 +130,13 @@ Complex_Signal::operator+=(const Complex_Signal& other) {
     return *this = std::move(new_signal);
 }
 
+/**
+ * @brief Вставляет другой Complex_Signal в текущий объект на указанную позицию.
+ *
+ * @param other Complex_Signal для вставки.
+ * @param position Позиция вставки.
+ * @throws std::out_of_range если позиция недопустима.
+ */
 void
 Complex_Signal::insert(const Complex_Signal& other, int position) {
     if (position < 0 || position >= signals.buffer_[signals.size_ - 1].time) {
@@ -108,6 +161,14 @@ Complex_Signal::insert(const Complex_Signal& other, int position) {
                   [duration](Signals& signal) { signal.time += duration; });
 }
 
+/**
+ * @brief Делит сигнал на части в массиве на основе позиции и размера.
+ *
+ * @param index Индекс сигнала для разделения.
+ * @param position Позиция в сигнале для разделения.
+ * @param size Размер сигнала после разделения.
+ * @return Новый индекс после разделения.
+ */
 int
 Complex_Signal::split(int index, int position, int size) {
     if (index == 0 && position == 0 || index != 0 && position == signals.buffer_[index - 1].time) {
@@ -125,6 +186,13 @@ Complex_Signal::split(int index, int position, int size) {
     return 1;
 }
 
+/**
+ * @brief Оператор * для многократного умножения сигнала.
+ *
+ * @param multiplier Количество копий сигнала.
+ * @return Новый Complex_Signal с повторенными сигналами.
+ * @throws std::invalid_argument если multiplier отрицателен.
+ */
 Complex_Signal
 Complex_Signal::operator*(int multiplier) {
     if (multiplier < 0) {
@@ -138,6 +206,11 @@ Complex_Signal::operator*(int multiplier) {
     return std::move(tmp);
 }
 
+/**
+ * @brief Форматированный вывод Complex_Signal в выходной поток.
+ *
+ * @param out Поток для вывода.
+ */
 void
 Complex_Signal::format_print(std::wostream& out) const {
     int last_level = -1;
@@ -152,12 +225,18 @@ Complex_Signal::format_print(std::wostream& out) const {
     });
 }
 
+/**
+ * @brief Оператор вывода для Complex_Signal.
+ */
 std::wostream&
 operator<<(std::wostream& out, const Complex_Signal& signals) {
     signals.format_print(out);
     return out;
 }
 
+/**
+ * @brief Оператор ввода для Complex_Signal.
+ */
 std::istream&
 operator>>(std::istream& in, Complex_Signal& signals) {
     std::string str;
