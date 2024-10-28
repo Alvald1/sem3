@@ -149,3 +149,20 @@ TEST(signal_format_print, should_handle_zero_duration_correctly) {
     signal.format_print(out);
     EXPECT_EQ(out.str(), std::wstring(L""));
 }
+
+// Test operator <<
+TEST(signal_operator, output) {
+    Signal signal("000");
+    std::wostringstream out;
+    out << signal;
+    EXPECT_EQ(out.str(), std::wstring(L"___"));
+}
+
+// Test operator >>
+TEST(signal_operator, input) {
+    Signal signal;
+    std::istringstream in("000111");
+    in >> signal;
+    EXPECT_EQ(signal.get_duration(), 3);
+    EXPECT_EQ(signal.get_level(), 0);
+}

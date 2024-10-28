@@ -33,11 +33,17 @@ class Complex_Signal {
 
     Complex_Signal operator*(int multiplier);
 
+    friend std::wostream& operator<<(std::wostream& out, const Complex_Signal& signals);
+    friend std::istream& operator>>(std::istream& in, Complex_Signal& signals);
+
   private:
     Allocator signals;
 
     int bin_search(int position) const;
     int split(int index, int position, int size);
 };
+
+std::wostream& operator<<(std::wostream& out, const Complex_Signal& signals);
+std::istream& operator>>(std::istream& in, Complex_Signal& signals);
 
 #endif

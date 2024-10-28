@@ -1,7 +1,7 @@
 #ifndef LAB2_2_SIGNAL_HPP
 #define LAB2_2_SIGNAL_HPP
 
-#include <fstream>
+#include <ostream>
 #include <string>
 
 class Signal {
@@ -24,8 +24,14 @@ class Signal {
 
     void format_print(std::wostream&) const;
 
+    friend std::wostream& operator<<(std::wostream&, const Signal& signal);
+    friend std::istream& operator>>(std::istream&, Signal& signal);
+
   private:
     int level_ = 0, duration_ = 0;
 };
+
+std::wostream& operator<<(std::wostream&, const Signal& signal);
+std::istream& operator>>(std::istream&, Signal& signal);
 
 #endif

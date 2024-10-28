@@ -85,3 +85,17 @@ Signal::format_print(std::wostream& out) const {
     wchar_t symbol = level_ == 0 ? L'_' : L'‾';
     out << std::wstring(duration_, symbol);
 }
+
+std::wostream&
+operator<<(std::wostream& out, const Signal& signal) {
+    signal.format_print(out);
+    return out;
+}
+
+std::istream&
+operator>>(std::istream& in, Signal& signal) {
+    std::string str;
+    in >> str;
+    signal = Signal(str);
+    return in;
+}

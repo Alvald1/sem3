@@ -313,3 +313,24 @@ TEST(complex_signal_print, valid_3) {
     complex_signal.format_print(out);
     EXPECT_EQ(out.str(), std::wstring(L""));
 }
+
+// Test operator <<
+TEST(complex_signal_operator, output) {
+    Complex_Signal complex_signal("0010");
+    std::wostringstream out;
+    out << complex_signal;
+    EXPECT_EQ(out.str(), std::wstring(L"__/‾\\_"));
+}
+
+// Test operator >>
+TEST(complex_signal_operator, input) {
+    Complex_Signal complex_signal;
+    std::istringstream in("001110");
+    in >> complex_signal;
+    EXPECT_EQ(complex_signal[0], 0);
+    EXPECT_EQ(complex_signal[1], 0);
+    EXPECT_EQ(complex_signal[2], 1);
+    EXPECT_EQ(complex_signal[3], 1);
+    EXPECT_EQ(complex_signal[4], 1);
+    EXPECT_EQ(complex_signal[5], 0);
+}

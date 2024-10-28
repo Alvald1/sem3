@@ -151,3 +151,17 @@ Complex_Signal::format_print(std::wostream& out) const {
         sig.signal.format_print(out);
     });
 }
+
+std::wostream&
+operator<<(std::wostream& out, const Complex_Signal& signals) {
+    signals.format_print(out);
+    return out;
+}
+
+std::istream&
+operator>>(std::istream& in, Complex_Signal& signals) {
+    std::string str;
+    in >> str;
+    signals = Complex_Signal(str);
+    return in;
+}
