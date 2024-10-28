@@ -124,3 +124,30 @@ Complex_Signal::split(int index, int position, int size) {
     signals.buffer_[index + size + 1].signal.set_duration(shift);
     return 1;
 }
+
+Complex_Signal
+Complex_Signal::operator*(int multiplier) {
+    if (multiplier < 0) {
+        throw std::invalid_argument("Multiply value must be a non-negative integer");
+    }
+    Complex_Signal tmp(*this);
+    std::for_each_n(tmp.signals.buffer_, tmp.signals.size_, [multiplier](Signals& sig) {
+        sig.signal.set_duration(sig.signal.get_duration() * multiplier);
+        sig.time *= multiplier;
+    });
+    return std::move(tmp);
+}
+
+void
+Complex_Signal::format_print(std::wostream& out) const {
+    int last_level = -1;
+    std::for_each_n(signals.buffer_, signals.size_, [&out, &last_level](Signals& sig) {
+        switch (last_level) {
+            case -1: break;
+            case 0: out << L'/'; break;
+            case 1: out << L'\\'; break;
+        }
+        last_level = sig.signal.get_level();
+        sig.signal.format_print(out);
+    });
+}

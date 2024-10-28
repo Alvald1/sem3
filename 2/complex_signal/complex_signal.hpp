@@ -25,13 +25,13 @@ class Complex_Signal {
 
     void insert(const Complex_Signal& other, int position);
 
-    Complex_Signal& operator*(int multiplier);
-
     void erase(int position, int duration);
 
     int operator[](int position) const;
 
     void format_print(std::wostream& out) const;
+
+    Complex_Signal operator*(int multiplier);
 
   private:
     Allocator signals;

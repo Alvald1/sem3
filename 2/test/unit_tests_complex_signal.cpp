@@ -264,3 +264,52 @@ TEST(complex_signal_insert, insert_invalid_negative) {
     Complex_Signal complex_signal2("010");
     EXPECT_THROW(complex_signal.insert(complex_signal2, -1), std::out_of_range);
 }
+
+//Test the multiply operator
+TEST(complex_signal_operator, multiply_valid) {
+    Complex_Signal complex_signal("001");
+    Complex_Signal res = complex_signal * 2;
+    EXPECT_EQ(res[0], 0);
+    EXPECT_EQ(res[1], 0);
+    EXPECT_EQ(res[2], 0);
+    EXPECT_EQ(res[3], 0);
+    EXPECT_EQ(res[4], 1);
+    EXPECT_EQ(res[5], 1);
+}
+
+//Test the multiply operator with zero
+TEST(complex_signal_operator, multiply_zero) {
+    Complex_Signal complex_signal("001");
+    Complex_Signal res = complex_signal * 0;
+    EXPECT_THROW(res[0], std::out_of_range);
+}
+
+//Test the multiply operator with negative
+TEST(complex_signal_operator, multiply_negative) {
+    Complex_Signal complex_signal("001");
+    EXPECT_THROW(complex_signal * -1, std::invalid_argument);
+}
+
+//Test format print
+TEST(complex_signal_print, valid) {
+    Complex_Signal complex_signal("001");
+    std::wostringstream out;
+    complex_signal.format_print(out);
+    EXPECT_EQ(out.str(), std::wstring(L"__/‾"));
+}
+
+//Test format print
+TEST(complex_signal_print, valid_2) {
+    Complex_Signal complex_signal("0010");
+    std::wostringstream out;
+    complex_signal.format_print(out);
+    EXPECT_EQ(out.str(), std::wstring(L"__/‾\\_"));
+}
+
+//Test format print
+TEST(complex_signal_print, valid_3) {
+    Complex_Signal complex_signal(0, 0);
+    std::wostringstream out;
+    complex_signal.format_print(out);
+    EXPECT_EQ(out.str(), std::wstring(L""));
+}

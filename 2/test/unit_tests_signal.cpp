@@ -131,7 +131,7 @@ TEST(signal_format_print, should_correctly_format_and_print_string_when_duration
     Signal signal("111");
     std::wostringstream out;
     signal.format_print(out);
-    EXPECT_EQ(out.str(), std::wstring(L"‾‾‾\n"));
+    EXPECT_EQ(out.str(), std::wstring(L"‾‾‾"));
 }
 
 // Correctly formats and prints a string based on duration_ and level_ = 0
@@ -139,7 +139,7 @@ TEST(signal_format_print, should_correctly_format_and_print_string_when_duration
     Signal signal("000");
     std::wostringstream out;
     signal.format_print(out);
-    EXPECT_EQ(out.str(), std::wstring(L"___\n"));
+    EXPECT_EQ(out.str(), std::wstring(L"___"));
 }
 
 // Handles duration_ set to zro
@@ -147,5 +147,5 @@ TEST(signal_format_print, should_handle_zero_duration_correctly) {
     Signal signal(0, 0);
     std::wostringstream out;
     signal.format_print(out);
-    EXPECT_EQ(out.str(), std::wstring(L"\n"));
+    EXPECT_EQ(out.str(), std::wstring(L""));
 }
