@@ -1,30 +1,55 @@
-find_package(Doxygen REQUIRED doxygen)
+# Проверка версии Doxygen
+find_package(Doxygen 1.9.0 REQUIRED)
 
+# Определение путей исходников
+set(DOC_SOURCES
+    ${PROJECT_SOURCE_DIR}/allocator
+    ${PROJECT_SOURCE_DIR}/complex_signal
+    ${PROJECT_SOURCE_DIR}/signal
+)
+
+# Конфигурация Doxygen
+set(DOXYGEN_PROJECT_NAME ${PROJECT_NAME})
+set(DOXYGEN_PROJECT_BRIEF "Краткое описание проекта")
+set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs)
 set(DOXYGEN_ALPHABETICAL_INDEX NO)
 set(DOXYGEN_BUILTIN_STL_SUPPORT YES)
 set(DOXYGEN_CASE_SENSE_NAMES NO)
-set(DOXYGEN_CLASS_DIAGRAMS NO)
+set(DOXYGEN_CLASS_DIAGRAMS YES)
 set(DOXYGEN_DISTRIBUTE_GROUP_DOC YES)
-set(DOXYGEN_EXCLUDE build test)
+set(DOXYGEN_EXCLUDE_PATTERNS 
+    */build/* 
+    */test/*
+    */.git/*
+)
 set(DOXYGEN_EXTRACT_ALL YES)
 set(DOXYGEN_EXTRACT_LOCAL_CLASSES NO)
-set(DOXYGEN_FILE_PATTERNS *.hpp *.cpp)
+set(DOXYGEN_FILE_PATTERNS *.hpp *.cpp *.h *.md)
+set(DOXYGEN_GENERATE_HTML YES)
 set(DOXYGEN_GENERATE_TREEVIEW YES)
 set(DOXYGEN_HIDE_FRIEND_COMPOUNDS YES)
 set(DOXYGEN_HIDE_IN_BODY_DOCS YES)
 set(DOXYGEN_HIDE_UNDOC_CLASSES YES)
 set(DOXYGEN_HIDE_UNDOC_MEMBERS YES)
+set(DOXYGEN_HTML_EXTRA_STYLESHEET ${CMAKE_CURRENT_SOURCE_DIR}/doxygen-style.css)
 set(DOXYGEN_QUIET YES)
 set(DOXYGEN_RECURSIVE YES)
 set(DOXYGEN_SORT_BY_SCOPE_NAME YES)
 set(DOXYGEN_SORT_MEMBER_DOCS NO)
 set(DOXYGEN_SOURCE_BROWSER YES)
 set(DOXYGEN_STRIP_CODE_COMMENTS NO)
+set(DOXYGEN_USE_MDFILE_AS_MAINPAGE ${CMAKE_CURRENT_SOURCE_DIR}/README.md)
 
-doxygen_add_docs(
-    doc
-    "allocator/" "complex_signal/" "signal/"
+# Генерация документации
+doxygen_add_docs(doc
+    ${DOC_SOURCES}
     ALL
     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
-    COMMENT "Generating HTML documentation"
+    COMMENT "Generating documentation with Doxygen"
+)
+
+# Цель для очистки документации
+add_custom_target(clean_docs
+    COMMAND ${CMAKE_COMMAND} -E remove_directory ${DOXYGEN_OUTPUT_DIRECTORY}
+    COMMENT "Cleaning documentation files"
 )
