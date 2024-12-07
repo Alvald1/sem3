@@ -11,17 +11,13 @@ class Creature : public NameID {
     size_t type{0};
     size_t initiative{0};
 
-    static inline size_t id_counter{0};
+    static inline size_t next_id{1};
 
   public:
     explicit Creature(std::string name, size_t speed = 0, size_t damage = 0, size_t range = 0, size_t type = 0,
-                     size_t initiative = 0)
-        : NameID(++id_counter, std::move(name))
-        , speed(speed)
-        , damage(damage)
-        , range(range)
-        , type(type)
-        , initiative(initiative) {}
+                      size_t initiative = 0)
+        : NameID(next_id++, std::move(name)), speed(speed), damage(damage), range(range), type(type),
+          initiative(initiative) {}
 
     // Rule of five
     Creature(const Creature&) = default;

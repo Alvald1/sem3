@@ -9,16 +9,14 @@ class Ability : public NameID {
     Creature* creature{nullptr};
     size_t level{0};
     size_t energy{0};
-    size_t upgrade_index{0};
     size_t experience{0};
 
-    static inline size_t id_counter{0};
+    static inline size_t next_id{1};
 
   public:
-    explicit Ability(const std::string& name, size_t level = 0, size_t energy = 0, size_t upgrade_index = 0,
-                     size_t experience = 0, Creature* creature = nullptr)
-        : NameID(++id_counter, name), creature(creature), level(level), energy(energy), upgrade_index(upgrade_index),
-          experience(experience) {}
+    explicit Ability(const std::string& name, size_t level = 0, size_t energy = 0, size_t experience = 0,
+                     Creature* creature = nullptr)
+        : NameID(next_id++, name), creature(creature), level(level), energy(energy), experience(experience) {}
 
     // Rule of five
     Ability(const Ability&) = default;
@@ -44,11 +42,6 @@ class Ability : public NameID {
     }
 
     [[nodiscard]] constexpr size_t
-    get_upgrade_index() const noexcept {
-        return upgrade_index;
-    }
-
-    [[nodiscard]] constexpr size_t
     get_experience() const noexcept {
         return experience;
     }
@@ -70,13 +63,13 @@ class Ability : public NameID {
     }
 
     constexpr void
-    set_upgrade_index(size_t new_upgrade_index) noexcept {
-        upgrade_index = new_upgrade_index;
-    }
-
-    constexpr void
     set_experience(size_t new_experience) noexcept {
         experience = new_experience;
+    }
+
+    [[nodiscard]] bool
+    can_upgrade(size_t exp, size_t level) const {
+        return exp >= experience && level >= this->level;
     }
 };
 
