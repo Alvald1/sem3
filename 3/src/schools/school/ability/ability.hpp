@@ -2,8 +2,8 @@
 #define ABILITY_HPP
 
 #include <stdexcept>
+#include "../../../utilities/name_id.hpp"
 #include "creature.hpp"
-#include "utilities/name_id.hpp"
 
 class Ability : public NameID {
   private:
