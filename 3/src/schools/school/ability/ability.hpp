@@ -1,22 +1,29 @@
 #ifndef ABILITY_HPP
 #define ABILITY_HPP
 
+#include <stdexcept>
 #include "creature.hpp"
 #include "utilities/name_id.hpp"
 
 class Ability : public NameID {
   private:
-    Creature* creature{nullptr};
+    Creature* creature;
     size_t level{0};
     size_t energy{0};
     size_t experience{0};
+    size_t count{0};
 
     static inline size_t next_id{1};
 
   public:
-    explicit Ability(const std::string& name, size_t level = 0, size_t energy = 0, size_t experience = 0,
-                     Creature* creature = nullptr)
-        : NameID(next_id++, name), creature(creature), level(level), energy(energy), experience(experience) {}
+    explicit Ability(const std::string& name, Creature* creature, size_t level = 0, size_t energy = 0,
+                     size_t experience = 0, size_t count = 0)
+        : NameID(next_id++, name), creature(creature), level(level), energy(energy), experience(experience),
+          count(count) {
+        if (!creature) {
+            throw std::invalid_argument("Creature cannot be null");
+        }
+    }
 
     // Rule of five
     Ability(const Ability&) = default;
@@ -46,6 +53,11 @@ class Ability : public NameID {
         return experience;
     }
 
+    [[nodiscard]] constexpr size_t
+    get_count() const noexcept {
+        return count;
+    }
+
     // Setters
     constexpr void
     set_creature(Creature* new_creature) noexcept {
@@ -65,6 +77,11 @@ class Ability : public NameID {
     constexpr void
     set_experience(size_t new_experience) noexcept {
         experience = new_experience;
+    }
+
+    constexpr void
+    set_count(size_t new_count) noexcept {
+        count = new_count;
     }
 
     [[nodiscard]] bool

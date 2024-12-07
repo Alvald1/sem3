@@ -1,32 +1,61 @@
 #ifndef BASE_TROOP_HPP
 #define BASE_TROOP_HPP
 
-#include "../../entity.hpp"
+#include "../entity.hpp"
 
 class BaseTroop : public Entity {
-private:
+  private:
     size_t speed;
     size_t damage;
     size_t range;
     size_t type;
 
-public:
-    BaseTroop(size_t id, const std::string& name, size_t initiative, size_t max_hp,
-              size_t speed, size_t damage, size_t range, size_t type)
-        : Entity(id, name, initiative, max_hp),
-          speed(speed), damage(damage), range(range), type(type) {}
+  public:
+    explicit BaseTroop(const Ability& ability)
+        : Entity(ability), speed(ability.get_creature()->get_speed()), damage(ability.get_creature()->get_damage()),
+          range(ability.get_creature()->get_range()), type(ability.get_creature()->get_type()) {}
 
     // Getters
-    size_t get_speed() const { return speed; }
-    size_t get_damage() const { return damage; }
-    size_t get_range() const { return range; }
-    size_t get_type() const { return type; }
+    [[nodiscard]] constexpr size_t
+    get_speed() const noexcept {
+        return speed;
+    }
+
+    [[nodiscard]] constexpr size_t
+    get_damage() const noexcept {
+        return damage;
+    }
+
+    [[nodiscard]] constexpr size_t
+    get_range() const noexcept {
+        return range;
+    }
+
+    [[nodiscard]] constexpr size_t
+    get_type() const noexcept {
+        return type;
+    }
 
     // Setters
-    void set_speed(size_t new_speed) { speed = new_speed; }
-    void set_damage(size_t new_damage) { damage = new_damage; }
-    void set_range(size_t new_range) { range = new_range; }
-    void set_type(size_t new_type) { type = new_type; }
+    constexpr void
+    set_speed(size_t new_speed) noexcept {
+        speed = new_speed;
+    }
+
+    constexpr void
+    set_damage(size_t new_damage) noexcept {
+        damage = new_damage;
+    }
+
+    constexpr void
+    set_range(size_t new_range) noexcept {
+        range = new_range;
+    }
+
+    constexpr void
+    set_type(size_t new_type) noexcept {
+        type = new_type;
+    }
 };
 
 #endif // BASE_TROOP_HPP

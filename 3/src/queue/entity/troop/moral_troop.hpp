@@ -5,23 +5,42 @@
 #include "i_moral.hpp"
 
 class MoralTroop : public BaseTroop, public IMoral {
-private:
+  private:
     int moral;
 
-public:
-    MoralTroop(size_t id, const std::string& name, size_t initiative, size_t max_hp,
-               size_t speed, size_t damage, size_t range, size_t type, int moral = 0)
-        : BaseTroop(id, name, initiative, max_hp, speed, damage, range, type),
-          moral(moral) {}
+  public:
+    explicit MoralTroop(const Ability& ability, int moral = 0) : BaseTroop(ability), moral(moral) {}
 
     // IMoral interface implementation
-    void increase_morale(size_t amount) override { moral += amount; }
-    void decrease_morale(size_t amount) override { moral -= amount; }
-    void balance_morale() override { moral = 0; }
+    inline void
+    increase_morale() override {
+        ++moral;
+    }
+
+    inline void
+    decrease_morale() override {
+        --moral;
+    }
+
+    inline void
+    balance_morale() override {
+        if (moral > 0) {
+            --moral;
+        } else if (moral < 0) {
+            ++moral;
+        }
+    }
 
     // Getter and setter for moral
-    int get_moral() const { return moral; }
-    void set_moral(int new_moral) { moral = new_moral; }
+    [[nodiscard]] constexpr int
+    get_moral() const noexcept {
+        return moral;
+    }
+
+    constexpr void
+    set_moral(int new_moral) noexcept {
+        moral = new_moral;
+    }
 };
 
 #endif // MORAL_TROOP_HPP
