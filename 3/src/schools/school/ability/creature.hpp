@@ -4,32 +4,83 @@
 #include "../../../utilities/name_id.hpp"
 
 class Creature : public NameID {
-private:
-    size_t speed;
-    size_t damage;
-    size_t range;
-    size_t type;
-    size_t initiative;
+  private:
+    size_t speed{0};
+    size_t damage{0};
+    size_t range{0};
+    size_t type{0};
+    size_t initiative{0};
 
-public:
-    Creature(size_t id, const std::string& name, size_t speed = 0, size_t damage = 0,
-            size_t range = 0, size_t type = 0, size_t initiative = 0)
-        : NameID(id, name), speed(speed), damage(damage), 
-          range(range), type(type), initiative(initiative) {}
+    static inline size_t id_counter{0};
+
+  public:
+    explicit Creature(std::string name, size_t speed = 0, size_t damage = 0, size_t range = 0, size_t type = 0,
+                     size_t initiative = 0)
+        : NameID(++id_counter, std::move(name))
+        , speed(speed)
+        , damage(damage)
+        , range(range)
+        , type(type)
+        , initiative(initiative) {}
+
+    // Rule of five
+    Creature(const Creature&) = default;
+    Creature& operator=(const Creature&) = default;
+    Creature(Creature&&) noexcept = default;
+    Creature& operator=(Creature&&) noexcept = default;
+    ~Creature() = default;
 
     // Getters
-    size_t getSpeed() const { return speed; }
-    size_t getDamage() const { return damage; }
-    size_t getRange() const { return range; }
-    size_t getType() const { return type; }
-    size_t getInitiative() const { return initiative; }
+    [[nodiscard]] constexpr auto
+    get_speed() const noexcept {
+        return speed;
+    }
+
+    [[nodiscard]] constexpr auto
+    get_damage() const noexcept {
+        return damage;
+    }
+
+    [[nodiscard]] constexpr auto
+    get_range() const noexcept {
+        return range;
+    }
+
+    [[nodiscard]] constexpr auto
+    get_type() const noexcept {
+        return type;
+    }
+
+    [[nodiscard]] constexpr auto
+    get_initiative() const noexcept {
+        return initiative;
+    }
 
     // Setters
-    void setSpeed(size_t newSpeed) { speed = newSpeed; }
-    void setDamage(size_t newDamage) { damage = newDamage; }
-    void setRange(size_t newRange) { range = newRange; }
-    void setType(size_t newType) { type = newType; }
-    void setInitiative(size_t newInitiative) { initiative = newInitiative; }
+    constexpr void
+    set_speed(size_t new_speed) noexcept {
+        speed = new_speed;
+    }
+
+    constexpr void
+    set_damage(size_t new_damage) noexcept {
+        damage = new_damage;
+    }
+
+    constexpr void
+    set_range(size_t new_range) noexcept {
+        range = new_range;
+    }
+
+    constexpr void
+    set_type(size_t new_type) noexcept {
+        type = new_type;
+    }
+
+    constexpr void
+    set_initiative(size_t new_initiative) noexcept {
+        initiative = new_initiative;
+    }
 };
 
 #endif // CREATURE_HPP
