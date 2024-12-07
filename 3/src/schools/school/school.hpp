@@ -2,8 +2,9 @@
 #define SCHOOL_HPP
 
 #include <optional>
+#include <unordered_map>
 #include <vector>
-#include "../utilities/name_id.hpp"
+#include "../../utilities/name_id.hpp"
 #include "ability/ability.hpp"
 
 class School : public NameID {
@@ -12,17 +13,19 @@ class School : public NameID {
     std::vector<Ability> abilities;
 
   public:
-    explicit School(const std::string& name);
+    explicit School(const std::string& name) : NameID(next_id++, name) {}
     School(const School&) = default;
     School(School&&) noexcept = default;
     School& operator=(const School&) = default;
     School& operator=(School&&) noexcept = default;
 
     void add_ability(const Ability& ability);
-    const std::vector<Ability>& get_available_abilities(size_t level) const;
-    const std::vector<Ability>& get_upgradable_abilities(size_t exp, size_t level) const;
+    std::vector<Ability> get_available_abilities(size_t level) const;
+    std::vector<Ability> get_upgradable_abilities(size_t exp, size_t level) const;
     std::optional<const Ability&> find_ability_by_id(size_t id) const;
     bool has_ability(size_t id) const;
+
+    [[nodiscard]] size_t count_creatures() const;
 
     const std::vector<Ability>&
     get_abilities() const {

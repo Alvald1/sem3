@@ -71,6 +71,11 @@ class Ability : public NameID {
     can_upgrade(size_t exp, size_t level) const {
         return exp >= experience && level >= this->level;
     }
+
+    [[nodiscard]] bool
+    has_creature() const noexcept {
+        return creature != nullptr;
+    }
 };
 
 #endif // ABILITY_HPP
