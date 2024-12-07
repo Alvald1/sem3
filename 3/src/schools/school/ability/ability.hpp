@@ -1,36 +1,83 @@
 #ifndef ABILITY_HPP
 #define ABILITY_HPP
 
+#include "creature.hpp"
 #include "utilities/name_id.hpp"
-#include "creature/creature.hpp"
 
 class Ability : public NameID {
-private:
-    Creature* creature;
-    size_t level;
-    size_t energy;
-    size_t upgrade_index;
-    size_t experience;
+  private:
+    Creature* creature{nullptr};
+    size_t level{0};
+    size_t energy{0};
+    size_t upgrade_index{0};
+    size_t experience{0};
 
-public:
-    Ability(size_t id, const std::string& name, size_t level = 0, size_t energy = 0, 
-           size_t upgrade_index = 0, size_t experience = 0, Creature* creature = nullptr)
-        : NameID(id, name), level(level), energy(energy), 
-          upgrade_index(upgrade_index), experience(experience), creature(creature) {}
+    static inline size_t id_counter{0};
+
+  public:
+    explicit Ability(const std::string& name, size_t level = 0, size_t energy = 0, size_t upgrade_index = 0,
+                     size_t experience = 0, Creature* creature = nullptr)
+        : NameID(++id_counter, name), creature(creature), level(level), energy(energy), upgrade_index(upgrade_index),
+          experience(experience) {}
+
+    // Rule of five
+    Ability(const Ability&) = default;
+    Ability& operator=(const Ability&) = default;
+    Ability(Ability&&) noexcept = default;
+    Ability& operator=(Ability&&) noexcept = default;
+    ~Ability() = default;
 
     // Getters
-    Creature* getCreature() const { return creature; }
-    size_t getLevel() const { return level; }
-    size_t getEnergy() const { return energy; }
-    size_t getUpgradeIndex() const { return upgrade_index; }
-    size_t getExperience() const { return experience; }
+    [[nodiscard]] constexpr Creature*
+    get_creature() const noexcept {
+        return creature;
+    }
+
+    [[nodiscard]] constexpr size_t
+    get_level() const noexcept {
+        return level;
+    }
+
+    [[nodiscard]] constexpr size_t
+    get_energy() const noexcept {
+        return energy;
+    }
+
+    [[nodiscard]] constexpr size_t
+    get_upgrade_index() const noexcept {
+        return upgrade_index;
+    }
+
+    [[nodiscard]] constexpr size_t
+    get_experience() const noexcept {
+        return experience;
+    }
 
     // Setters
-    void setCreature(Creature* newCreature) { creature = newCreature; }
-    void setLevel(size_t newLevel) { level = newLevel; }
-    void setEnergy(size_t newEnergy) { energy = newEnergy; }
-    void setUpgradeIndex(size_t newUpgradeIndex) { upgrade_index = newUpgradeIndex; }
-    void setExperience(size_t newExperience) { experience = newExperience; }
+    constexpr void
+    set_creature(Creature* new_creature) noexcept {
+        creature = new_creature;
+    }
+
+    constexpr void
+    set_level(size_t new_level) noexcept {
+        level = new_level;
+    }
+
+    constexpr void
+    set_energy(size_t new_energy) noexcept {
+        energy = new_energy;
+    }
+
+    constexpr void
+    set_upgrade_index(size_t new_upgrade_index) noexcept {
+        upgrade_index = new_upgrade_index;
+    }
+
+    constexpr void
+    set_experience(size_t new_experience) noexcept {
+        experience = new_experience;
+    }
 };
 
 #endif // ABILITY_HPP
