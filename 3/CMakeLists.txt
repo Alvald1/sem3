@@ -28,11 +28,7 @@ set(MSAN_FLAGS -fsanitize=memory -fsanitize=undefined)
 
 # Организация исходников
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-file(GLOB_RECURSE SOURCES 
-    ${SRC_DIR}/allocator/*.cpp
-    ${SRC_DIR}/signal/*.cpp
-    ${SRC_DIR}/complex_signal/*.cpp
-)
+file(GLOB_RECURSE SOURCES ${SRC_DIR}/**/*.cpp ${SRC_DIR}/**/*.hpp)
 set(MAIN_SOURCE ${SRC_DIR}/main.cpp)
 
 # Основная цель
@@ -79,5 +75,4 @@ add_custom_target(clean_analysis
 )
 
 add_subdirectory(test)
-add_subdirectory(src)
 add_subdirectory(doc)
