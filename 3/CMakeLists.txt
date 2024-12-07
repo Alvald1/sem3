@@ -76,3 +76,4 @@ add_custom_target(clean_analysis
 
 add_subdirectory(test)
 add_subdirectory(doc)
+add_subdirectory(src)
