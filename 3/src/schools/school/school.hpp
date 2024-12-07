@@ -3,9 +3,7 @@
 
 #include <vector>
 #include "../utilities/name_id.hpp"
-#include "../ability/ability.hpp"
-#include "../experience/experience.hpp"
-#include "../utils/vector.hpp"
+#include "ability/ability.hpp"
 
 class School : public NameID {
 private:

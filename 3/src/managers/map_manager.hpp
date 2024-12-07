@@ -14,9 +14,9 @@ private:
     std::vector<cell> effect_cells_;
 
 public:
-    bool move(entity_id id, position delta);
-    entity_id action(entity_id id, position delta_pos, int act, position delta_action);
-    std::vector<cell> effect_cell_entity();
+    bool move_entity(entity_id id, position delta);
+    entity_id perform_action(entity_id id, position delta_pos, int act, position delta_action);
+    std::vector<cell> get_effect_cells();
 };
 
 #endif // MAP_MANAGER_HPP

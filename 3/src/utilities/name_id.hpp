@@ -11,10 +11,10 @@ private:
 public:
     NameID(size_t id, const std::string& name) : id(id), name(name) {}
 
-    size_t getId() const { return id; }
+    size_t get_id() const { return id; }
     
-    const std::string& getName() const { return name; }
-    void setName(const std::string& newName) { name = newName; }
+    const std::string& get_name() const { return name; }
+    void set_name(const std::string& new_name) { name = new_name; }
 };
 
 #endif // NAME_ID_HPP

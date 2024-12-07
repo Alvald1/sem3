@@ -17,16 +17,16 @@ public:
           speed(speed), damage(damage), range(range), type(type) {}
 
     // Getters
-    size_t getSpeed() const { return speed; }
-    size_t getDamage() const { return damage; }
-    size_t getRange() const { return range; }
-    size_t getType() const { return type; }
+    size_t get_speed() const { return speed; }
+    size_t get_damage() const { return damage; }
+    size_t get_range() const { return range; }
+    size_t get_type() const { return type; }
 
     // Setters
-    void setSpeed(size_t newSpeed) { speed = newSpeed; }
-    void setDamage(size_t newDamage) { damage = newDamage; }
-    void setRange(size_t newRange) { range = newRange; }
-    void setType(size_t newType) { type = newType; }
+    void set_speed(size_t new_speed) { speed = new_speed; }
+    void set_damage(size_t new_damage) { damage = new_damage; }
+    void set_range(size_t new_range) { range = new_range; }
+    void set_type(size_t new_type) { type = new_type; }
 };
 
 #endif // BASE_TROOP_HPP

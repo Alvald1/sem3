@@ -2,21 +2,21 @@
 #include "../src/map/matrix/matrix.hpp"
 
 // Test default constructor
-TEST(MatrixTest, DefaultConstructor) {
+TEST(MatrixTest, default_constructor) {
     Matrix<int> m;
     EXPECT_EQ(m.get_rows(), 0);
     EXPECT_EQ(m.get_cols(), 0);
 }
 
 // Test parameterized constructor
-TEST(MatrixTest, ParameterizedConstructor) {
+TEST(MatrixTest, parameterized_constructor) {
     Matrix<int> m(3, 4);
     EXPECT_EQ(m.get_rows(), 3);
     EXPECT_EQ(m.get_cols(), 4);
 }
 
 // Test copy constructor
-TEST(MatrixTest, CopyConstructor) {
+TEST(MatrixTest, copy_constructor) {
     Matrix<int> m1(2, 2);
     m1(0, 0) = 1;
     m1(0, 1) = 2;
@@ -28,7 +28,7 @@ TEST(MatrixTest, CopyConstructor) {
 }
 
 // Test copy constructor with empty matrix
-TEST(MatrixTest, CopyConstructorEmpty) {
+TEST(MatrixTest, copy_constructor_empty) {
     Matrix<int> m1;
     Matrix<int> m2(m1);
     EXPECT_EQ(m2.get_rows(), 0);
@@ -36,7 +36,7 @@ TEST(MatrixTest, CopyConstructorEmpty) {
 }
 
 // Test move constructor
-TEST(MatrixTest, MoveConstructor) {
+TEST(MatrixTest, move_constructor) {
     Matrix<int> m1(2, 2);
     m1(0, 0) = 1;
     m1(0, 1) = 2;
@@ -50,7 +50,7 @@ TEST(MatrixTest, MoveConstructor) {
 }
 
 // Test copy assignment
-TEST(MatrixTest, CopyAssignment) {
+TEST(MatrixTest, copy_assignment) {
     Matrix<int> m1(2, 3);
     m1(0, 0) = 5;
     Matrix<int> m2;
@@ -61,7 +61,7 @@ TEST(MatrixTest, CopyAssignment) {
 }
 
 // Test copy assignment with empty matrix
-TEST(MatrixTest, CopyAssignmentEmpty) {
+TEST(MatrixTest, copy_assignment_empty) {
     Matrix<int> m1;
     Matrix<int> m2(2, 2);
     m2 = m1;
@@ -70,7 +70,7 @@ TEST(MatrixTest, CopyAssignmentEmpty) {
 }
 
 // Test move assignment self-assignment
-TEST(MatrixTest, MoveAssignmentSelf) {
+TEST(MatrixTest, move_assignment_self) {
     Matrix<int> m(2, 3);
     m(0, 0) = 1;
     m(0, 1) = 2;
@@ -86,7 +86,7 @@ TEST(MatrixTest, MoveAssignmentSelf) {
 }
 
 // Test move assignment
-TEST(MatrixTest, MoveAssignment) {
+TEST(MatrixTest, move_assignment) {
     Matrix<int> m1(2, 3);
     m1(0, 0) = 7;
     Matrix<int> m2;
@@ -99,7 +99,7 @@ TEST(MatrixTest, MoveAssignment) {
 }
 
 // Test move assignment with empty matrix
-TEST(MatrixTest, MoveAssignmentEmpty) {
+TEST(MatrixTest, move_assignment_empty) {
     Matrix<int> m1;
     Matrix<int> m2(2, 2);
     m2 = std::move(m1);
@@ -110,7 +110,7 @@ TEST(MatrixTest, MoveAssignmentEmpty) {
 }
 
 // Test move assignment self-assignment
-TEST(MatrixTest, MoveAssignmentSelf2) {
+TEST(MatrixTest, move_assignment_self2) {
     Matrix<int> m(2, 2);
     m(0, 0) = 5;
     m(0, 1) = 6;
@@ -126,7 +126,7 @@ TEST(MatrixTest, MoveAssignmentSelf2) {
 }
 
 // Test resize increasing size
-TEST(MatrixTest, ResizeIncrease) {
+TEST(MatrixTest, resize_increase) {
     Matrix<int> m(2, 2);
     m(0, 0) = 1;
     m.resize(3, 3);
@@ -137,7 +137,7 @@ TEST(MatrixTest, ResizeIncrease) {
 }
 
 // Test resize decreasing size
-TEST(MatrixTest, ResizeDecrease) {
+TEST(MatrixTest, resize_decrease) {
     Matrix<int> m(3, 3);
     m(2, 2) = 9;
     m.resize(2, 2);
@@ -148,7 +148,7 @@ TEST(MatrixTest, ResizeDecrease) {
 }
 
 // Test resize to zero rows and zero columns
-TEST(MatrixTest, ResizeToZero) {
+TEST(MatrixTest, resize_to_zero) {
     Matrix<int> m(3, 3);
     m.resize(0, 0);
     EXPECT_EQ(m.get_rows(), 0);
@@ -157,7 +157,7 @@ TEST(MatrixTest, ResizeToZero) {
 }
 
 // Test resize with one dimension zero
-TEST(MatrixTest, ResizeOneDimensionZero) {
+TEST(MatrixTest, resize_one_dimension_zero) {
     Matrix<int> m(2, 2);
     m.resize(0, 3);
     EXPECT_EQ(m.get_rows(), 0);
@@ -171,7 +171,7 @@ TEST(MatrixTest, ResizeOneDimensionZero) {
 }
 
 // Test add_row
-TEST(MatrixTest, AddRow) {
+TEST(MatrixTest, add_row) {
     Matrix<int> m(2, 2);
     m.add_row(1);
     EXPECT_EQ(m.get_rows(), 3);
@@ -181,7 +181,7 @@ TEST(MatrixTest, AddRow) {
 }
 
 // Test adding a row at the end
-TEST(MatrixTest, AddRowAtEnd) {
+TEST(MatrixTest, add_row_at_end) {
     Matrix<int> m(2, 2);
     m.add_row(2);
     EXPECT_EQ(m.get_rows(), 3);
@@ -190,7 +190,7 @@ TEST(MatrixTest, AddRowAtEnd) {
 }
 
 // Test add_column
-TEST(MatrixTest, AddColumn) {
+TEST(MatrixTest, add_column) {
     Matrix<int> m(2, 2);
     m.add_column(1);
     EXPECT_EQ(m.get_cols(), 3);
@@ -200,7 +200,7 @@ TEST(MatrixTest, AddColumn) {
 }
 
 // Test adding a column at the end
-TEST(MatrixTest, AddColumnAtEnd) {
+TEST(MatrixTest, add_column_at_end) {
     Matrix<int> m(2, 2);
     m.add_column(2);
     EXPECT_EQ(m.get_cols(), 3);
@@ -209,7 +209,7 @@ TEST(MatrixTest, AddColumnAtEnd) {
 }
 
 // Test delete_row
-TEST(MatrixTest, DeleteRow) {
+TEST(MatrixTest, delete_row) {
     Matrix<int> m(3, 2);
     m.delete_row(1);
     EXPECT_EQ(m.get_rows(), 2);
@@ -219,7 +219,7 @@ TEST(MatrixTest, DeleteRow) {
 }
 
 // Test deleting the last row
-TEST(MatrixTest, DeleteLastRow) {
+TEST(MatrixTest, delete_last_row) {
     Matrix<int> m(3, 2);
     m.delete_row(2);
     EXPECT_EQ(m.get_rows(), 2);
@@ -228,7 +228,7 @@ TEST(MatrixTest, DeleteLastRow) {
 }
 
 // Test delete_column
-TEST(MatrixTest, DeleteColumn) {
+TEST(MatrixTest, delete_column) {
     Matrix<int> m(2, 3);
     m.delete_column(1);
     EXPECT_EQ(m.get_cols(), 2);
@@ -238,7 +238,7 @@ TEST(MatrixTest, DeleteColumn) {
 }
 
 // Test deleting the last column
-TEST(MatrixTest, DeleteLastColumn) {
+TEST(MatrixTest, delete_last_column) {
     Matrix<int> m(2, 3);
     m.delete_column(2);
     EXPECT_EQ(m.get_cols(), 2);
@@ -247,7 +247,7 @@ TEST(MatrixTest, DeleteLastColumn) {
 }
 
 // Test operator()
-TEST(MatrixTest, AccessOperator) {
+TEST(MatrixTest, access_operator) {
     Matrix<int> m(2, 2);
     m(0, 0) = 10;
     m(1, 1) = 20;
@@ -258,13 +258,13 @@ TEST(MatrixTest, AccessOperator) {
 }
 
 // Test operator() on empty matrix
-TEST(MatrixTest, AccessOperatorEmpty) {
+TEST(MatrixTest, access_operator_empty) {
     Matrix<int> m;
     EXPECT_THROW(m(0, 0), std::out_of_range);
 }
 
 // Test iterator
-TEST(MatrixIteratorTest, Iteration) {
+TEST(MatrixIteratorTest, iteration) {
     Matrix<int> m(2, 2);
     m(0, 0) = 1;
     m(0, 1) = 2;
@@ -278,7 +278,7 @@ TEST(MatrixIteratorTest, Iteration) {
 }
 
 // Test const iterator
-TEST(MatrixIteratorTest, ConstIteration) {
+TEST(MatrixIteratorTest, const_iteration) {
     Matrix<int> m(2, 2);
     m(0, 0) = 5;
     m(0, 1) = 6;
@@ -293,7 +293,7 @@ TEST(MatrixIteratorTest, ConstIteration) {
 }
 
 // Test iterator operators
-TEST(MatrixIteratorTest, IteratorOperators) {
+TEST(MatrixIteratorTest, iterator_operators) {
     Matrix<int> m(1, 3);
     m(0, 0) = 1;
     m(0, 1) = 2;
@@ -315,30 +315,30 @@ TEST(MatrixIteratorTest, IteratorOperators) {
 }
 
 // Test exception on invalid add_row
-TEST(MatrixTest, AddRowOutOfRange) {
+TEST(MatrixTest, add_row_out_of_range) {
     Matrix<int> m(2, 2);
     EXPECT_THROW(m.add_row(3), std::out_of_range);
 }
 
 // Test exception on invalid add_column
-TEST(MatrixTest, AddColumnOutOfRange) {
+TEST(MatrixTest, add_column_out_of_range) {
     Matrix<int> m(2, 2);
     EXPECT_THROW(m.add_column(3), std::out_of_range);
 }
 
 // Test exception on invalid delete_row
-TEST(MatrixTest, DeleteRowOutOfRange) {
+TEST(MatrixTest, delete_row_out_of_range) {
     Matrix<int> m(2, 2);
     EXPECT_THROW(m.delete_row(2), std::out_of_range);
 }
 
 // Test exception on invalid delete_column
-TEST(MatrixTest, DeleteColumnOutOfRange) {
+TEST(MatrixTest, delete_column_out_of_range) {
     Matrix<int> m(2, 2);
     EXPECT_THROW(m.delete_column(2), std::out_of_range);
 }
 
-TEST(MatrixTest, CopyAssignmentSelf) {
+TEST(MatrixTest, copy_assignment_self) {
     Matrix<int> m(2, 2);
     m(0, 0) = 1;
     m(0, 1) = 2;

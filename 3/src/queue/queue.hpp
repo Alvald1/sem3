@@ -1,35 +1,38 @@
 #ifndef QUEUE_HPP
 #define QUEUE_HPP
 
-#include <vector>
 #include <algorithm>
+#include <stdexcept>
+#include <vector>
 #include "../entity/entity.hpp"
 
 class SortQueue {
-private:
+  private:
     std::vector<Entity> list;
 
-    void sortByInitiative() {
-        std::sort(list.begin(), list.end(), 
-            [](const Entity& a, const Entity& b) {
-                return a.getInitiative() > b.getInitiative();
-            });
+    void
+    sort_by_initiative() {
+        std::sort(list.begin(), list.end(),
+                  [](const Entity& a, const Entity& b) { return a.getInitiative() > b.getInitiative(); });
     }
 
-public:
-    void insert(Entity entity) {
+  public:
+    void
+    insert(Entity entity) {
         list.push_back(entity);
-        sortByInitiative();
+        sort_by_initiative();
     }
 
-    Entity front() const {
+    Entity
+    front() const {
         if (list.empty()) {
             throw std::runtime_error("Queue is empty");
         }
         return list.front();
     }
 
-    void shift() {
+    void
+    shift() {
         if (list.empty()) {
             throw std::runtime_error("Queue is empty");
         }
@@ -38,7 +41,8 @@ public:
         list.push_back(front);
     }
 
-    void remove(ID id) {
+    void
+    remove(size_t id) {
         for (auto it = list.begin(); it != list.end(); ++it) {
             if (it->getId() == id) {
                 list.erase(it);
@@ -48,7 +52,8 @@ public:
         throw std::runtime_error("Entity not found");
     }
 
-    Entity get(ID id) const {
+    Entity
+    get(ID id) const {
         for (const auto& entity : list) {
             if (entity.getId() == id) {
                 return entity;

@@ -20,8 +20,8 @@ public:
     void balance_morale() override { moral = 0; }
 
     // Getter and setter for moral
-    int getMoral() const { return moral; }
-    void setMoral(int newMoral) { moral = newMoral; }
+    int get_moral() const { return moral; }
+    void set_moral(int new_moral) { moral = new_moral; }
 };
 
 #endif // MORAL_TROOP_HPP
