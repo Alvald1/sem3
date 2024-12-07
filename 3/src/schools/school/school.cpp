@@ -11,24 +11,24 @@ School::add_ability(const Ability& ability) {
 }
 
 std::vector<Ability>
-School::get_available_abilities(size_t level) const {
+School::get_available_abilities(size_t level, size_t energy) const {
     std::vector<Ability> available;
-    available.reserve(abilities.size()); // резервируем память для избежания реаллокаций
-    for(const auto& ability : abilities) {
-        if(ability.get_level() <= level) {
-            available.push_back(std::move(ability)); // move из копии
+    available.reserve(abilities.size());
+    for (const auto& ability : abilities) {
+        if (ability.get_level() <= level && ability.get_energy() <= energy) {
+            available.push_back(ability);
         }
     }
-    return std::move(available); // явный move при возврате
+    return std::move(available);
 }
 
 std::vector<Ability>
-School::get_upgradable_abilities(size_t exp, size_t level) const {
+School::get_upgradable_abilities(size_t level, size_t exp) const {
     std::vector<Ability> upgradable;
     upgradable.reserve(abilities.size());
-    for(const auto& ability : abilities) {
-        if(ability.can_upgrade(exp, level)) {
-            upgradable.push_back(std::move(ability));
+    for (const auto& ability : abilities) {
+        if (ability.can_upgrade(exp, level)) {
+            upgradable.push_back(ability);
         }
     }
     return std::move(upgradable);
@@ -36,8 +36,7 @@ School::get_upgradable_abilities(size_t exp, size_t level) const {
 
 std::optional<const Ability&>
 School::find_ability_by_id(size_t id) const {
-    auto it = std::find_if(abilities.begin(), abilities.end(), 
-                          [id](const Ability& a) { return a.get_id() == id; });
+    auto it = std::find_if(abilities.begin(), abilities.end(), [id](const Ability& a) { return a.get_id() == id; });
     return it != abilities.end() ? std::optional<const Ability&>(*it) : std::nullopt;
 }
 
@@ -49,5 +48,5 @@ School::has_ability(size_t id) const {
 size_t
 School::count_creatures() const {
     return std::count_if(abilities.begin(), abilities.end(),
-                        [](const Ability& ability) { return ability.has_creature(); });
+                         [](const Ability& ability) { return ability.has_creature(); });
 }

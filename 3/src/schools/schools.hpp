@@ -22,8 +22,8 @@ class Schools {
     void add_school(School school);
     size_t count_schools() const;
     size_t count_creatures() const;
-    std::vector<Ability> get_available_abilities(std::unordered_map<School, size_t> levels) const;
-    std::vector<Ability> get_upgradable_abilities(size_t exp, std::unordered_map<School, size_t> levels) const;
+    std::vector<Ability> get_available_abilities(const std::unordered_map<size_t, size_t>& levels, size_t energy) const;
+    std::vector<Ability> get_upgradable_abilities(const std::unordered_map<size_t, size_t>& levels, size_t exp) const;
 
     // New methods
     const School* find_school_by_id(size_t id) const;
