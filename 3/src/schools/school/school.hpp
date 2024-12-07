@@ -4,6 +4,7 @@
 #include <optional>
 #include <unordered_map>
 #include <vector>
+#include <set>
 #include "../../utilities/name_id.hpp"
 #include "ability/ability.hpp"
 
@@ -23,7 +24,7 @@ class School : public NameID {
     void add_ability(const Ability& ability);
     std::vector<Ability> get_available_abilities(size_t level, size_t energy) const;
     std::vector<Ability> get_upgradable_abilities(size_t level, size_t exp) const;
-    std::optional<const Ability&> find_ability_by_id(size_t id) const;
+    std::optional<Ability> find_ability_by_id(size_t id) const;
     bool has_ability(size_t id) const;
 
     [[nodiscard]] size_t count_creatures() const;
