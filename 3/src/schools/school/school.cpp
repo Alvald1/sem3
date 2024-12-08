@@ -23,13 +23,12 @@ School::get_available_abilities(size_t level, size_t energy) const {
 std::vector<Ability>
 School::get_upgradable_abilities(size_t level, size_t exp) const {
     std::vector<Ability> upgradable;
-    upgradable.reserve(abilities.size());
     for (const auto& ability : abilities) {
         if (ability.can_upgrade(exp, level)) {
             upgradable.push_back(ability);
         }
     }
-    return std::move(upgradable);
+    return upgradable;
 }
 
 std::optional<Ability>
@@ -45,9 +44,9 @@ School::has_ability(size_t id) const {
 
 size_t
 School::count_creatures() const {
-    std::set<const Creature*> unique_creatures;
+    std::set<const Creature*, std::less<>> unique_creatures;
     for (const auto& ability : abilities) {
-        if (ability.has_creature()) {
+        if (ability.has_creature()) {  // Only count non-null creatures
             unique_creatures.insert(ability.get_creature());
         }
     }

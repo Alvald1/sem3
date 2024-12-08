@@ -1,6 +1,7 @@
 #include "schools.hpp"
 #include <algorithm>
 #include <numeric>
+#include <set>
 
 void
 Schools::add_school(School school) {
@@ -14,8 +15,13 @@ Schools::count_schools() const {
 
 size_t
 Schools::count_creatures() const {
-    return std::accumulate(schools.begin(), schools.end(), size_t{0},
-                           [](size_t sum, const School& school) { return sum + school.count_creatures(); });
+    std::set<const Creature*, std::less<>> unique_creatures;
+    for (const auto& school : schools) {
+        for (const auto& ability : school.get_abilities()) {
+            unique_creatures.insert(ability.get_creature());
+        }
+    }
+    return unique_creatures.size();
 }
 
 std::vector<Ability>
@@ -38,7 +44,8 @@ Schools::get_upgradable_abilities(const std::unordered_map<size_t, size_t>& leve
     for (const auto& school : schools) {
         auto it = levels.find(school.get_id());
         if (it != levels.end()) {
-            auto school_abilities = school.get_upgradable_abilities(exp, it->second);
+            // Corrected parameter order: level first, then exp
+            auto school_abilities = school.get_upgradable_abilities(it->second, exp);
             result.insert(result.end(), std::make_move_iterator(school_abilities.begin()),
                           std::make_move_iterator(school_abilities.end()));
         }
