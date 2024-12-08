@@ -1,4 +1,3 @@
-
 include(FetchContent)
 
 # Fetch googletest
@@ -36,15 +35,34 @@ target_compile_options(test_target PRIVATE ${CXXFLAGS})
 target_link_options(test_target PRIVATE ${LDFLAGS})
 target_link_libraries(test_target GTest::gtest GTest::gtest_main pthread)
 
-# Add custom command for coverage
+# Add custom command for coverage with detailed reporting
 add_custom_target(cov
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target test_target
     COMMAND valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./${PROJECT_NAME}_test
     COMMAND llvm-profdata merge -sparse default.profraw -o foo.profdata
-    COMMAND llvm-cov report ${PROJECT_NAME}_test -instr-profile=foo.profdata
-    COMMAND llvm-cov show ${PROJECT_NAME}_test -instr-profile=foo.profdata -format=html -output-dir=report_coverage
+    # Text summary
+    COMMAND llvm-cov report ${PROJECT_NAME}_test 
+            -instr-profile=foo.profdata 
+            --show-branch-summary
+            ${SOURCES}
+            -stats
+    # Detailed HTML report
+    COMMAND llvm-cov show ${PROJECT_NAME}_test 
+            -instr-profile=foo.profdata 
+            -show-branch-summary
+            -show-branches=count
+            -show-expansions
+            -show-line-counts-or-regions 
+            -show-instantiation-summary
+            -show-regions
+            -show-line-counts
+            -use-color
+            -Xdemangler=c++filt
+            -format=html 
+            -output-dir=report_coverage 
+            ${SOURCES}
     COMMAND rm foo.profdata default.profraw
-    COMMENT "Building with coverage"
+    COMMENT "Building with detailed coverage reports"
 )
 
 # Add test
