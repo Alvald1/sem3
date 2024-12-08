@@ -1,6 +1,8 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
+#include <algorithm>
+#include <type_traits>
 #include "../../schools/school/ability/ability.hpp"
 #include "../../utilities/name_id.hpp"
 
@@ -12,68 +14,88 @@ class Entity : public NameID {
     const size_t max_hp;
 
   public:
-    explicit Entity(const Ability& ability)
+    explicit Entity(const Ability& ability) noexcept
         : NameID(next_id++, ability.get_name()), initiative(ability.get_creature()->get_initiative()),
-          max_hp(ability.get_count()), hp(max_hp) {}
+          max_hp(ability.get_count()), hp(ability.get_count()) {}
 
     virtual ~Entity() = default;
 
-    Entity(const Entity&) = delete;
+    // Delete assignment operators since we have const members
+    Entity(const Entity&) = default;
     Entity& operator=(const Entity&) = delete;
 
-    // Запрещаем перемещение
-    Entity(Entity&&) = delete;
+    Entity(Entity&&) = default;
     Entity& operator=(Entity&&) = delete;
 
-    size_t
-    get_initiative() const {
+    [[nodiscard]] constexpr size_t
+    get_initiative() const noexcept {
         return initiative;
     }
 
-    size_t
-    get_hp() const {
+    [[nodiscard]] constexpr size_t
+    get_hp() const noexcept {
         return hp;
     }
 
-    void
-    set_hp(size_t new_hp) {
-        hp = std::min(new_hp, max_hp);
+    constexpr void
+    set_hp(size_t new_hp) noexcept {
+        hp = std::clamp(new_hp, size_t{0}, max_hp);
     }
 
-    size_t
-    get_max_hp() const {
+    [[nodiscard]] constexpr size_t
+    get_max_hp() const noexcept {
         return max_hp;
     }
 
-    void
-    heal(size_t amount) {
-
-        hp = std::min(hp + amount, max_hp);
+    constexpr void
+    heal(size_t amount) noexcept {
+        if (std::make_signed_t<size_t>(amount) < 0) {
+            return;
+        }
+        hp = std::clamp(hp + amount, size_t{0}, max_hp);
     }
 
-    [[nodiscard]] double
-    get_health_percentage() const {
+    [[nodiscard]] constexpr double
+    get_health_percentage() const noexcept {
         return (static_cast<double>(hp) / max_hp) * 100.0;
     }
 
-    void
-    damage(size_t amount) {
+    constexpr void
+    do_damage(size_t amount) noexcept {
+        if (std::make_signed_t<size_t>(amount) < 0) {
+            return;
+        }
         hp = (amount >= hp) ? 0 : hp - amount;
     }
 
-    bool
-    is_alive() const {
+    [[nodiscard]] constexpr bool
+    is_alive() const noexcept {
         return hp > 0;
     }
 
-    bool
-    operator<(const Entity& other) const {
+    [[nodiscard]] constexpr bool
+    operator<(const Entity& other) const noexcept {
         return initiative < other.initiative;
     }
 
-    bool
-    operator>(const Entity& other) const {
+    [[nodiscard]] constexpr bool
+    operator>(const Entity& other) const noexcept {
         return initiative > other.initiative;
+    }
+
+    [[nodiscard]] constexpr bool
+    operator==(const Entity& other) const noexcept {
+        return initiative == other.initiative;
+    }
+
+    [[nodiscard]] constexpr bool
+    operator<=(const Entity& other) const noexcept {
+        return initiative <= other.initiative;
+    }
+
+    [[nodiscard]] constexpr bool
+    operator>=(const Entity& other) const noexcept {
+        return initiative >= other.initiative;
     }
 };
 

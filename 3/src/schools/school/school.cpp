@@ -46,9 +46,7 @@ size_t
 School::count_creatures() const {
     std::set<const Creature*, std::less<>> unique_creatures;
     for (const auto& ability : abilities) {
-        if (ability.has_creature()) {  // Only count non-null creatures
-            unique_creatures.insert(ability.get_creature());
-        }
+        unique_creatures.insert(ability.get_creature());
     }
     return unique_creatures.size();
 }

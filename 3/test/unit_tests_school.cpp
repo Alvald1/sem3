@@ -91,13 +91,20 @@ TEST_F(SchoolTest, CountCreatures) {
     EXPECT_EQ(school.count_creatures(), 4); // New creature
 }
 
-TEST_F(SchoolTest, CountCreaturesWithNullifiedCreature) {
+TEST_F(SchoolTest, CountCreaturesWithRemovedAbility) {
     size_t initial_count = school.count_creatures();
+    
+    // Create a new ability with a unique creature
+    Creature unique_creature{"UniqueCreature", 1};
+    Ability unique_ability("UniqueAbility", &unique_creature);
+    school.add_ability(unique_ability);
+    EXPECT_EQ(school.count_creatures(), initial_count + 1);
 
-    // Nullify creature pointer in an existing ability
+    // Remove the ability and verify count decreases
     auto& abilities = const_cast<std::vector<Ability>&>(school.get_abilities());
-    abilities.back().set_creature(nullptr);
-    EXPECT_EQ(school.count_creatures(), initial_count - 1);
+    size_t last_idx = abilities.size() - 1;
+    abilities.pop_back();
+    EXPECT_EQ(school.count_creatures(), initial_count);
 }
 
 TEST_F(SchoolTest, CopyConstructor) {

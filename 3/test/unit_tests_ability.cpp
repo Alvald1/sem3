@@ -65,6 +65,11 @@ TEST_F(AbilityTest, Setters) {
     delete new_creature;
 }
 
+TEST_F(AbilityTest, SetterNullCreature) {
+    Ability ability("TestAbility", creature);
+    EXPECT_THROW(ability.set_creature(nullptr), std::invalid_argument);
+}
+
 // Utility method tests
 TEST_F(AbilityTest, CanUpgrade) {
     Ability ability("TestAbility", creature, 2, 100, 50, 1);
@@ -78,9 +83,11 @@ TEST_F(AbilityTest, CanUpgrade) {
 TEST_F(AbilityTest, HasCreature) {
     Ability ability("TestAbility", creature);
     EXPECT_TRUE(ability.has_creature());
-
-    ability.set_creature(nullptr);
-    EXPECT_FALSE(ability.has_creature());
+    
+    MockCreature* another_creature = new MockCreature();
+    ability.set_creature(another_creature);
+    EXPECT_TRUE(ability.has_creature());
+    delete another_creature;
 }
 
 // Copy and move tests

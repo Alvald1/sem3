@@ -60,7 +60,10 @@ class Ability : public NameID {
 
     // Setters
     constexpr void
-    set_creature(Creature* new_creature) noexcept {
+    set_creature(Creature* new_creature) {
+        if (!new_creature) {
+            throw std::invalid_argument("Creature cannot be null");
+        }
         creature = new_creature;
     }
 
@@ -84,12 +87,12 @@ class Ability : public NameID {
         count = new_count;
     }
 
-    [[nodiscard]] bool
-    can_upgrade(size_t exp, size_t level) const {
-        return exp >= experience && level >= this->level;
+    [[nodiscard]] constexpr bool
+    can_upgrade(size_t exp, size_t lvl) const noexcept {
+        return exp >= experience && lvl >= level;
     }
 
-    [[nodiscard]] bool
+    [[nodiscard]] constexpr bool
     has_creature() const noexcept {
         return creature != nullptr;
     }
