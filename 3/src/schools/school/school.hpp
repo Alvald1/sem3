@@ -2,9 +2,9 @@
 #define SCHOOL_HPP
 
 #include <optional>
+#include <set>
 #include <unordered_map>
 #include <vector>
-#include <set>
 #include "../../utilities/name_id.hpp"
 #include "ability/ability.hpp"
 

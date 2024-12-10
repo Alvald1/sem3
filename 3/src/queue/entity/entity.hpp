@@ -27,27 +27,27 @@ class Entity : public NameID {
     Entity(Entity&&) = default;
     Entity& operator=(Entity&&) = delete;
 
-    [[nodiscard]] constexpr size_t
+    [[nodiscard]] inline size_t
     get_initiative() const noexcept {
         return initiative;
     }
 
-    [[nodiscard]] constexpr size_t
+    [[nodiscard]] inline size_t
     get_hp() const noexcept {
         return hp;
     }
 
-    constexpr void
+    inline void
     set_hp(size_t new_hp) noexcept {
         hp = std::clamp(new_hp, size_t{0}, max_hp);
     }
 
-    [[nodiscard]] constexpr size_t
+    [[nodiscard]] inline size_t
     get_max_hp() const noexcept {
         return max_hp;
     }
 
-    constexpr void
+    void
     heal(size_t amount) noexcept {
         if (std::make_signed_t<size_t>(amount) < 0) {
             return;
@@ -55,12 +55,12 @@ class Entity : public NameID {
         hp = std::clamp(hp + amount, size_t{0}, max_hp);
     }
 
-    [[nodiscard]] constexpr double
+    [[nodiscard]] inline double
     get_health_percentage() const noexcept {
         return (static_cast<double>(hp) / max_hp) * 100.0;
     }
 
-    constexpr void
+    void
     do_damage(size_t amount) noexcept {
         if (std::make_signed_t<size_t>(amount) < 0) {
             return;
@@ -68,32 +68,32 @@ class Entity : public NameID {
         hp = (amount >= hp) ? 0 : hp - amount;
     }
 
-    [[nodiscard]] constexpr bool
+    [[nodiscard]] inline bool
     is_alive() const noexcept {
         return hp > 0;
     }
 
-    [[nodiscard]] constexpr bool
+    [[nodiscard]] inline bool
     operator<(const Entity& other) const noexcept {
         return initiative < other.initiative;
     }
 
-    [[nodiscard]] constexpr bool
+    [[nodiscard]] inline bool
     operator>(const Entity& other) const noexcept {
         return initiative > other.initiative;
     }
 
-    [[nodiscard]] constexpr bool
+    [[nodiscard]] inline bool
     operator==(const Entity& other) const noexcept {
         return initiative == other.initiative;
     }
 
-    [[nodiscard]] constexpr bool
+    [[nodiscard]] inline bool
     operator<=(const Entity& other) const noexcept {
         return initiative <= other.initiative;
     }
 
-    [[nodiscard]] constexpr bool
+    [[nodiscard]] inline bool
     operator>=(const Entity& other) const noexcept {
         return initiative >= other.initiative;
     }

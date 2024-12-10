@@ -22,7 +22,7 @@ class MoralTroop : public BaseTroop, public IMoral {
         --moral;
     }
 
-    inline void
+    void
     balance_morale() override {
         if (moral > 0) {
             --moral;
@@ -32,12 +32,12 @@ class MoralTroop : public BaseTroop, public IMoral {
     }
 
     // Getter and setter for moral
-    [[nodiscard]] constexpr int
+    [[nodiscard]] inline int
     get_moral() const noexcept {
         return moral;
     }
 
-    constexpr void
+    inline void
     set_moral(int new_moral) noexcept {
         moral = new_moral;
     }

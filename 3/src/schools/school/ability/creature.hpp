@@ -27,53 +27,53 @@ class Creature : public NameID {
     ~Creature() = default;
 
     // Getters
-    [[nodiscard]] constexpr auto
+    [[nodiscard]] inline size_t
     get_speed() const noexcept {
         return speed;
     }
 
-    [[nodiscard]] constexpr auto
+    [[nodiscard]] inline size_t
     get_damage() const noexcept {
         return damage;
     }
 
-    [[nodiscard]] constexpr auto
+    [[nodiscard]] inline size_t
     get_range() const noexcept {
         return range;
     }
 
-    [[nodiscard]] constexpr auto
+    [[nodiscard]] inline size_t
     get_type() const noexcept {
         return type;
     }
 
-    [[nodiscard]] constexpr auto
+    [[nodiscard]] inline size_t
     get_initiative() const noexcept {
         return initiative;
     }
 
     // Setters
-    constexpr void
+    inline void
     set_speed(size_t new_speed) noexcept {
         speed = new_speed;
     }
 
-    constexpr void
+    inline void
     set_damage(size_t new_damage) noexcept {
         damage = new_damage;
     }
 
-    constexpr void
+    inline void
     set_range(size_t new_range) noexcept {
         range = new_range;
     }
 
-    constexpr void
+    inline void
     set_type(size_t new_type) noexcept {
         type = new_type;
     }
 
-    constexpr void
+    inline void
     set_initiative(size_t new_initiative) noexcept {
         initiative = new_initiative;
     }

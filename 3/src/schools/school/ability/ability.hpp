@@ -33,33 +33,33 @@ class Ability : public NameID {
     ~Ability() = default;
 
     // Getters
-    [[nodiscard]] constexpr Creature*
+    [[nodiscard]] inline Creature*
     get_creature() const noexcept {
         return creature;
     }
 
-    [[nodiscard]] constexpr size_t
+    [[nodiscard]] inline size_t
     get_level() const noexcept {
         return level;
     }
 
-    [[nodiscard]] constexpr size_t
+    [[nodiscard]] inline size_t
     get_energy() const noexcept {
         return energy;
     }
 
-    [[nodiscard]] constexpr size_t
+    [[nodiscard]] inline size_t
     get_experience() const noexcept {
         return experience;
     }
 
-    [[nodiscard]] constexpr size_t
+    [[nodiscard]] inline size_t
     get_count() const noexcept {
         return count;
     }
 
     // Setters
-    constexpr void
+    inline void
     set_creature(Creature* new_creature) {
         if (!new_creature) {
             throw std::invalid_argument("Creature cannot be null");
@@ -67,22 +67,22 @@ class Ability : public NameID {
         creature = new_creature;
     }
 
-    constexpr void
+    inline void
     set_level(size_t new_level) noexcept {
         level = new_level;
     }
 
-    constexpr void
+    inline void
     set_energy(size_t new_energy) noexcept {
         energy = new_energy;
     }
 
-    constexpr void
+    inline void
     set_experience(size_t new_experience) noexcept {
         experience = new_experience;
     }
 
-    constexpr void
+    inline void
     set_count(size_t new_count) noexcept {
         count = new_count;
     }
