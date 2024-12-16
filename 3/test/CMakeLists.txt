@@ -35,9 +35,17 @@ target_compile_options(test_target PRIVATE ${CXXFLAGS})
 target_link_options(test_target PRIVATE ${LDFLAGS})
 target_link_libraries(test_target GTest::gtest GTest::gtest_main pthread)
 
+# Enable parallel testing
+include(ProcessorCount)
+ProcessorCount(N)
+if(NOT N EQUAL 0)
+    set(CTEST_BUILD_FLAGS -j${N})
+    set(CTEST_PARALLEL_LEVEL ${N})
+endif()
+
 # Add custom command for coverage with detailed reporting
 add_custom_target(cov
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target test_target
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target test_target -j${N}
     COMMAND valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./${PROJECT_NAME}_test
     COMMAND llvm-profdata merge -sparse default.profraw -o foo.profdata
     # Text summary
@@ -67,3 +75,6 @@ add_custom_target(cov
 
 # Add test
 add_test(NAME test COMMAND test_target)
+
+# Enable parallel test execution
+set_tests_properties(test PROPERTIES PROCESSORS ${N})

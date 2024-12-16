@@ -1,9 +1,26 @@
 cmake_minimum_required(VERSION 3.13)
 
+# Enable parallel build
+include(ProcessorCount)
+ProcessorCount(N)
+if(NOT N EQUAL 0)
+    set(CTEST_BUILD_FLAGS -j${N})
+    set(CTEST_PARALLEL_LEVEL ${N})
+endif()
+
 # Проверка наличия инструментов
 find_program(CLANG_PP "clang++")
-if(NOT CLANG_PP)
-    message(FATAL_ERROR "clang++ not found!")
+find_program(GPP "g++")
+
+if(NOT CLANG_PP AND NOT GPP)
+    message(FATAL_ERROR "Neither clang++ nor g++ found!")
+endif()
+
+# Выбор компилятора (clang++ по умолчанию)
+if(CLANG_PP)
+    set(CMAKE_CXX_COMPILER clang++)
+else()
+    set(CMAKE_CXX_COMPILER g++)
 endif()
 
 find_program(VALGRIND "valgrind")
@@ -12,8 +29,7 @@ if(NOT VALGRIND)
 endif()
 
 # Установка компилятора
-set(CMAKE_CXX_COMPILER clang++)
-project(lab2)
+project(lab3)
 
 # Общие настройки
 set(CMAKE_CXX_STANDARD 23)
@@ -54,7 +70,7 @@ set_target_properties(msan PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_msan)
 
 # Valgrind
 add_custom_target(valgrind
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target debug
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target debug -j${N}
     COMMAND ${VALGRIND} --leak-check=full --show-leak-kinds=all 
             --track-origins=yes --verbose ./${PROJECT_NAME}_debug
     COMMENT "Running Valgrind"
@@ -62,7 +78,7 @@ add_custom_target(valgrind
 
 # Статический анализ
 add_custom_target(static
-    COMMAND ${CLANG_PP} -std=c++2b --analyze -Xanalyzer -analyzer-output=html ${SOURCES}
+    COMMAND ${CLANG_PP} -std=c++2b --analyze -Xanalyzer -analyzer-output=html ${SOURCES} -j${N}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     COMMENT "Running static analysis"
 )
