@@ -84,7 +84,12 @@ Matrix<T>::Matrix(const Matrix& other) : rows_(other.rows_), cols_(other.cols_),
 }
 
 template <typename T>
-Matrix<T>::Matrix(Matrix&& other) noexcept : rows_(other.rows_), cols_(other.cols_), data_(std::move(other.data_)) {}
+Matrix<T>::Matrix(Matrix&& other) noexcept : rows_(other.rows_), cols_(other.cols_), data_(std::move(other.data_)) {
+    // Set the source matrix to empty state
+    other.rows_ = 0;
+    other.cols_ = 0;
+    // Note: data_ is already moved, no need to clear it
+}
 
 template <typename T>
 Matrix<T>::~Matrix() = default;
@@ -213,9 +218,15 @@ Matrix<T>::operator=(const Matrix& other) {
 template <typename T>
 Matrix<T>&
 Matrix<T>::operator=(Matrix&& other) noexcept {
-    std::swap(rows_, other.rows_);
-    std::swap(cols_, other.cols_);
-    std::swap(data_, other.data_);
+    if (this != &other) {
+        data_ = std::move(other.data_);
+        rows_ = other.rows_;
+        cols_ = other.cols_;
+        
+        // Reset the moved-from object
+        other.rows_ = 0;
+        other.cols_ = 0;
+    }
     return *this;
 }
 

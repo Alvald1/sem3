@@ -17,7 +17,7 @@ School::get_available_abilities(size_t level, size_t energy) const {
             available.push_back(ability);
         }
     }
-    return std::move(available);
+    return available;
 }
 
 std::vector<Ability>

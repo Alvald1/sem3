@@ -35,7 +35,7 @@ Schools::get_available_abilities(const std::unordered_map<size_t, size_t>& level
                           std::make_move_iterator(school_abilities.end()));
         }
     }
-    return std::move(result);
+    return result; // Removed std::move
 }
 
 std::vector<Ability>
@@ -50,7 +50,7 @@ Schools::get_upgradable_abilities(const std::unordered_map<size_t, size_t>& leve
                           std::make_move_iterator(school_abilities.end()));
         }
     }
-    return std::move(result);
+    return result; // Removed std::move
 }
 
 const School*
