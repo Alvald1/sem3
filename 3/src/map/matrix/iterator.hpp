@@ -8,7 +8,7 @@
 template <typename T>
 class Matrix; // Forward declaration
 
-template <typename T, bool is_const>
+template <typename T, bool is_const = false>
 class MatrixIterator {
   private:
     using elem_ptr_t = std::conditional_t<is_const, const T, T>*;
@@ -16,8 +16,8 @@ class MatrixIterator {
     elem_ptr_t elem_;
 
   public:
-    using value_type = T;
-    using difference_type = ptrdiff_t;
+    using value_t = T;
+    using difference_t = ptrdiff_t;
     using pointer = std::conditional_t<is_const, const T, T>*;
     using reference = std::conditional_t<is_const, const T, T>&;
     using iterator_category = std::contiguous_iterator_tag;
@@ -110,43 +110,43 @@ class MatrixIterator {
     }
 
     template <bool other_const>
-    difference_type
+    difference_t
     operator-(const MatrixIterator<T, other_const>& o) const noexcept {
         return elem_ - o.elem_;
     }
 
     MatrixIterator
-    operator+(difference_type n) const noexcept {
+    operator+(difference_t n) const noexcept {
         MatrixIterator res(elem_ + n);
         return res;
     }
 
     MatrixIterator&
-    operator+=(difference_type n) noexcept {
+    operator+=(difference_t n) noexcept {
         elem_ += n;
         return *this;
     }
 
     MatrixIterator
-    operator-(difference_type n) const noexcept {
+    operator-(difference_t n) const noexcept {
         MatrixIterator res(elem_ - n);
         return res;
     }
 
     MatrixIterator&
-    operator-=(difference_type n) noexcept {
+    operator-=(difference_t n) noexcept {
         elem_ -= n;
         return *this;
     }
 
     reference
-    operator[](difference_type n) const {
+    operator[](difference_t n) const {
         return elem_[n];
     }
 
     template <bool other_const>
     friend MatrixIterator
-    operator+(difference_type n, const MatrixIterator<T, other_const>& o) {
+    operator+(difference_t n, const MatrixIterator<T, other_const>& o) {
         return MatrixIterator(o.elem_ + n);
     }
 };
