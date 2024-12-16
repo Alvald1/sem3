@@ -1,0 +1,23 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}  % Changed from T1 to T2A
+\usepackage[english,russian]{babel}
+\usepackage{cyrillic}     % Added cyrillic package
+\usepackage{amsmath}
+\usepackage{amsfonts}     % Added amsfonts package
+\usepackage{amssymb}      % Added amssymb package
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+% Code listing settings
+\lstset{
+    breaklines=true,
+    breakatwhitespace=true,
+    numbers=left,
+    frame=single,
+    basicstyle=\ttfamily\small,
+    literate={а}{{\selectfont\char224}}1  % Cyrillic letters support in listings
+            {б}{{\selectfont\char225}}1
+            % ... add other Cyrillic letters as needed
+}
