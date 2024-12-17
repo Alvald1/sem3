@@ -72,31 +72,6 @@ class Entity : public NameID {
     is_alive() const noexcept {
         return hp > 0;
     }
-
-    [[nodiscard]] inline bool
-    operator<(const Entity& other) const noexcept {
-        return initiative < other.initiative;
-    }
-
-    [[nodiscard]] inline bool
-    operator>(const Entity& other) const noexcept {
-        return initiative > other.initiative;
-    }
-
-    [[nodiscard]] inline bool
-    operator==(const Entity& other) const noexcept {
-        return initiative == other.initiative;
-    }
-
-    [[nodiscard]] inline bool
-    operator<=(const Entity& other) const noexcept {
-        return initiative <= other.initiative;
-    }
-
-    [[nodiscard]] inline bool
-    operator>=(const Entity& other) const noexcept {
-        return initiative >= other.initiative;
-    }
 };
 
 #endif // ENTITY_HPP
