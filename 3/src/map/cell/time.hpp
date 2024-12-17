@@ -4,12 +4,33 @@
 #include <cstddef>
 
 class Time {
-private:
+  private:
     size_t time;
 
-public:
-    size_t get_time() const { return time; }
-    void set_time(size_t new_time) { time = new_time; }
+  public:
+    explicit Time(size_t t) : time(t) {}
+
+    inline size_t
+    get_time() const {
+        return time;
+    }
+
+    inline void
+    set_time(size_t new_time) {
+        time = new_time;
+    }
+
+    inline void
+    decrease_time() {
+        if (time > 0) {
+            time--;
+        }
+    }
+
+    inline bool
+    is_not_zero() const {
+        return time > 0;
+    }
 };
 
 #endif // TIME_HPP

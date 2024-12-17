@@ -1,4 +1,3 @@
-
 #ifndef EFFECT_CELL_DAMAGE_HPP
 #define EFFECT_CELL_DAMAGE_HPP
 
@@ -11,20 +10,22 @@ class EffectCellDamage : public Time, public Cell, public IEffectCell {
     int delta_damage;
 
   public:
-    EffectCellDamage() : delta_damage(0) {}
-
-    void
-    give_effect(EntityID entity_id) override {
-        // Implementation will be added later
-    }
+    EffectCellDamage(size_t id, Position pos, int damage = 0, bool passability = true, bool busy = false,
+                     size_t id_entity = 0, size_t time)
+        : Time(time), Cell(id, pos, passability, busy, id_entity), delta_damage(damage) {}
 
     int
-    get_delta_damage() const {
-        return delta_damage;
+    give_effect() override {
+        if (is_not_zero()) {
+            return delta_damage;
+        } else {
+            return 0;
+        }
     }
 
     void
-    set_delta_damage(int new_delta_damage) {
+    set_effect(int new_delta_damage, size_t time) override {
+        set_time(time);
         delta_damage = new_delta_damage;
     }
 };
