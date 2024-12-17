@@ -8,9 +8,10 @@
 #include <type_traits>
 #include "iterator.hpp"
 
-template <typename T, bool is_const = false>
-class Iterator; // Forward declaration
-
+/**
+ * @brief A 2D matrix container class
+ * @tparam T Type of elements stored in the matrix
+ */
 template <typename T>
 class Matrix {
   private:
@@ -26,28 +27,89 @@ class Matrix {
     size_t cols_;
     std::shared_ptr<value_t[]> data_;
 
+    /**
+     * @brief Allocates memory for matrix data
+     * @param rows Number of rows
+     * @param cols Number of columns
+     */
     void allocate(size_t rows, size_t cols);
+
+    /** @brief Deallocates matrix memory */
     void deallocate();
 
   public:
     // Type traits
 
+    /** @brief Default constructor creating empty matrix */
     Matrix();
+
+    /**
+     * @brief Constructor creating matrix of specified size
+     * @param rows Number of rows
+     * @param cols Number of columns
+     */
     Matrix(size_t rows, size_t cols);
+
+    /**
+     * @brief Copy constructor
+     * @param other Matrix to copy from
+     */
     Matrix(const Matrix& other);
+
+    /**
+     * @brief Move constructor
+     * @param other Matrix to move from
+     */
     Matrix(Matrix&& other) noexcept;
+
+    /** @brief Virtual destructor */
     virtual ~Matrix();
 
-    // Size operations
+    /**
+     * @brief Gets number of rows
+     * @return Number of rows in matrix
+     */
     inline size_t get_rows() const;
+
+    /**
+     * @brief Gets number of columns
+     * @return Number of columns in matrix
+     */
     inline size_t get_cols() const;
 
+    /**
+     * @brief Resizes matrix to new dimensions
+     * @param new_rows New number of rows
+     * @param new_cols New number of columns
+     */
     void resize(size_t new_rows, size_t new_cols);
 
-    // Row/Column operations
+    /**
+     * @brief Adds a new row at specified position
+     * @param pos Position to insert row
+     * @throw std::out_of_range if position is invalid
+     */
     void add_row(size_t pos);
+
+    /**
+     * @brief Adds a new column at specified position
+     * @param pos Position to insert column
+     * @throw std::out_of_range if position is invalid
+     */
     void add_column(size_t pos);
+
+    /**
+     * @brief Deletes row at specified position
+     * @param pos Position of row to delete
+     * @throw std::out_of_range if position is invalid
+     */
     void delete_row(size_t pos);
+
+    /**
+     * @brief Deletes column at specified position
+     * @param pos Position of column to delete
+     * @throw std::out_of_range if position is invalid
+     */
     void delete_column(size_t pos);
 
     // Operators
@@ -222,7 +284,7 @@ Matrix<T>::operator=(Matrix&& other) noexcept {
         data_ = std::move(other.data_);
         rows_ = other.rows_;
         cols_ = other.cols_;
-        
+
         // Reset the moved-from object
         other.rows_ = 0;
         other.cols_ = 0;
