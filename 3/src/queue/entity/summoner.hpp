@@ -89,13 +89,8 @@ class Summoner : public Entity {
             return;
         }
         if (amount > energy) {
-            std::string err_msg;
-            err_msg.reserve(64);
-            err_msg += "Not enough energy: have ";
-            err_msg += std::to_string(energy);
-            err_msg += ", need ";
-            err_msg += std::to_string(amount);
-            throw std::runtime_error(err_msg);
+            throw std::runtime_error("Not enough energy: have " + std::to_string(energy) + ", need "
+                                     + std::to_string(amount));
         }
         energy -= amount;
     }

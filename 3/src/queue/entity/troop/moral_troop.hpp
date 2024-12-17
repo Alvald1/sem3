@@ -13,21 +13,21 @@ class MoralTroop : public BaseTroop, public IMoral {
 
     // IMoral interface implementation
     inline void
-    increase_morale() override {
-        ++moral;
+    increase_morale(std::size_t amount) override {
+        moral += amount;
     }
 
     inline void
-    decrease_morale() override {
-        --moral;
+    decrease_morale(std::size_t amount) override {
+        moral -= amount;
     }
 
     void
-    balance_morale() override {
+    balance_morale(std::size_t amount) override {
         if (moral > 0) {
-            --moral;
+            decrease_morale(amount);
         } else if (moral < 0) {
-            ++moral;
+            increase_morale(amount);
         }
     }
 
