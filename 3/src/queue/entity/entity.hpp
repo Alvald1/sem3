@@ -10,8 +10,8 @@ class Entity : public NameID {
   private:
     static inline size_t next_id{1};
     size_t initiative;
-    size_t hp;
     const size_t max_hp;
+    size_t hp;
 
   public:
     explicit Entity(const Ability& ability) noexcept
