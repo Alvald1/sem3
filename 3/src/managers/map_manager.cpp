@@ -1,4 +1,5 @@
 #include "map_manager.hpp"
+#include "../queue/entity/troop/base_troop.hpp"
 
 MapManager::MoveResult
 MapManager::move_entity(size_t id, Position delta) {
@@ -91,4 +92,32 @@ MapManager::can_entity_act(size_t id, Position delta) const {
     Position target_pos(curr_pos.get_x() + delta.get_x(), curr_pos.get_y() + delta.get_y());
 
     return is_cell_passable(target_pos);
+}
+
+void
+MapManager::effect_cells() {
+    auto& entity_manager = EntityManager::getInstance();
+
+    for (Cell* cell : effect_cells_) {
+        if (!cell->is_empty()) {
+            size_t entity_id = cell->get_id_entity();
+            auto entity = entity_manager.get_entity(entity_id);
+
+            if (!entity) {
+                continue;
+            }
+
+            if (auto* hp_cell = dynamic_cast<EffectCellHP*>(cell)) {
+                entity->modify_hp(hp_cell->give_effect());
+            } else if (auto* troop = dynamic_cast<BaseTroop*>(entity.get())) {
+                if (auto* damage_cell = dynamic_cast<EffectCellDamage*>(cell)) {
+                    troop->modify_damage(damage_cell->give_effect());
+                } else if (auto* speed_cell = dynamic_cast<EffectCellSpeed*>(cell)) {
+                    troop->modify_speed(speed_cell->give_effect());
+                } else if (auto* range_cell = dynamic_cast<EffectCellRange*>(cell)) {
+                    troop->modify_range(range_cell->give_effect());
+                }
+            }
+        }
+    }
 }

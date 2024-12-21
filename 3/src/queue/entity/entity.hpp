@@ -48,24 +48,17 @@ class Entity : public NameID {
     }
 
     void
-    heal(size_t amount) noexcept {
-        if (std::make_signed_t<size_t>(amount) < 0) {
-            return;
+    modify_hp(int delta) noexcept {
+        if (delta < 0 && static_cast<size_t>(-delta) > hp) {
+            hp = 0;
+        } else {
+            hp = std::clamp(static_cast<size_t>(static_cast<int>(hp) + delta), size_t{0}, max_hp);
         }
-        hp = std::clamp(hp + amount, size_t{0}, max_hp);
     }
 
     [[nodiscard]] inline double
     get_health_percentage() const noexcept {
         return (static_cast<double>(hp) / max_hp) * 100.0;
-    }
-
-    void
-    do_damage(size_t amount) noexcept {
-        if (std::make_signed_t<size_t>(amount) < 0) {
-            return;
-        }
-        hp = (amount >= hp) ? 0 : hp - amount;
     }
 
     [[nodiscard]] inline bool

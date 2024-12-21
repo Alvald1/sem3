@@ -13,6 +13,9 @@ class Cell {
     size_t id_entity;
 
   public:
+    // Add virtual destructor to make the class polymorphic
+    virtual ~Cell() = default;
+
     // Constructors
     Cell(size_t id, Position position, bool passability = true, bool busy = false, size_t id_entity = 0)
         : id(id), position(position), passability(passability), busy(busy), id_entity(id_entity) {}

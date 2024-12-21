@@ -56,6 +56,34 @@ class BaseTroop : public Entity {
     set_type(size_t new_type) noexcept {
         type = new_type;
     }
+
+    // Modifier methods
+    inline void
+    modify_speed(int delta) noexcept {
+        if (delta < 0 && static_cast<size_t>(-delta) > speed) {
+            speed = 0;
+        } else {
+            speed = static_cast<size_t>(static_cast<int>(speed) + delta);
+        }
+    }
+
+    inline void
+    modify_damage(int delta) noexcept {
+        if (delta < 0 && static_cast<size_t>(-delta) > damage) {
+            damage = 0;
+        } else {
+            damage = static_cast<size_t>(static_cast<int>(damage) + delta);
+        }
+    }
+
+    inline void
+    modify_range(int delta) noexcept {
+        if (delta < 0 && static_cast<size_t>(-delta) > range) {
+            range = 0;
+        } else {
+            range = static_cast<size_t>(static_cast<int>(range) + delta);
+        }
+    }
 };
 
 #endif // BASE_TROOP_HPP
