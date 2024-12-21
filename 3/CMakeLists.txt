@@ -52,25 +52,33 @@ set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 file(GLOB_RECURSE SOURCES ${SRC_DIR}/**/*.cpp ${SRC_DIR}/**/*.hpp)
 set(MAIN_SOURCE ${SRC_DIR}/main.cpp)
 
+# Find ncurses package
+find_package(Curses REQUIRED)
+include_directories(${CURSES_INCLUDE_DIR})
+
 # Основная цель
 add_executable(${PROJECT_NAME} ${MAIN_SOURCE} ${SOURCES})
 target_compile_options(${PROJECT_NAME} PRIVATE ${COMMON_COMPILE_FLAGS})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${CURSES_LIBRARIES})
 
 # Отладочная сборка
 add_executable(debug ${MAIN_SOURCE} ${SOURCES})
 target_compile_options(debug PRIVATE ${COMMON_COMPILE_FLAGS} ${DEBUG_FLAGS})
+target_link_libraries(debug PRIVATE ${CURSES_LIBRARIES})
 set_target_properties(debug PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_debug)
 
 # AddressSanitizer
 add_executable(asan ${MAIN_SOURCE} ${SOURCES})
 target_compile_options(asan PRIVATE ${COMMON_COMPILE_FLAGS} ${DEBUG_FLAGS} ${ASAN_FLAGS})
 target_link_options(asan PRIVATE ${ASAN_FLAGS})
+target_link_libraries(asan PRIVATE ${CURSES_LIBRARIES})
 set_target_properties(asan PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_asan)
 
 # MemorySanitizer
 add_executable(msan ${MAIN_SOURCE} ${SOURCES})
 target_compile_options(msan PRIVATE ${COMMON_COMPILE_FLAGS} ${DEBUG_FLAGS} ${MSAN_FLAGS})
 target_link_options(msan PRIVATE ${MSAN_FLAGS})
+target_link_libraries(msan PRIVATE ${CURSES_LIBRARIES})
 set_target_properties(msan PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_msan)
 
 # Valgrind

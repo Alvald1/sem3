@@ -38,6 +38,12 @@ class Cell {
         return id_entity;
     }
 
+    // Add getter for id
+    inline size_t
+    get_id() const {
+        return id;
+    }
+
     // Setters
     inline void
     set_passability(bool value) {

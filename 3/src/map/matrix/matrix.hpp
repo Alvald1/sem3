@@ -51,6 +51,14 @@ class Matrix {
     Matrix(size_t rows, size_t cols);
 
     /**
+     * @brief Constructor creating matrix of specified size with initial value
+     * @param rows Number of rows
+     * @param cols Number of columns
+     * @param initial_value Initial value for all elements
+     */
+    Matrix(size_t rows, size_t cols, const T& initial_value);
+
+    /**
      * @brief Copy constructor
      * @param other Matrix to copy from
      */
@@ -138,6 +146,12 @@ Matrix<T>::Matrix() : rows_(0), cols_(0), data_(nullptr) {}
 template <typename T>
 Matrix<T>::Matrix(size_t rows, size_t cols) : rows_(rows), cols_(cols) {
     allocate(rows, cols);
+}
+
+template <typename T>
+Matrix<T>::Matrix(size_t rows, size_t cols, const T& initial_value) : rows_(rows), cols_(cols) {
+    allocate(rows, cols);
+    std::fill(data_.get(), data_.get() + rows * cols, initial_value);
 }
 
 template <typename T>

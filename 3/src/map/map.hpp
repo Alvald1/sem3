@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <utility>
-#include "../matrix/matrix.hpp"
+#include "matrix/matrix.hpp"
 #include "cell/cell.hpp"
 
 class Map {
@@ -14,6 +14,10 @@ class Map {
     std::pair<size_t, size_t> size;
 
   public:
+    // Add getter for matrix
+    Matrix<std::shared_ptr<Cell>>& get_matrix() { return matrix; }
+    const Matrix<std::shared_ptr<Cell>>& get_matrix() const { return matrix; }
+
     // Getters and setters for size
     std::pair<size_t, size_t>
     get_size() const {
@@ -29,6 +33,10 @@ class Map {
     // Replace cell at given position with new cell
     template <typename CellType>
     void replace_cell(std::shared_ptr<CellType> new_cell);
+
+    // Export map data as matrices
+    Matrix<bool> export_passability_matrix() const;
+    Matrix<int> export_cell_types_matrix() const;
 };
 
 template <typename CellType>
@@ -39,11 +47,14 @@ Map::replace_cell(std::shared_ptr<CellType> new_cell) {
     }
 
     Position pos = new_cell->get_position();
-    if (pos.row >= size.first || pos.col >= size.second) {
+    if (pos.get_x() < 0 || pos.get_y() < 0 || 
+        static_cast<size_t>(pos.get_x()) >= size.first || 
+        static_cast<size_t>(pos.get_y()) >= size.second) {
         throw std::out_of_range("Cell position out of range");
     }
 
-    matrix(pos.row, pos.col) = new_cell;
+    matrix(static_cast<size_t>(pos.get_x()), 
+           static_cast<size_t>(pos.get_y())) = new_cell;
 }
 
 #endif // MAP_HPP
