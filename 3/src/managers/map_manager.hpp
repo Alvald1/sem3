@@ -8,16 +8,28 @@
 #include "../utilities/position.hpp"
 
 class MapManager : public Map {
-  public:
-    enum class MoveResult { SUCCESS, ENTITY_NOT_FOUND, OUT_OF_BOUNDS, CELL_NOT_PASSABLE, CELL_OCCUPIED };
-
   private:
+    static MapManager* instance_;
+    MapManager() = default;  // Private constructor
+    
     EntityList entities_;
     std::vector<Cell*> effect_cells_;
     bool is_cell_occupied(Position pos) const;
     bool is_cell_passable(Position pos) const;
 
   public:
+    static MapManager& getInstance() {
+        if (instance_ == nullptr) {
+            instance_ = new MapManager();
+        }
+        return *instance_;
+    }
+
+    MapManager(const MapManager&) = delete;
+    MapManager& operator=(const MapManager&) = delete;
+
+    enum class MoveResult { SUCCESS, ENTITY_NOT_FOUND, OUT_OF_BOUNDS, CELL_NOT_PASSABLE, CELL_OCCUPIED };
+
     MoveResult move_entity(size_t id, Position delta);
     std::vector<Cell*> effect_cells();
     bool can_move_entity(size_t id, Position delta) const;

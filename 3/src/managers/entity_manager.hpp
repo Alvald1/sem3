@@ -8,11 +8,19 @@
 
 class EntityManager {
   private:
+    static EntityManager* instance_;
+    EntityManager() : initiative_queue(*this) {}  // Private constructor
+    
     std::unordered_map<size_t, std::shared_ptr<Entity>> entities;
     SortQueue initiative_queue;
 
   public:
-    EntityManager() : initiative_queue(*this) {}
+    static EntityManager& getInstance() {
+        if (instance_ == nullptr) {
+            instance_ = new EntityManager();
+        }
+        return *instance_;
+    }
 
     ~EntityManager() = default;
 

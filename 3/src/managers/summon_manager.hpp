@@ -7,7 +7,21 @@
 #include "../schools/school/school.hpp"
 
 class SummonManager {
-  public:
+private:
+    static SummonManager* instance_;
+    SummonManager() = default;
+
+public:
+    static SummonManager& getInstance() {
+        if (instance_ == nullptr) {
+            instance_ = new SummonManager();
+        }
+        return *instance_;
+    }
+
+    SummonManager(const SummonManager&) = delete;
+    SummonManager& operator=(const SummonManager&) = delete;
+
     void upgrade(Summoner& summoner, School& school);
     Entity make_entity(const Ability& ability);
 };

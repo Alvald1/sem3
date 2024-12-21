@@ -5,7 +5,21 @@
 #include "../queue/entity/troop/base_troop.hpp"
 
 class DamageManager {
+private:
+    static DamageManager* instance_;
+    DamageManager() = default;
+
 public:
+    static DamageManager& getInstance() {
+        if (instance_ == nullptr) {
+            instance_ = new DamageManager();
+        }
+        return *instance_;
+    }
+
+    DamageManager(const DamageManager&) = delete;
+    DamageManager& operator=(const DamageManager&) = delete;
+
     void fight(BaseTroop& attacker, Entity& defender);
 };
 
