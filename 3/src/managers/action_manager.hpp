@@ -3,14 +3,14 @@
 
 #include <tuple>
 #include <vector>
-#include "queue/entity/entity.hpp"
-#include "schools/school/ability/ability.hpp"
-#include "utilities/position.hpp"
+#include "../queue/entity/entity.hpp"
+#include "../schools/school/ability/ability.hpp"
+#include "../utilities/position.hpp"
 
-class action_manager {
-public:
-    std::tuple<Position, Position, int> request(entity& entity);
-    ability choose_ability(bool type, std::vector<ability>& abilities);
+class ActionManager {
+  public:
+    std::tuple<Position, Position, int> request(Entity& entity);
+    Ability choose_ability(bool type, std::vector<Ability>& abilities);
 };
 
 #endif // ACTION_MANAGER_HPP

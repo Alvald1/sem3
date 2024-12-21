@@ -1,27 +1,27 @@
 #ifndef GAME_MANAGER_HPP
 #define GAME_MANAGER_HPP
 
-#include "../core/game.hpp"
-#include "map_manager.hpp"
-#include "damage_manager.hpp"
-#include "action_manager.hpp"
-#include "summon_manager.hpp"
-#include "../core/queue.hpp"
+#include "../game/game.hpp"
+#include "../queue/queue.hpp"
 #include "../schools/schools.hpp"
+#include "action_manager.hpp"
+#include "damage_manager.hpp"
+#include "map_manager.hpp"
+#include "summon_manager.hpp"
 
-class game_manager : public game {
-public:
-    game_manager();
-    ~game_manager();
+class GameManager : public Game {
+  public:
+    GameManager();
+    ~GameManager();
     void do_step();
 
-private:
-    map_manager map_manager_;
-    queue queue_;
-    schools schools_;
-    damage_manager damage_manager_;
-    action_manager action_manager_;
-    summon_manager summon_manager_;
+  private:
+    MapManager map_manager_;
+    SortQueue queue_;
+    Schools schools_;
+    DamageManager damage_manager_;
+    ActionManager action_manager_;
+    SummonManager summon_manager_;
 };
 
 #endif // GAME_MANAGER_HPP
