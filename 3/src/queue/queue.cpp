@@ -1,5 +1,6 @@
 #include "queue.hpp"
 #include <stdexcept>
+#include "../managers/entity_manager.hpp"
 
 void
 SortQueue::link_nodes(Node* first, Node* second) {
@@ -65,7 +66,7 @@ SortQueue::insert(size_t entity_id) {
     Node* max_node = head;
     Node* current = head->prev;
     auto max_initiative = entity_manager.get_entity(max_node->entity_id)->get_initiative();
-    
+
     while (current != head) {
         auto curr_initiative = entity_manager.get_entity(current->entity_id)->get_initiative();
         if (curr_initiative <= max_initiative) {
@@ -81,7 +82,7 @@ SortQueue::insert(size_t entity_id) {
     // Теперь идем вправо от максимального элемента, чтобы найти место для вставки
     current = max_node;
     auto new_initiative = entity_manager.get_entity(entity_id)->get_initiative();
-    
+
     do {
         auto curr_initiative = entity_manager.get_entity(current->entity_id)->get_initiative();
         if (new_initiative > curr_initiative) {
@@ -126,7 +127,7 @@ SortQueue::remove(size_t id) {
     }
 
     Node* current = head;
-    
+
     do {
         if (current->entity_id == id) {
             if (size == 1) {
@@ -146,21 +147,4 @@ SortQueue::remove(size_t id) {
     } while (current != head);
 
     throw std::runtime_error("Entity not found in queue");
-}
-
-bool
-SortQueue::get(size_t id) const {
-    if (!head) {
-        return false;
-    }
-
-    Node* current = head;
-    do {
-        if (current->entity_id == id) {
-            return true;
-        }
-        current = current->next;
-    } while (current != head);
-
-    return false;
 }
