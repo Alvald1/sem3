@@ -2,7 +2,8 @@
 #include "map/map.hpp"
 #include "view/board.hpp"
 
-int main() {
+int
+main() {
     try {
         // Create map 10x20
         Map game_map;
@@ -10,7 +11,7 @@ int main() {
 
         // Create some walls and entities for demonstration
         Matrix<bool> walls(10, 20, true); // Start with all passable
-        
+
         // Add some walls (false means impassable)
         walls(2, 3) = false;
         walls(2, 4) = false;
@@ -18,7 +19,7 @@ int main() {
         walls(3, 4) = false;
         walls(7, 15) = false;
         walls(7, 16) = false;
-        
+
         game_map.load_from_passability_matrix(walls);
 
         // Add some entities (set cells as busy)
@@ -35,8 +36,7 @@ int main() {
         getch();
 
         return 0;
-    }
-    catch (const std::exception& e) {
+    } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
