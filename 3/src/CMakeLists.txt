@@ -1,3 +1,5 @@
 add_subdirectory(schools)
 add_subdirectory(map)
 add_subdirectory(view)
+add_subdirectory(managers)
+add_subdirectory(queue)
