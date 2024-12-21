@@ -1,110 +1,41 @@
 #ifndef QUEUE_HPP
 #define QUEUE_HPP
 
-#include <algorithm>
-#include <memory>
-#include <stdexcept>
-#include <vector>
-#include "../entity/entity.hpp"
+#include "../managers/entity_manager.hpp"
 
 class SortQueue {
-  private:
-    std::vector<std::shared_ptr<Entity>> entities;
-    size_t shift_index = 0;
+private:
+    struct Node {
+        size_t entity_id;
+        Node* next;
+        Node* prev;
+        explicit Node(size_t id) : entity_id(id), next(nullptr), prev(nullptr) {}
+    };
 
-    void
-    sort_unshifted() {
-        if (shift_index < entities.size()) {
-            std::stable_sort(entities.begin() + shift_index, entities.end(),
-                     [](const auto& a, const auto& b) {
-                         return a->get_initiative() > b->get_initiative();
-                     });
-        }
-    }
+    const EntityManager& entity_manager;
+    Node* head = nullptr;
+    size_t size = 0;
 
-    void
-    sort_shifted() {
-        if (shift_index > 0) {
-            std::stable_sort(entities.begin(), entities.begin() + shift_index,
-                     [](const auto& a, const auto& b) {
-                         return a->get_initiative() > b->get_initiative();
-                     });
-        }
-    }
+    void cleanup();
+    void link_nodes(Node* first, Node* second);
 
-  public:
-    void
-    insert(std::shared_ptr<Entity> entity) {
-        if (!entity) {
-            throw std::invalid_argument("Cannot insert null entity");
-        }
-        if (entities.empty()) {
-            entities.push_back(entity);
-            return;
-        }
-
-        // Compare with front element
-        if (entity->get_initiative() > entities[shift_index]->get_initiative()) {
-            // Insert at the end of shifted portion
-            entities.insert(entities.begin() + shift_index, entity);
-            ++shift_index;
-            sort_shifted();
-        } else {
-            // Insert into unshifted portion
-            entities.push_back(entity);
-            sort_unshifted();
-        }
-    }
-
-    [[nodiscard]] std::shared_ptr<Entity>
-    front() const {
-        if (entities.empty()) {
-            throw std::runtime_error("Queue is empty");
-        }
-        return entities[shift_index];
-    }
-
-    void
-    shift() {
-        if (entities.empty()) {
-            throw std::runtime_error("Queue is empty");
-        }
-        shift_index = (shift_index + 1) % entities.size();
-        if (shift_index == 0) {
-            // Start of a new round, sort the unshifted portion
-            sort_unshifted();
-        }
-    }
-
-    void
-    remove(size_t id) {
-        auto it = std::find_if(entities.begin(), entities.end(),
-                               [id](const auto& entity) {
-                                   return entity->get_id() == id;
-                               });
-        if (it != entities.end()) {
-            size_t index = std::distance(entities.begin(), it);
-            entities.erase(it);
-            if (index < shift_index || shift_index >= entities.size()) {
-                // Adjust shift_index if necessary
-                shift_index = (shift_index == 0) ? 0 : shift_index - 1;
-            }
-        } else {
-            throw std::runtime_error("Entity not found");
-        }
-    }
-
-    [[nodiscard]] std::shared_ptr<Entity>
-    get(size_t id) const {
-        auto it = std::find_if(entities.begin(), entities.end(),
-                               [id](const auto& entity) {
-                                   return entity->get_id() == id;
-                               });
-        if (it != entities.end()) {
-            return *it;
-        }
-        throw std::runtime_error("Entity not found");
-    }
+public:
+    explicit SortQueue(const EntityManager& manager) : entity_manager(manager) {}
+    ~SortQueue() { cleanup(); }
+    
+    SortQueue(const SortQueue&) = delete;
+    SortQueue& operator=(const SortQueue&) = delete;
+    
+    // Add move operations declarations
+    SortQueue(SortQueue&& other) noexcept;
+    SortQueue& operator=(SortQueue&& other) noexcept;
+    
+    void insert(size_t entity_id);
+    [[nodiscard]] size_t front() const;
+    void shift();
+    void remove(size_t id);
+    [[nodiscard]] bool empty() const { return head == nullptr; }
+    [[nodiscard]] bool get(size_t id) const;
 };
 
 #endif // QUEUE_HPP
