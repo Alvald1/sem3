@@ -13,19 +13,14 @@
 class GameManager : public Game {
   private:
     static GameManager* instance_;
-    
+
     // Приватный конструктор с инициализацией членов
-    GameManager() : 
-        schools_(),
-        entity_manager_(EntityManager::getInstance()),
-        map_manager_(MapManager::getInstance()),
-        damage_manager_(DamageManager::getInstance()),
-        action_manager_(ActionManager::getInstance()),
-        summon_manager_(SummonManager::getInstance())
-    {}
+    GameManager()
+        : entity_manager_(EntityManager::getInstance()), map_manager_(MapManager::getInstance()),
+          damage_manager_(DamageManager::getInstance()), action_manager_(ActionManager::getInstance()),
+          summon_manager_(SummonManager::getInstance()) {}
 
     // Члены класса
-    Schools schools_;
     EntityManager& entity_manager_;
     MapManager& map_manager_;
     DamageManager& damage_manager_;
@@ -33,7 +28,8 @@ class GameManager : public Game {
     SummonManager& summon_manager_;
 
   public:
-    static GameManager& getInstance() {
+    static GameManager&
+    getInstance() {
         if (instance_ == nullptr) {
             instance_ = new GameManager();
         }
