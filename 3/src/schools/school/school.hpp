@@ -1,6 +1,7 @@
 #ifndef SCHOOL_HPP
 #define SCHOOL_HPP
 
+#include <functional>
 #include <optional>
 #include <set>
 #include <unordered_map>
@@ -22,8 +23,8 @@ class School : public NameID {
     School& operator=(School&&) noexcept = default;
 
     void add_ability(const Ability& ability);
-    std::vector<Ability> get_available_abilities(size_t level, size_t energy) const;
-    std::vector<Ability> get_upgradable_abilities(size_t level, size_t exp) const;
+    std::vector<std::reference_wrapper<const Ability>> get_available_abilities(size_t level, size_t energy) const;
+    std::vector<std::reference_wrapper<const Ability>> get_upgradable_abilities(size_t level, size_t exp) const;
     std::optional<Ability> find_ability_by_id(size_t id) const;
     bool has_ability(size_t id) const;
 

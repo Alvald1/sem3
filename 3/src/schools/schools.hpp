@@ -8,22 +8,35 @@
 
 class Schools {
   private:
+    static Schools* instance_;
     std::vector<School> schools;
 
-  public:
-    // Constructors and assignment operators
+    // Private constructor
     Schools() = default;
-    Schools(const Schools&) = default;
-    Schools(Schools&&) noexcept = default;
-    Schools& operator=(const Schools&) = default;
-    Schools& operator=(Schools&&) noexcept = default;
+
+  public:
+    // Delete copy/move operations
+    Schools(const Schools&) = delete;
+    Schools(Schools&&) noexcept = delete;
+    Schools& operator=(const Schools&) = delete;
+    Schools& operator=(Schools&&) noexcept = delete;
+
+    static Schools&
+    getInstance() {
+        if (instance_ == nullptr) {
+            instance_ = new Schools();
+        }
+        return *instance_;
+    }
 
     // Existing methods
     void add_school(School school);
     size_t count_schools() const;
     size_t count_creatures() const;
-    std::vector<Ability> get_available_abilities(const std::unordered_map<size_t, size_t>& levels, size_t energy) const;
-    std::vector<Ability> get_upgradable_abilities(const std::unordered_map<size_t, size_t>& levels, size_t exp) const;
+    std::vector<std::reference_wrapper<const Ability>>
+    get_available_abilities(const std::unordered_map<size_t, size_t>& levels, size_t energy) const;
+    std::vector<std::reference_wrapper<const Ability>>
+    get_upgradable_abilities(const std::unordered_map<size_t, size_t>& levels, size_t exp) const;
 
     // New methods
     const School* find_school_by_id(size_t id) const;

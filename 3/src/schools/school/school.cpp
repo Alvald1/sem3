@@ -8,24 +8,24 @@ School::add_ability(const Ability& ability) {
     }
 }
 
-std::vector<Ability>
+std::vector<std::reference_wrapper<const Ability>>
 School::get_available_abilities(size_t level, size_t energy) const {
-    std::vector<Ability> available;
+    std::vector<std::reference_wrapper<const Ability>> available;
     available.reserve(abilities.size());
     for (const auto& ability : abilities) {
         if (ability.get_level() <= level && ability.get_energy() <= energy) {
-            available.push_back(ability);
+            available.push_back(std::cref(ability));
         }
     }
     return available;
 }
 
-std::vector<Ability>
+std::vector<std::reference_wrapper<const Ability>>
 School::get_upgradable_abilities(size_t level, size_t exp) const {
-    std::vector<Ability> upgradable;
+    std::vector<std::reference_wrapper<const Ability>> upgradable;
     for (const auto& ability : abilities) {
         if (ability.can_upgrade(exp, level)) {
-            upgradable.push_back(ability);
+            upgradable.push_back(std::cref(ability));
         }
     }
     return upgradable;

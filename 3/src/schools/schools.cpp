@@ -24,33 +24,30 @@ Schools::count_creatures() const {
     return unique_creatures.size();
 }
 
-std::vector<Ability>
+std::vector<std::reference_wrapper<const Ability>>
 Schools::get_available_abilities(const std::unordered_map<size_t, size_t>& levels, size_t energy) const {
-    std::vector<Ability> result;
+    std::vector<std::reference_wrapper<const Ability>> result;
     for (const auto& school : schools) {
         auto it = levels.find(school.get_id());
         if (it != levels.end()) {
             auto school_abilities = school.get_available_abilities(it->second, energy);
-            result.insert(result.end(), std::make_move_iterator(school_abilities.begin()),
-                          std::make_move_iterator(school_abilities.end()));
+            result.insert(result.end(), school_abilities.begin(), school_abilities.end());
         }
     }
-    return result; // Removed std::move
+    return result;
 }
 
-std::vector<Ability>
+std::vector<std::reference_wrapper<const Ability>>
 Schools::get_upgradable_abilities(const std::unordered_map<size_t, size_t>& levels, size_t exp) const {
-    std::vector<Ability> result;
+    std::vector<std::reference_wrapper<const Ability>> result;
     for (const auto& school : schools) {
         auto it = levels.find(school.get_id());
         if (it != levels.end()) {
-            // Corrected parameter order: level first, then exp
             auto school_abilities = school.get_upgradable_abilities(it->second, exp);
-            result.insert(result.end(), std::make_move_iterator(school_abilities.begin()),
-                          std::make_move_iterator(school_abilities.end()));
+            result.insert(result.end(), school_abilities.begin(), school_abilities.end());
         }
     }
-    return result; // Removed std::move
+    return result;
 }
 
 const School*
