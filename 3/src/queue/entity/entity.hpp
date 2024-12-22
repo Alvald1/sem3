@@ -18,7 +18,7 @@ class Entity : public NameID {
         : NameID(next_id++, ability.get_name()), initiative(ability.get_creature()->get_initiative()),
           max_hp(ability.get_count()), hp(ability.get_count()) {}
 
-    virtual ~Entity() = default;
+    virtual ~Entity() = 0; // Pure virtual destructor
 
     // Delete assignment operators since we have const members
     Entity(const Entity&) = default;
@@ -65,6 +65,11 @@ class Entity : public NameID {
     is_alive() const noexcept {
         return hp > 0;
     }
+
+    [[nodiscard]] virtual Entity* clone() const = 0; // Pure virtual clone method
 };
+
+// Need to provide implementation for pure virtual destructor
+inline Entity::~Entity() = default;
 
 #endif // ENTITY_HPP

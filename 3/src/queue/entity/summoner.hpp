@@ -1,6 +1,8 @@
 #ifndef SUMMONER_HPP
 #define SUMMONER_HPP
 
+#include <cstddef>
+#include <string>
 #include <unordered_map>
 #include "../../schools/school/school.hpp"
 #include "../../schools/schools.hpp"
@@ -31,10 +33,6 @@ class Summoner : public Entity {
         }
     }
 
-    // Delete move operations since base class Entity has deleted them
-    Summoner(Summoner&&) noexcept = default;
-    Summoner& operator=(Summoner&&) noexcept = delete;
-
     // Optimize getters with noexcept
     [[nodiscard]] size_t
     get_energy() const noexcept {
@@ -58,7 +56,7 @@ class Summoner : public Entity {
 
     [[nodiscard]] size_t
     get_school_level(size_t school_id) const noexcept {
-        return level.contains(school_id) ? level.at(school_id) : 0;
+        return level.find(school_id) != level.end() ? level.at(school_id) : 0;
     }
 
     [[nodiscard]] bool
@@ -68,18 +66,15 @@ class Summoner : public Entity {
 
     [[nodiscard]] bool
     can_level_up(size_t school_id, size_t required_exp) const noexcept {
-        return current_experience >= required_exp && level.contains(school_id);
+        return current_experience >= required_exp && level.find(school_id) != level.end();
     }
 
     void
     add_experience(size_t exp) noexcept {
-        if (exp > 0) {
-            // Проверка на переполнение
-            if (current_experience > SIZE_MAX - exp) {
-                current_experience = SIZE_MAX;
-            } else {
-                current_experience += exp;
-            }
+        if (exp > 0 && current_experience <= SIZE_MAX - exp) {
+            current_experience += exp;
+        } else if (exp > 0) {
+            current_experience = SIZE_MAX;
         }
     }
 
@@ -100,11 +95,11 @@ class Summoner : public Entity {
         if (energy >= max_energy) {
             return;
         }
-        // Проверка на переполнение
-        if (accum_index > SIZE_MAX - energy) {
-            energy = max_energy;
+
+        if (max_energy - energy >= accum_index) {
+            energy += accum_index;
         } else {
-            energy = std::min(energy + accum_index, max_energy);
+            energy = max_energy;
         }
     }
 
@@ -125,6 +120,11 @@ class Summoner : public Entity {
     [[nodiscard]] const std::unordered_map<size_t, size_t>&
     get_level() const noexcept {
         return level;
+    }
+
+    [[nodiscard]] virtual Entity*
+    clone() const override {
+        return new Summoner(*this);
     }
 };
 

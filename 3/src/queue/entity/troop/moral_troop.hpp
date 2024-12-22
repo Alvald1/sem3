@@ -41,6 +41,11 @@ class MoralTroop : public BaseTroop, public IMoral {
     set_moral(int new_moral) noexcept {
         moral = new_moral;
     }
+
+    [[nodiscard]] virtual Entity*
+    clone() const override {
+        return new MoralTroop(*this);
+    }
 };
 
 #endif // MORAL_TROOP_HPP

@@ -84,6 +84,11 @@ class BaseTroop : public Entity {
             range = static_cast<size_t>(static_cast<int>(range) + delta);
         }
     }
+
+    [[nodiscard]] virtual Entity*
+    clone() const override {
+        return new BaseTroop(*this);
+    }
 };
 
 #endif // BASE_TROOP_HPP

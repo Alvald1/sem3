@@ -6,6 +6,11 @@
 class AmoralTroop : public BaseTroop {
   public:
     explicit AmoralTroop(const Ability& ability) : BaseTroop(ability) {}
+
+    [[nodiscard]] virtual Entity*
+    clone() const override {
+        return new AmoralTroop(*this);
+    }
 };
 
 #endif // AMORAL_TROOP_HPP
