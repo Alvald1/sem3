@@ -14,10 +14,10 @@ class Summoner : public Entity {
     const size_t max_energy;
     size_t current_experience;
     size_t accum_index;
-    std::unordered_map<size_t, size_t> level;
+    std::unordered_map<size_t, size_t> levels;
 
   public:
-    explicit Summoner(const Ability& ability, size_t max_energy, const Schools& schools, size_t accum_index = 1)
+    explicit Summoner(const Ability& ability, size_t max_energy, size_t accum_index = 1)
         : Entity(ability), energy(max_energy), max_energy(max_energy), current_experience(0), accum_index(accum_index) {
         if (max_energy == 0) {
             throw std::invalid_argument("Maximum energy cannot be zero");
@@ -26,10 +26,10 @@ class Summoner : public Entity {
             throw std::invalid_argument("Accumulation index cannot be zero");
         }
 
-        const auto& school_list = schools.get_schools();
-        level.reserve(school_list.size());
+        const auto& school_list = Schools::getInstance().get_schools();
+        levels.reserve(school_list.size());
         for (const auto& school : school_list) {
-            level.emplace(school.get_id(), 1);
+            levels.emplace(school.get_id(), 1);
         }
     }
 
@@ -56,17 +56,7 @@ class Summoner : public Entity {
 
     [[nodiscard]] size_t
     get_school_level(size_t school_id) const noexcept {
-        return level.find(school_id) != level.end() ? level.at(school_id) : 0;
-    }
-
-    [[nodiscard]] bool
-    has_enough_energy(size_t required_energy) const noexcept {
-        return energy >= required_energy;
-    }
-
-    [[nodiscard]] bool
-    can_level_up(size_t school_id, size_t required_exp) const noexcept {
-        return current_experience >= required_exp && level.find(school_id) != level.end();
+        return levels.find(school_id) != levels.end() ? levels.at(school_id) : 0;
     }
 
     void
@@ -110,16 +100,16 @@ class Summoner : public Entity {
 
     void
     upgrade(size_t school_id) {
-        auto it = level.find(school_id);
-        if (it == level.end()) {
+        auto it = levels.find(school_id);
+        if (it == levels.end()) {
             throw std::invalid_argument("Invalid school ID: " + std::to_string(school_id));
         }
         ++it->second;
     }
 
     [[nodiscard]] const std::unordered_map<size_t, size_t>&
-    get_level() const noexcept {
-        return level;
+    get_levels() const noexcept {
+        return levels;
     }
 
     [[nodiscard]] virtual Entity*
