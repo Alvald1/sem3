@@ -1,13 +1,14 @@
 #ifndef ABILITY_HPP
 #define ABILITY_HPP
 
-#include <stdexcept>
-#include "../../../utilities/name_id.hpp"
+#include <memory>
 #include "creature.hpp"
+#include "src/schools/builders/ability_builder.hpp"
+#include "src/utilities/name_id.hpp"
 
 class Ability : public NameID {
   private:
-    Creature* creature;
+    Creature creature; // Changed back to value
     size_t level{0};
     size_t energy{0};
     size_t experience{0};
@@ -15,14 +16,15 @@ class Ability : public NameID {
 
     static inline size_t next_id{1};
 
+    friend class AbilityBuilder;
+
+    explicit Ability(std::string name, Creature creature)
+        : NameID(next_id++, std::move(name)), creature(std::move(creature)) {}
+
   public:
-    explicit Ability(const std::string& name, Creature* creature, size_t level = 0, size_t energy = 0,
-                     size_t experience = 0, size_t count = 0)
-        : NameID(next_id++, name), creature(creature), level(level), energy(energy), experience(experience),
-          count(count) {
-        if (!creature) {
-            throw std::invalid_argument("Creature cannot be null");
-        }
+    static AbilityBuilder
+    create(std::string name, Creature creature) {
+        return AbilityBuilder(std::move(name), std::move(creature));
     }
 
     // Rule of five
@@ -33,7 +35,7 @@ class Ability : public NameID {
     ~Ability() = default;
 
     // Getters
-    [[nodiscard]] inline Creature*
+    [[nodiscard]] inline const Creature&
     get_creature() const noexcept {
         return creature;
     }
@@ -60,11 +62,8 @@ class Ability : public NameID {
 
     // Setters
     inline void
-    set_creature(Creature* new_creature) {
-        if (!new_creature) {
-            throw std::invalid_argument("Creature cannot be null");
-        }
-        creature = new_creature;
+    set_creature(Creature new_creature) {
+        creature = std::move(new_creature);
     }
 
     inline void
@@ -90,11 +89,6 @@ class Ability : public NameID {
     [[nodiscard]] constexpr bool
     can_upgrade(size_t exp, size_t lvl) const noexcept {
         return exp >= experience && lvl >= level;
-    }
-
-    [[nodiscard]] constexpr bool
-    has_creature() const noexcept {
-        return creature != nullptr;
     }
 };
 

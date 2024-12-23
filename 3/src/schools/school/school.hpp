@@ -2,27 +2,38 @@
 #define SCHOOL_HPP
 
 #include <functional>
+#include <memory>
 #include <optional>
 #include <set>
 #include <unordered_map>
 #include <vector>
 #include "../../utilities/name_id.hpp"
+#include "../builders/school_builder.hpp"
 #include "ability/ability.hpp"
+
+class SchoolBuilder;
 
 class School : public NameID {
   private:
     static inline size_t next_id = 1;
     std::vector<Ability> abilities;
 
+    explicit School(std::string name) : NameID(next_id++, std::move(name)) {}
+
+    friend class SchoolBuilder;
+
   public:
-    explicit School(const std::string& name) : NameID(next_id++, name) {}
+    static SchoolBuilder
+    create(const std::string& name) {
+        return SchoolBuilder(std::string(name));
+    }
 
     School(const School&) = default;
     School(School&&) noexcept = default;
     School& operator=(const School&) = default;
     School& operator=(School&&) noexcept = default;
 
-    void add_ability(const Ability& ability);
+    void add_ability(Ability ability);
     std::vector<std::reference_wrapper<const Ability>> get_available_abilities(size_t level, size_t energy) const;
     std::vector<std::reference_wrapper<const Ability>> get_upgradable_abilities(size_t level, size_t exp) const;
     std::optional<Ability> find_ability_by_id(size_t id) const;

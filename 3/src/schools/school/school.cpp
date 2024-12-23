@@ -2,9 +2,9 @@
 #include <algorithm>
 
 void
-School::add_ability(const Ability& ability) {
+School::add_ability(Ability ability) {
     if (!has_ability(ability.get_id())) {
-        abilities.push_back(std::move(ability)); // можно использовать перемещение, т.к. ability - копия
+        abilities.push_back(std::move(ability));
     }
 }
 
@@ -44,7 +44,7 @@ School::has_ability(size_t id) const {
 
 size_t
 School::count_creatures() const {
-    std::set<const Creature*, std::less<>> unique_creatures;
+    std::set<const Creature, std::less<>> unique_creatures;
     for (const auto& ability : abilities) {
         unique_creatures.insert(ability.get_creature());
     }

@@ -1,7 +1,8 @@
 #ifndef CREATURE_HPP
 #define CREATURE_HPP
 
-#include "../../../utilities/name_id.hpp"
+#include "src/schools/builders/creature_builder.hpp"
+#include "src/utilities/name_id.hpp"
 
 class Creature : public NameID {
   private:
@@ -13,11 +14,15 @@ class Creature : public NameID {
 
     static inline size_t next_id{1};
 
+    friend class CreatureBuilder;
+
+    explicit Creature(std::string name) : NameID(next_id++, std::move(name)) {}
+
   public:
-    explicit Creature(std::string name, size_t speed = 0, size_t damage = 0, size_t range = 0, size_t type = 0,
-                      size_t initiative = 0)
-        : NameID(next_id++, std::move(name)), speed(speed), damage(damage), range(range), type(type),
-          initiative(initiative) {}
+    static CreatureBuilder
+    create(std::string name) {
+        return CreatureBuilder(std::move(name));
+    }
 
     // Rule of five
     Creature(const Creature&) = default;
