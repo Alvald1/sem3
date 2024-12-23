@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
-#include "../src/schools/school/ability/ability.hpp"
-#include "../src/schools/school/ability/creature.hpp"
-#include "../src/schools/school/school.hpp"
-#include "../src/schools/schools.hpp"
+#include "schools/school/ability/ability.hpp"
+#include "schools/school/ability/creature.hpp"
+#include "schools/school/school.hpp"
+#include "schools/schools.hpp"
 
 class SchoolsTest : public ::testing::Test {
   protected:
@@ -110,15 +110,15 @@ TEST_F(SchoolsTest, RemoveSchool_NotExists) {
 TEST_F(SchoolsTest, AddDuplicateSchool) {
     Schools new_schools;
     new_schools.add_school(school1);
-    new_schools.add_school(school1);  // Adding same school twice
-    EXPECT_EQ(new_schools.count_schools(), 2);  // Should add both as separate schools
+    new_schools.add_school(school1);           // Adding same school twice
+    EXPECT_EQ(new_schools.count_schools(), 2); // Should add both as separate schools
 }
 
 TEST_F(SchoolsTest, EmptySchoolOperations) {
     School empty_school("Empty");
     schools.add_school(empty_school);
     EXPECT_EQ(schools.count_schools(), 3);
-    EXPECT_EQ(schools.count_creatures(), 2);  // Should not affect creature count
+    EXPECT_EQ(schools.count_creatures(), 2); // Should not affect creature count
 }
 
 TEST_F(SchoolsTest, GetAvailableAbilities_NoEnergy) {
@@ -130,7 +130,7 @@ TEST_F(SchoolsTest, GetAvailableAbilities_NoEnergy) {
 TEST_F(SchoolsTest, GetAvailableAbilities_HighEnergy) {
     std::unordered_map<size_t, size_t> levels = {{school1.get_id(), 10}, {school2.get_id(), 10}};
     auto abilities = schools.get_available_abilities(levels, 1000);
-    EXPECT_EQ(abilities.size(), 2);  // Should get all abilities
+    EXPECT_EQ(abilities.size(), 2); // Should get all abilities
 }
 
 TEST_F(SchoolsTest, GetUpgradableAbilities_NoExperience) {
@@ -145,7 +145,7 @@ TEST_F(SchoolsTest, GetUpgradableAbilities_AllSchools) {
         levels[school.get_id()] = 10;
     }
     auto abilities = schools.get_upgradable_abilities(levels, 1000);
-    EXPECT_EQ(abilities.size(), 2);  // Should get all abilities
+    EXPECT_EQ(abilities.size(), 2); // Should get all abilities
 }
 
 TEST_F(SchoolsTest, RemoveAllSchools) {
@@ -157,8 +157,8 @@ TEST_F(SchoolsTest, RemoveAllSchools) {
 }
 
 TEST_F(SchoolsTest, FindSchoolByName_CaseSensitive) {
-    const School* found1 = schools.find_school_by_name("magic");  // lowercase
-    const School* found2 = schools.find_school_by_name("Magic");  // correct case
+    const School* found1 = schools.find_school_by_name("magic"); // lowercase
+    const School* found2 = schools.find_school_by_name("Magic"); // correct case
     EXPECT_EQ(found1, nullptr);
     EXPECT_NE(found2, nullptr);
 }
@@ -171,10 +171,10 @@ TEST_F(SchoolsTest, FindSchoolByName_EmptyString) {
 TEST_F(SchoolsTest, SchoolsWithSameCreature) {
     // Create a school with an ability using the same creature
     School school3{"Nature"};
-    Ability ability3{"SuperFly", &creature1, 3, 30, 15};  // Using creature1 again
+    Ability ability3{"SuperFly", &creature1, 3, 30, 15}; // Using creature1 again
     school3.add_ability(ability3);
     schools.add_school(school3);
-    
+
     EXPECT_EQ(schools.count_schools(), 3);
-    EXPECT_EQ(schools.count_creatures(), 2);  // Should still be 2 creatures
+    EXPECT_EQ(schools.count_creatures(), 2); // Should still be 2 creatures
 }

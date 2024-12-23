@@ -41,45 +41,24 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Добавляем пути для поиска заголовочных файлов
+include_directories(${CMAKE_SOURCE_DIR}/src)
+
 # Общие флаги компиляции
 set(COMMON_COMPILE_FLAGS -Wall -Werror -Wextra)
 set(DEBUG_FLAGS -g -O0)
 set(ASAN_FLAGS -fsanitize=address -fsanitize=undefined)
 set(MSAN_FLAGS -fsanitize=memory -fsanitize=undefined)
 
-# Организация исходников
-set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-file(GLOB_RECURSE SOURCES ${SRC_DIR}/**/*.cpp ${SRC_DIR}/**/*.hpp)
-set(MAIN_SOURCE ${SRC_DIR}/main.cpp)
-
 # Find ncurses package
 find_package(Curses REQUIRED)
 include_directories(${CURSES_INCLUDE_DIR})
 
-# Основная цель
-add_executable(${PROJECT_NAME} ${MAIN_SOURCE} ${SOURCES})
-target_compile_options(${PROJECT_NAME} PRIVATE ${COMMON_COMPILE_FLAGS})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CURSES_LIBRARIES})
+# Делегируем в src, test, doc
+add_subdirectory(src)
+add_subdirectory(test)
+add_subdirectory(doc)
 
-# Отладочная сборка
-add_executable(debug ${MAIN_SOURCE} ${SOURCES})
-target_compile_options(debug PRIVATE ${COMMON_COMPILE_FLAGS} ${DEBUG_FLAGS})
-target_link_libraries(debug PRIVATE ${CURSES_LIBRARIES})
-set_target_properties(debug PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_debug)
-
-# AddressSanitizer
-add_executable(asan ${MAIN_SOURCE} ${SOURCES})
-target_compile_options(asan PRIVATE ${COMMON_COMPILE_FLAGS} ${DEBUG_FLAGS} ${ASAN_FLAGS})
-target_link_options(asan PRIVATE ${ASAN_FLAGS})
-target_link_libraries(asan PRIVATE ${CURSES_LIBRARIES})
-set_target_properties(asan PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_asan)
-
-# MemorySanitizer
-add_executable(msan ${MAIN_SOURCE} ${SOURCES})
-target_compile_options(msan PRIVATE ${COMMON_COMPILE_FLAGS} ${DEBUG_FLAGS} ${MSAN_FLAGS})
-target_link_options(msan PRIVATE ${MSAN_FLAGS})
-target_link_libraries(msan PRIVATE ${CURSES_LIBRARIES})
-set_target_properties(msan PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_msan)
 
 # Valgrind
 add_custom_target(valgrind
@@ -102,7 +81,3 @@ add_custom_target(clean_analysis
     COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/html
     COMMENT "Cleaning analysis artifacts"
 )
-
-add_subdirectory(test)
-add_subdirectory(doc)
-add_subdirectory(src)

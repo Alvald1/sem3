@@ -1,15 +1,17 @@
 #include <gtest/gtest.h>
-#include "../src/utilities/name_id.hpp"
+#include "utilities/name_id.hpp"
 
 class NameIDTest : public ::testing::Test {
-protected:
+  protected:
     NameID* test_obj;
-    
-    void SetUp() override {
+
+    void
+    SetUp() override {
         test_obj = new NameID(1, "Test");
     }
-    
-    void TearDown() override {
+
+    void
+    TearDown() override {
         delete test_obj;
     }
 };
@@ -20,13 +22,9 @@ TEST_F(NameIDTest, ConstructorTest) {
     EXPECT_EQ(obj.get_name(), "TestName");
 }
 
-TEST_F(NameIDTest, GetIdTest) {
-    EXPECT_EQ(test_obj->get_id(), 1);
-}
+TEST_F(NameIDTest, GetIdTest) { EXPECT_EQ(test_obj->get_id(), 1); }
 
-TEST_F(NameIDTest, GetNameTest) {
-    EXPECT_EQ(test_obj->get_name(), "Test");
-}
+TEST_F(NameIDTest, GetNameTest) { EXPECT_EQ(test_obj->get_name(), "Test"); }
 
 TEST_F(NameIDTest, SetNameTest) {
     test_obj->set_name("NewName");

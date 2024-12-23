@@ -6,6 +6,7 @@
 #include "summon_manager.hpp"
 
 // Initialize static members
+Schools* Schools::instance_ = nullptr;
 ActionManager* ActionManager::instance_ = nullptr;
 DamageManager* DamageManager::instance_ = nullptr;
 EntityManager* EntityManager::instance_ = nullptr;

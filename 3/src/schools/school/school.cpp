@@ -1,4 +1,5 @@
 #include "school.hpp"
+
 #include <algorithm>
 
 void
@@ -44,7 +45,7 @@ School::has_ability(size_t id) const {
 
 size_t
 School::count_creatures() const {
-    std::set<const Creature, std::less<>> unique_creatures;
+    std::set<Creature, std::less<>> unique_creatures;
     for (const auto& ability : abilities) {
         unique_creatures.insert(ability.get_creature());
     }

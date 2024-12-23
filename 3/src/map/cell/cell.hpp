@@ -2,7 +2,7 @@
 #define CELL_HPP
 
 #include <cstddef>
-#include "../../utilities/position.hpp"
+#include "utilities/position.hpp"
 
 class Cell {
   private:

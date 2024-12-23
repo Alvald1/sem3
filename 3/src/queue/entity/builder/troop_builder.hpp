@@ -1,37 +1,39 @@
 #ifndef TROOP_BUILDER_HPP
 #define TROOP_BUILDER_HPP
 
-#include "../troop/amoral_troop.hpp"
-#include "../troop/moral_troop.hpp"
-#include "entity_builder.hpp"
+#include <memory>
+#include "queue/entity/troop/amoral_troop.hpp"
+#include "queue/entity/troop/moral_troop.hpp"
 
-class TroopBuilder : public EntityBuilder {
-  private:
-    bool is_moral;
-    int moral_value;
+class TroopBuilder {
 
   public:
-    explicit TroopBuilder(const Ability& ability) : EntityBuilder(ability), is_moral(false), moral_value(0) {}
+    explicit TroopBuilder(Ability ability) : ability(ability) {}
 
     TroopBuilder&
-    setMoral(bool moral) {
+    moral(bool moral) noexcept {
         is_moral = moral;
         return *this;
     }
 
     TroopBuilder&
-    setMoralValue(int value) {
-        moral_value = value;
+    moral_value(int value) noexcept {
+        moral_value_ = value;
         return *this;
     }
 
-    [[nodiscard]] Entity*
-    build() override {
+    Entity
+    build() {
         if (is_moral) {
-            return new MoralTroop(ability, moral_value);
+            return MoralTroop(ability, moral_value_);
         }
-        return new AmoralTroop(ability);
+        return AmoralTroop(ability);
     }
+
+  private:
+    Ability ability;
+    bool is_moral;
+    int moral_value_;
 };
 
 #endif // TROOP_BUILDER_HPP

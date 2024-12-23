@@ -2,17 +2,18 @@
 #define BOARD_HPP
 
 #include <ncurses.h>
-#include "../map/map.hpp"
+
+#include "map/map.hpp"
 
 class Board {
-private:
+  private:
     WINDOW* window;
     const Map& map;
-    
+
     void init_colors();
     void cleanup();
 
-public:
+  public:
     explicit Board(const Map& game_map);
     ~Board();
 

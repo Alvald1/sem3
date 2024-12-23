@@ -1,13 +1,13 @@
 #ifndef GAME_MANAGER_HPP
 #define GAME_MANAGER_HPP
 
-#include "../game/game.hpp"
-#include "../queue/queue.hpp"
-#include "../schools/schools.hpp"
 #include "action_manager.hpp"
 #include "damage_manager.hpp"
 #include "entity_manager.hpp"
+#include "game/game.hpp"
 #include "map_manager.hpp"
+#include "queue/queue.hpp"
+#include "schools/schools.hpp"
 #include "summon_manager.hpp"
 
 class GameManager : public Game {
@@ -15,17 +15,7 @@ class GameManager : public Game {
     static GameManager* instance_;
 
     // Приватный конструктор с инициализацией членов
-    GameManager()
-        : entity_manager_(EntityManager::getInstance()), map_manager_(MapManager::getInstance()),
-          damage_manager_(DamageManager::getInstance()), action_manager_(ActionManager::getInstance()),
-          summon_manager_(SummonManager::getInstance()) {}
-
-    // Члены класса
-    EntityManager& entity_manager_;
-    MapManager& map_manager_;
-    DamageManager& damage_manager_;
-    ActionManager& action_manager_;
-    SummonManager& summon_manager_;
+    GameManager() = default;
 
   public:
     static GameManager&

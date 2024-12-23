@@ -2,9 +2,9 @@
 #define EFFECT_CELL_SPEED_HPP
 
 #include <cstddef>
-#include "../cell.hpp"
-#include "../time.hpp"
 #include "i_effect_cell.hpp"
+#include "map/cell/cell.hpp"
+#include "map/cell/time.hpp"
 
 class EffectCellSpeed : public Time, public Cell, public IEffectCell {
   private:

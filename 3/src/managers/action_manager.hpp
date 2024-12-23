@@ -3,12 +3,13 @@
 
 #include <tuple>
 #include <vector>
-#include "../queue/entity/entity.hpp"
-#include "../queue/entity/summoner.hpp"
-#include "../queue/entity/troop/base_troop.hpp"
-#include "../schools/school/ability/ability.hpp"
-#include "../ui/control.hpp"
-#include "../utilities/position.hpp"
+
+#include "queue/entity/entity.hpp"
+#include "queue/entity/summoner.hpp"
+#include "queue/entity/troop/base_troop.hpp"
+#include "schools/school/ability/ability.hpp"
+#include "ui/control.hpp"
+#include "utilities/position.hpp"
 
 class ActionManager {
   private:

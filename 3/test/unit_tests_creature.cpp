@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/schools/school/ability/creature.hpp"
+#include "schools/school/ability/creature.hpp"
 
 class CreatureTest : public ::testing::Test {
   protected:

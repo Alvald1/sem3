@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include "../src/queue/entity/entity.hpp"
-#include "../src/schools/school/ability/ability.hpp"
-#include "../src/schools/school/ability/creature.hpp"
+#include "queue/entity/entity.hpp"
+#include "schools/school/ability/ability.hpp"
+#include "schools/school/ability/creature.hpp"
 
 class EntityTest : public ::testing::Test {
   protected:
@@ -157,18 +157,18 @@ TEST_F(EntityTest, AdditionalComparisonOperatorsTest) {
     Entity entity3(ability3);
 
     // Test equality operator (==)
-    EXPECT_TRUE(entity1 == entity2);      // Same initiative (5 == 5)
-    EXPECT_FALSE(entity1 == entity3);     // Different initiative (5 != 10)
+    EXPECT_TRUE(entity1 == entity2);  // Same initiative (5 == 5)
+    EXPECT_FALSE(entity1 == entity3); // Different initiative (5 != 10)
 
     // Test less than or equal operator (<=)
-    EXPECT_TRUE(entity1 <= entity2);      // Equal initiatives (5 <= 5)
-    EXPECT_TRUE(entity1 <= entity3);      // Lower initiative (5 <= 10)
-    EXPECT_FALSE(entity3 <= entity1);     // Higher initiative (10 <= 5)
+    EXPECT_TRUE(entity1 <= entity2);  // Equal initiatives (5 <= 5)
+    EXPECT_TRUE(entity1 <= entity3);  // Lower initiative (5 <= 10)
+    EXPECT_FALSE(entity3 <= entity1); // Higher initiative (10 <= 5)
 
     // Test greater than or equal operator (>=)
-    EXPECT_TRUE(entity1 >= entity2);      // Equal initiatives (5 >= 5)
-    EXPECT_TRUE(entity3 >= entity1);      // Higher initiative (10 >= 5)
-    EXPECT_FALSE(entity1 >= entity3);     // Lower initiative (5 >= 10)
+    EXPECT_TRUE(entity1 >= entity2);  // Equal initiatives (5 >= 5)
+    EXPECT_TRUE(entity3 >= entity1);  // Higher initiative (10 >= 5)
+    EXPECT_FALSE(entity1 >= entity3); // Lower initiative (5 >= 10)
 }
 
 TEST_F(EntityTest, ComplexScenarioTest) {

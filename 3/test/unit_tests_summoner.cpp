@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include "../src/queue/entity/summoner.hpp"
-#include "../src/schools/school/ability/creature.hpp"
-#include "../src/schools/schools.hpp"
+#include "queue/entity/summoner.hpp"
+#include "schools/school/ability/creature.hpp"
+#include "schools/schools.hpp"
 
 class SummonerTest : public ::testing::Test {
   protected:

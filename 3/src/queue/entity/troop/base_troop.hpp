@@ -1,7 +1,7 @@
 #ifndef BASE_TROOP_HPP
 #define BASE_TROOP_HPP
 
-#include "../entity.hpp"
+#include "queue/entity/entity.hpp"
 
 class TroopBuilder; // Forward declaration
 
@@ -20,6 +20,13 @@ class BaseTroop : public Entity {
           range(ability.get_creature().get_range()), type(ability.get_creature().get_type()) {}
 
   public:
+    // Rule of five
+    BaseTroop(const BaseTroop&) = default;
+    BaseTroop& operator=(const BaseTroop&) = default;
+    BaseTroop(BaseTroop&&) noexcept = default;
+    BaseTroop& operator=(BaseTroop&&) noexcept = default;
+    ~BaseTroop() override = default;
+
     // Getters
     [[nodiscard]] inline size_t
     get_speed() const noexcept {
@@ -68,7 +75,11 @@ class BaseTroop : public Entity {
         if (delta < 0 && static_cast<size_t>(-delta) > speed) {
             speed = 0;
         } else {
-            speed = static_cast<size_t>(static_cast<int>(speed) + delta);
+            if (delta < 0 && static_cast<size_t>(-delta) > speed) {
+                speed = 0;
+            } else {
+                speed = static_cast<size_t>(static_cast<int>(speed) + delta);
+            }
         }
     }
 

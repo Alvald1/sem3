@@ -1,6 +1,8 @@
 #include "queue.hpp"
+#include "managers/entity_manager.hpp"
+#include "queue/entity/entity.hpp"
+
 #include <stdexcept>
-#include "../managers/entity_manager.hpp"
 
 void
 SortQueue::link_nodes(Node* first, Node* second) {
@@ -49,7 +51,7 @@ SortQueue::operator=(SortQueue&& other) noexcept {
 
 void
 SortQueue::insert(size_t entity_id) {
-    if (!entity_manager.has_entity(entity_id)) {
+    if (!entity_manager->has_entity(entity_id)) {
         throw std::invalid_argument("Entity does not exist");
     }
 
@@ -65,10 +67,10 @@ SortQueue::insert(size_t entity_id) {
     // Идем влево пока не найдем элемент с меньшей инициативой
     Node* max_node = head;
     Node* current = head->prev;
-    auto max_initiative = entity_manager.get_entity(max_node->entity_id)->get_initiative();
+    auto max_initiative = entity_manager->get_entity(max_node->entity_id)->get_initiative();
 
     while (current != head) {
-        auto curr_initiative = entity_manager.get_entity(current->entity_id)->get_initiative();
+        auto curr_initiative = entity_manager->get_entity(current->entity_id)->get_initiative();
         if (curr_initiative <= max_initiative) {
             break; // Нашли первый элемент с меньшей инициативой
         }
@@ -81,10 +83,10 @@ SortQueue::insert(size_t entity_id) {
 
     // Теперь идем вправо от максимального элемента, чтобы найти место для вставки
     current = max_node;
-    auto new_initiative = entity_manager.get_entity(entity_id)->get_initiative();
+    auto new_initiative = entity_manager->get_entity(entity_id)->get_initiative();
 
     do {
-        auto curr_initiative = entity_manager.get_entity(current->entity_id)->get_initiative();
+        auto curr_initiative = entity_manager->get_entity(current->entity_id)->get_initiative();
         if (new_initiative > curr_initiative) {
             // Insert before current
             link_nodes(current->prev, new_node);

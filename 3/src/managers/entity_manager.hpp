@@ -3,17 +3,19 @@
 
 #include <memory>
 #include <unordered_map>
-#include "../queue/entity/entity.hpp"
-#include "../queue/queue.hpp"
+#include "queue/entity/entity.hpp"
+
+// Forward declare SortQueue
+class SortQueue;
 
 class EntityManager {
   private:
     static EntityManager* instance_;
+    std::unordered_map<size_t, std::unique_ptr<Entity>> entities_;
+    std::unique_ptr<SortQueue> queue_;
 
-    EntityManager() : initiative_queue(*this) {} // Private constructor
-
-    std::unordered_map<size_t, std::shared_ptr<Entity>> entities;
-    SortQueue initiative_queue;
+    // Constructor will be defined in cpp file
+    EntityManager();
 
   public:
     static EntityManager&
@@ -28,57 +30,19 @@ class EntityManager {
 
     EntityManager(const EntityManager&) = delete;
     EntityManager& operator=(const EntityManager&) = delete;
-    EntityManager(EntityManager&&) = default;
-    EntityManager& operator=(EntityManager&&) = default;
+    EntityManager(EntityManager&&) = delete;
+    EntityManager& operator=(EntityManager&&) = delete;
 
-    void
-    add_entity(std::shared_ptr<Entity> entity) {
-        if (entity) {
-            entities[entity->get_id()] = entity;
-            initiative_queue.insert(entity->get_id());
-        }
-    }
-
-    void
-    remove_entity(size_t id) {
-        if (has_entity(id)) {
-            initiative_queue.remove(id);
-            entities.erase(id);
-        }
-    }
-
-    void
-    next_turn() {
-        if (!initiative_queue.empty()) {
-            initiative_queue.shift();
-        }
-    }
-
-    [[nodiscard]] std::shared_ptr<Entity>
-    get_current_entity() const {
-        return !initiative_queue.empty() ? get_entity(initiative_queue.front()) : nullptr;
-    }
-
-    [[nodiscard]] std::shared_ptr<Entity>
-    get_entity(size_t id) const {
-        auto it = entities.find(id);
-        return (it != entities.end()) ? it->second : nullptr;
-    }
-
-    [[nodiscard]] bool
-    has_entity(size_t id) const {
-        return entities.find(id) != entities.end();
-    }
-
-    [[nodiscard]] size_t
-    get_entity_count() const {
-        return entities.size();
-    }
-
-    void
-    clear() {
-        entities.clear();
-    }
+    void add_entity(std::unique_ptr<Entity> entity);
+    void remove_entity(size_t id);
+    void next_turn();
+    [[nodiscard]] Entity* get_current_entity();
+    [[nodiscard]] const Entity* get_current_entity() const;
+    [[nodiscard]] Entity* get_entity(size_t id);
+    [[nodiscard]] const Entity* get_entity(size_t id) const;
+    [[nodiscard]] bool has_entity(size_t id) const;
+    [[nodiscard]] size_t get_entity_count() const;
+    void clear();
 };
 
 #endif // ENTITY_MANAGER_HPP

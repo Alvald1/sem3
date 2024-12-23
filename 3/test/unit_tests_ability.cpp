@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/schools/school/ability/ability.hpp"
+#include "schools/school/ability/ability.hpp"
 
 // Mock Creature class for testing
 class MockCreature : public Creature {
@@ -83,7 +83,7 @@ TEST_F(AbilityTest, CanUpgrade) {
 TEST_F(AbilityTest, HasCreature) {
     Ability ability("TestAbility", creature);
     EXPECT_TRUE(ability.has_creature());
-    
+
     MockCreature* another_creature = new MockCreature();
     ability.set_creature(another_creature);
     EXPECT_TRUE(ability.has_creature());
@@ -106,7 +106,7 @@ TEST_F(AbilityTest, CopyConstructor) {
 TEST_F(AbilityTest, CopyAssignment) {
     Ability original("TestAbility", creature, 1, 100, 50, 2);
     Ability copy("OtherAbility", creature);
-    
+
     copy = original;
 
     EXPECT_EQ(copy.get_name(), original.get_name());
@@ -120,7 +120,7 @@ TEST_F(AbilityTest, CopyAssignment) {
 TEST_F(AbilityTest, MoveAssignment) {
     Ability original("TestAbility", creature, 1, 100, 50, 2);
     Ability moved("OtherAbility", creature);
-    
+
     moved = std::move(original);
 
     EXPECT_EQ(moved.get_name(), "TestAbility");

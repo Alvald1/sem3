@@ -1,5 +1,6 @@
 #include "map_manager.hpp"
-#include "../queue/entity/troop/base_troop.hpp"
+
+#include "queue/entity/troop/base_troop.hpp"
 
 MapManager::MoveResult
 MapManager::move_entity(size_t id, Position delta) {
@@ -101,7 +102,7 @@ MapManager::effect_cells() {
     for (Cell* cell : effect_cells_) {
         if (!cell->is_empty()) {
             size_t entity_id = cell->get_id_entity();
-            auto entity = entity_manager.get_entity(entity_id);
+            auto* entity = entity_manager.get_entity(entity_id); // Now returns non-const Entity*
 
             if (!entity) {
                 continue;
@@ -109,7 +110,7 @@ MapManager::effect_cells() {
 
             if (auto* hp_cell = dynamic_cast<EffectCellHP*>(cell)) {
                 entity->modify_hp(hp_cell->give_effect());
-            } else if (auto* troop = dynamic_cast<BaseTroop*>(entity.get())) {
+            } else if (auto* troop = dynamic_cast<BaseTroop*>(entity)) {
                 if (auto* damage_cell = dynamic_cast<EffectCellDamage*>(cell)) {
                     troop->modify_damage(damage_cell->give_effect());
                 } else if (auto* speed_cell = dynamic_cast<EffectCellSpeed*>(cell)) {

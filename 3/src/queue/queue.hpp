@@ -1,9 +1,9 @@
 #ifndef QUEUE_HPP
 #define QUEUE_HPP
 
-#include "../managers/entity_manager.hpp"
+#include <cstddef> // for size_t
 
-// Forward declare EntityManager to resolve circular dependency
+// Forward declare EntityManager
 class EntityManager;
 
 class SortQueue {
@@ -16,15 +16,16 @@ class SortQueue {
         explicit Node(size_t id) : entity_id(id), next(nullptr), prev(nullptr) {}
     };
 
-    const EntityManager& entity_manager;
+    // Change member variable type to match constructor
+    EntityManager* entity_manager;
     Node* head = nullptr;
     size_t size = 0;
 
     void cleanup();
     void link_nodes(Node* first, Node* second);
 
-    // Make constructor private and EntityManager a friend
-    explicit SortQueue(const EntityManager& manager) : entity_manager(manager) {}
+    // Fix constructor parameter type
+    explicit SortQueue(EntityManager* manager) : entity_manager(manager) {}
     friend class EntityManager;
 
   public:

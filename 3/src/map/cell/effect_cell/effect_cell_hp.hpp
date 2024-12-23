@@ -1,9 +1,9 @@
 #ifndef EFFECT_CELL_HP_HPP
 #define EFFECT_CELL_HP_HPP
 
-#include "../cell.hpp"
-#include "../time.hpp"
 #include "i_effect_cell.hpp"
+#include "map/cell/cell.hpp"
+#include "map/cell/time.hpp"
 
 class EffectCellHP : public Time, public Cell, public IEffectCell {
   private:

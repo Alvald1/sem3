@@ -7,11 +7,12 @@
 #include <set>
 #include <unordered_map>
 #include <vector>
-#include "../../utilities/name_id.hpp"
-#include "../builders/school_builder.hpp"
-#include "ability/ability.hpp"
 
-class SchoolBuilder;
+#include "ability/ability.hpp"
+#include "schools/builders/school_builder.hpp"
+#include "utilities/name_id.hpp"
+
+class SchoolBuilder; // Forward declaration
 
 class School : public NameID {
   private:

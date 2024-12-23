@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "../src/schools/school/ability/creature.hpp"
-#include "../src/schools/school/school.hpp"
+#include "schools/school/ability/creature.hpp"
+#include "schools/school/school.hpp"
 
 class SchoolTest : public ::testing::Test {
   protected:
@@ -93,7 +93,7 @@ TEST_F(SchoolTest, CountCreatures) {
 
 TEST_F(SchoolTest, CountCreaturesWithRemovedAbility) {
     size_t initial_count = school.count_creatures();
-    
+
     // Create a new ability with a unique creature
     Creature unique_creature{"UniqueCreature", 1};
     Ability unique_ability("UniqueAbility", &unique_creature);
@@ -269,10 +269,10 @@ TEST_F(SchoolTest, AvailableAbilitiesExactMatch) {
 
 TEST_F(SchoolTest, CanUpgradeSingleCondition) {
     Ability ability("Test", &creature1, 2, 10, 5);
-    
+
     // Only exp matches, level doesn't
     EXPECT_FALSE(ability.can_upgrade(5, 1));
-    
+
     // Only level matches, exp doesn't
     EXPECT_FALSE(ability.can_upgrade(4, 2));
 }
@@ -281,17 +281,17 @@ TEST_F(SchoolTest, UpgradableAbilitiesEdgeCases) {
     // Add ability with zero requirements
     Ability zero_ability("Zero", &creature1, 0, 0, 0);
     school.add_ability(zero_ability);
-    
+
     auto abilities = school.get_upgradable_abilities(0, 0);
     EXPECT_FALSE(abilities.empty());
     EXPECT_TRUE(std::any_of(abilities.begin(), abilities.end(),
-        [](const Ability& a) { return a.get_level() == 0 && a.get_experience() == 0; }));
+                            [](const Ability& a) { return a.get_level() == 0 && a.get_experience() == 0; }));
 }
 
 TEST_F(SchoolTest, HasAbilityEdgeCases) {
     EXPECT_FALSE(school.has_ability(SIZE_MAX));
     EXPECT_FALSE(school.has_ability(0));
-    
+
     // Test with recently deleted ability id
     size_t last_id = school.get_abilities().back().get_id();
     auto& abilities = const_cast<std::vector<Ability>&>(school.get_abilities());
@@ -301,20 +301,20 @@ TEST_F(SchoolTest, HasAbilityEdgeCases) {
 
 TEST_F(SchoolTest, EmptySchoolCopyMove) {
     School empty_school("Empty");
-    
+
     // Copy empty school
     School copied = empty_school;
     EXPECT_TRUE(copied.get_abilities().empty());
-    
+
     // Move empty school
     School moved = std::move(empty_school);
     EXPECT_TRUE(moved.get_abilities().empty());
-    
+
     // Copy assignment of empty school
     School target("Target");
     target = copied;
     EXPECT_TRUE(target.get_abilities().empty());
-    
+
     // Move assignment of empty school
     School target2("Target2");
     target2 = std::move(moved);

@@ -3,8 +3,9 @@
 
 #include <algorithm>
 #include <type_traits>
-#include "src/schools/school/ability/ability.hpp"
-#include "src/utilities/name_id.hpp"
+
+#include "schools/school/ability/ability.hpp"
+#include "utilities/name_id.hpp"
 
 class EntityBuilder; // Forward declaration
 
@@ -14,7 +15,7 @@ class Entity : public NameID {
   private:
     static inline size_t next_id{1};
     size_t initiative;
-    const size_t max_hp;
+    size_t max_hp;
     size_t hp;
 
   protected:
@@ -23,14 +24,12 @@ class Entity : public NameID {
           max_hp(ability.get_count()), hp(ability.get_count()) {}
 
   public:
-    virtual ~Entity() = 0; // Pure virtual destructor
-
-    // Delete assignment operators since we have const members
+    // Rule of five
     Entity(const Entity&) = default;
-    Entity& operator=(const Entity&) = delete;
-
-    Entity(Entity&&) = default;
-    Entity& operator=(Entity&&) = delete;
+    Entity& operator=(const Entity&) = default; // Due to const members
+    Entity(Entity&&) noexcept = default;
+    Entity& operator=(Entity&&) = default; // Due to const members
+    virtual ~Entity() = 0;
 
     [[nodiscard]] inline size_t
     get_initiative() const noexcept {

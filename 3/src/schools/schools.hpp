@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include <vector>
+
 #include "school/ability/ability.hpp"
 #include "school/school.hpp"
 

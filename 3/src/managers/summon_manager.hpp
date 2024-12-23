@@ -1,18 +1,19 @@
 #ifndef SUMMON_MANAGER_HPP
 #define SUMMON_MANAGER_HPP
 
-#include "../queue/entity/entity.hpp"
-#include "../queue/entity/summoner.hpp"
-#include "../schools/school/ability/ability.hpp"
-#include "../schools/school/school.hpp"
+#include "queue/entity/entity.hpp"
+#include "queue/entity/summoner.hpp"
+#include "schools/school/ability/ability.hpp"
+#include "schools/school/school.hpp"
 
 class SummonManager {
-private:
+  private:
     static SummonManager* instance_;
     SummonManager() = default;
 
-public:
-    static SummonManager& getInstance() {
+  public:
+    static SummonManager&
+    getInstance() {
         if (instance_ == nullptr) {
             instance_ = new SummonManager();
         }

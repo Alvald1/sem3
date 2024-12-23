@@ -1,16 +1,18 @@
 #include <gtest/gtest.h>
-#include "../src/queue/entity/troop/moral_troop.hpp"
-#include "../src/schools/school/ability/creature.hpp"
+#include "queue/entity/troop/moral_troop.hpp"
+#include "schools/school/ability/creature.hpp"
 
 class MoralTroopTest : public ::testing::Test {
-protected:
-    void SetUp() override {
+  protected:
+    void
+    SetUp() override {
         // Create a creature for testing
         creature = new Creature("TestCreature", 10, 5, 3, 2, 1);
         ability = new Ability("TestAbility", creature, 1, 100, 50, 20);
     }
 
-    void TearDown() override {
+    void
+    TearDown() override {
         delete creature;
         delete ability;
     }
@@ -81,7 +83,7 @@ TEST_F(MoralTroopTest, InheritedProperties) {
 
 TEST_F(MoralTroopTest, ExtremeMoralValues) {
     MoralTroop troop(*ability);
-    
+
     // Test extremely high moral
     troop.set_moral(INT_MAX);
     EXPECT_EQ(troop.get_moral(), INT_MAX);
@@ -108,7 +110,7 @@ TEST_F(MoralTroopTest, ZeroHPTroop) {
     MoralTroop troop(*ability);
     troop.set_hp(0);
     EXPECT_FALSE(troop.is_alive());
-    
+
     // Check that moral changes still work on dead troop
     troop.increase_morale();
     EXPECT_EQ(troop.get_moral(), 1);
@@ -119,11 +121,11 @@ TEST_F(MoralTroopTest, ZeroHPTroop) {
 TEST_F(MoralTroopTest, MaxHPTroop) {
     MoralTroop troop(*ability);
     size_t max_hp = troop.get_max_hp();
-    
+
     // Try to set HP above max
     troop.set_hp(max_hp + 100);
     EXPECT_EQ(troop.get_hp(), max_hp);
-    
+
     // Verify heal doesn't exceed max HP
     troop.do_damage(10);
     troop.heal(100);
@@ -132,12 +134,12 @@ TEST_F(MoralTroopTest, MaxHPTroop) {
 
 TEST_F(MoralTroopTest, ConsecutiveMoraleChanges) {
     MoralTroop troop(*ability);
-    
+
     // Multiple increases followed by multiple decreases
-    for(int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i) {
         troop.increase_morale();
     }
-    for(int i = 0; i < 2000; ++i) {
+    for (int i = 0; i < 2000; ++i) {
         troop.decrease_morale();
     }
     EXPECT_EQ(troop.get_moral(), -1000);
@@ -145,12 +147,12 @@ TEST_F(MoralTroopTest, ConsecutiveMoraleChanges) {
 
 TEST_F(MoralTroopTest, BalanceMoraleExtremeCases) {
     MoralTroop troop(*ability);
-    
+
     // Test balance from extreme positive
     troop.set_moral(INT_MAX);
     troop.balance_morale();
     EXPECT_EQ(troop.get_moral(), INT_MAX - 1);
-    
+
     // Test balance from extreme negative
     troop.set_moral(INT_MIN);
     troop.balance_morale();

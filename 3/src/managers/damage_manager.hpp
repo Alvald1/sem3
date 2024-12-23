@@ -1,16 +1,17 @@
 #ifndef DAMAGE_MANAGER_HPP
 #define DAMAGE_MANAGER_HPP
 
-#include "../queue/entity/entity.hpp"
-#include "../queue/entity/troop/base_troop.hpp"
+#include "queue/entity/entity.hpp"
+#include "queue/entity/troop/base_troop.hpp"
 
 class DamageManager {
-private:
+  private:
     static DamageManager* instance_;
     DamageManager() = default;
 
-public:
-    static DamageManager& getInstance() {
+  public:
+    static DamageManager&
+    getInstance() {
         if (instance_ == nullptr) {
             instance_ = new DamageManager();
         }

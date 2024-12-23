@@ -1,32 +1,31 @@
 #ifndef SUMMONER_BUILDER_HPP
 #define SUMMONER_BUILDER_HPP
 
-#include "../summoner.hpp"
-#include "entity_builder.hpp"
+#include "queue/entity/summoner.hpp"
 
-class SummonerBuilder : public EntityBuilder {
+class SummonerBuilder {
   private:
-    size_t max_energy;
-    size_t accum_index;
+    Summoner summoner_;
 
   public:
-    explicit SummonerBuilder(const Ability& ability) : EntityBuilder(ability), max_energy(100), accum_index(1) {}
+    explicit SummonerBuilder(Ability ability) : summoner_(ability) {}
 
     SummonerBuilder&
-    setMaxEnergy(size_t energy) {
-        max_energy = energy;
+    max_energy(size_t energy) {
+        summoner_.energy = energy;
+        summoner_.max_energy = energy;
         return *this;
     }
 
     SummonerBuilder&
-    setAccumIndex(size_t index) {
-        accum_index = index;
+    accum_index(size_t index) {
+        summoner_.accum_index = index;
         return *this;
     }
 
-    [[nodiscard]] Entity*
-    build() override {
-        return new Summoner(ability, max_energy, accum_index);
+    Summoner
+    build() {
+        return std::move(summoner_);
     }
 };
 

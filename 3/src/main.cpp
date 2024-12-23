@@ -1,6 +1,6 @@
 #include <iostream>
 #include "map/map.hpp"
-#include "view/board.hpp"
+#include "ui/board.hpp"
 
 int
 main() {

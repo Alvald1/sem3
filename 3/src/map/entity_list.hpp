@@ -2,8 +2,9 @@
 #define ENTITY_LIST_HPP
 
 #include <unordered_map>
-#include "../queue/entity/entity.hpp"
+
 #include "cell/cell.hpp"
+#include "queue/entity/entity.hpp"
 
 class EntityList {
   private:

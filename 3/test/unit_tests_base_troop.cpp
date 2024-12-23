@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/queue/entity/troop/base_troop.hpp"
+#include "queue/entity/troop/base_troop.hpp"
 
 class BaseTroopTest : public ::testing::Test {
   protected:
@@ -174,11 +174,11 @@ TEST_F(BaseTroopTest, EdgeCaseHealingTest) {
 
 TEST_F(BaseTroopTest, NegativeValuesTest) {
     size_t initial_hp = troop->get_hp();
-    
+
     // Попытка нанести отрицательный урон не должна менять HP
     troop->do_damage(-5);
     EXPECT_EQ(troop->get_hp(), initial_hp);
-    
+
     // Попытка отрицательного лечения не должна менять HP
     troop->heal(-10);
     EXPECT_EQ(troop->get_hp(), initial_hp);
@@ -186,11 +186,11 @@ TEST_F(BaseTroopTest, NegativeValuesTest) {
 
 TEST_F(BaseTroopTest, ZeroValueEffectsTest) {
     size_t initial_hp = troop->get_hp();
-    
+
     // Урон в 0 единиц
     troop->do_damage(0);
     EXPECT_EQ(troop->get_hp(), initial_hp);
-    
+
     // Лечение на 0 единиц
     troop->heal(0);
     EXPECT_EQ(troop->get_hp(), initial_hp);
@@ -200,11 +200,11 @@ TEST_F(BaseTroopTest, ZeroMaxHPTest) {
     Creature zeroHPCreature("ZeroHP", 1, 1, 1, 1, 1);
     Ability zeroHPAbility("ZeroAbility", &zeroHPCreature, 1, 0, 0, 0);
     BaseTroop zeroHPTroop(zeroHPAbility);
-    
+
     EXPECT_EQ(zeroHPTroop.get_hp(), 0);
     EXPECT_EQ(zeroHPTroop.get_max_hp(), 0);
     EXPECT_FALSE(zeroHPTroop.is_alive());
-    
+
     // Попытка лечения существа с нулевым максимальным здоровьем
     zeroHPTroop.heal(100);
     EXPECT_EQ(zeroHPTroop.get_hp(), 0);
@@ -214,25 +214,25 @@ TEST_F(BaseTroopTest, InitiativeEdgeCasesTest) {
     Creature maxInitCreature("MaxInit", 1, 1, 1, 1, SIZE_MAX);
     Ability maxInitAbility("MaxInitAbility", &maxInitCreature, 1, 50, 100, 20);
     BaseTroop maxInitTroop(maxInitAbility);
-    
+
     Creature zeroInitCreature("ZeroInit", 1, 1, 1, 1, 0);
     Ability zeroInitAbility("ZeroInitAbility", &zeroInitCreature, 1, 50, 100, 20);
     BaseTroop zeroInitTroop(zeroInitAbility);
-    
+
     EXPECT_TRUE(maxInitTroop > zeroInitTroop);
     EXPECT_TRUE(zeroInitTroop < maxInitTroop);
 }
 
 TEST_F(BaseTroopTest, RapidHealDamageTest) {
     // Быстрое чередование урона и лечения
-    for(size_t i = 0; i < 1000; ++i) {
+    for (size_t i = 0; i < 1000; ++i) {
         troop->do_damage(1);
         troop->heal(1);
     }
     EXPECT_EQ(troop->get_hp(), troop->get_max_hp());
-    
+
     // Быстрое нанесение большого количества минимального урона
-    for(size_t i = 0; i < 1000; ++i) {
+    for (size_t i = 0; i < 1000; ++i) {
         troop->do_damage(1);
     }
     EXPECT_EQ(troop->get_hp(), 0);
@@ -241,11 +241,11 @@ TEST_F(BaseTroopTest, RapidHealDamageTest) {
 TEST_F(BaseTroopTest, HealthPercentageEdgeCasesTest) {
     // Проверка процента здоровья при максимальном HP
     EXPECT_DOUBLE_EQ(troop->get_health_percentage(), 100.0);
-    
+
     // Проверка при HP = 1
     troop->do_damage(troop->get_hp() - 1);
     EXPECT_DOUBLE_EQ(troop->get_health_percentage(), 100.0 / troop->get_max_hp());
-    
+
     // Проверка при HP = 0
     troop->do_damage(1);
     EXPECT_DOUBLE_EQ(troop->get_health_percentage(), 0.0);

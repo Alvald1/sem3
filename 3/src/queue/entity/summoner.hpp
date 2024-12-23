@@ -9,28 +9,20 @@
 #include <unordered_map>
 
 #include "entity.hpp"
-#include "src/schools/school/school.hpp"
-#include "src/schools/schools.hpp"
+#include "schools/school/school.hpp"
+#include "schools/schools.hpp"
 
 class Summoner : public Entity {
     friend class SummonerBuilder;
 
   private:
     size_t energy;
-    const size_t max_energy;
+    size_t max_energy;
     size_t current_experience;
     size_t accum_index;
     std::unordered_map<size_t, size_t> levels;
 
-    explicit Summoner(const Ability& ability, size_t max_energy, size_t accum_index = 1)
-        : Entity(ability), energy(max_energy), max_energy(max_energy), current_experience(0), accum_index(accum_index) {
-        if (max_energy == 0) {
-            throw std::invalid_argument("Maximum energy cannot be zero");
-        }
-        if (accum_index == 0) {
-            throw std::invalid_argument("Accumulation index cannot be zero");
-        }
-
+    explicit Summoner(const Ability& ability) : Entity(ability), current_experience(0) {
         const auto& school_list = Schools::getInstance().get_schools();
         levels.reserve(school_list.size());
         for (const auto& school : school_list) {
@@ -40,6 +32,13 @@ class Summoner : public Entity {
 
     // Optimize getters with noexcept
   public:
+    // Rule of five
+    Summoner(const Summoner&) = default;
+    Summoner& operator=(const Summoner&) = delete; // Due to const members
+    Summoner(Summoner&&) noexcept = default;
+    Summoner& operator=(Summoner&&) = delete; // Due to const members
+    ~Summoner() override = default;
+
     [[nodiscard]] size_t
     get_energy() const noexcept {
         return energy;

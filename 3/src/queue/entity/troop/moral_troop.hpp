@@ -7,10 +7,13 @@
 class MoralTroop : public BaseTroop, public IMoral {
     friend class TroopBuilder;
 
-  private:
-    int moral;
-
-    explicit MoralTroop(const Ability& ability, int moral = 0) : BaseTroop(ability), moral(moral) {}
+  public:
+    // Rule of five
+    MoralTroop(const MoralTroop&) = default;
+    MoralTroop& operator=(const MoralTroop&) = default;
+    MoralTroop(MoralTroop&&) noexcept = default;
+    MoralTroop& operator=(MoralTroop&&) noexcept = default;
+    ~MoralTroop() override = default;
 
     // IMoral interface implementation
     inline void
@@ -42,6 +45,11 @@ class MoralTroop : public BaseTroop, public IMoral {
     set_moral(int new_moral) noexcept {
         moral = new_moral;
     }
+
+  private:
+    int moral;
+
+    explicit MoralTroop(const Ability& ability, int moral) : BaseTroop(ability), moral(moral) {}
 };
 
 #endif // MORAL_TROOP_HPP

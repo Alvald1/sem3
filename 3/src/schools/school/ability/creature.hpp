@@ -1,8 +1,11 @@
 #ifndef CREATURE_HPP
 #define CREATURE_HPP
 
-#include "src/schools/builders/creature_builder.hpp"
-#include "src/utilities/name_id.hpp"
+#include <string>
+#include "utilities/name_id.hpp" // Add this include
+
+// Forward declare CreatureBuilder
+class CreatureBuilder;
 
 class Creature : public NameID {
   private:
@@ -19,10 +22,7 @@ class Creature : public NameID {
     explicit Creature(std::string name) : NameID(next_id++, std::move(name)) {}
 
   public:
-    static CreatureBuilder
-    create(std::string name) {
-        return CreatureBuilder(std::move(name));
-    }
+    static CreatureBuilder create(std::string name);
 
     // Rule of five
     Creature(const Creature&) = default;
@@ -55,6 +55,12 @@ class Creature : public NameID {
     [[nodiscard]] inline size_t
     get_initiative() const noexcept {
         return initiative;
+    }
+
+    // Add comparison operator
+    bool
+    operator<(const Creature& other) const {
+        return get_id() < other.get_id();
     }
 
     // Setters

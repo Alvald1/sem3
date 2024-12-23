@@ -2,13 +2,16 @@
 #define ABILITY_HPP
 
 #include <memory>
+
 #include "creature.hpp"
-#include "src/schools/builders/ability_builder.hpp"
-#include "src/utilities/name_id.hpp"
+#include "schools/builders/ability_builder.hpp"
+#include "utilities/name_id.hpp"
+
+class AbilityBuilder; // Forward declaration
 
 class Ability : public NameID {
   private:
-    Creature creature; // Changed back to value
+    Creature creature;
     size_t level{0};
     size_t energy{0};
     size_t experience{0};
@@ -22,10 +25,7 @@ class Ability : public NameID {
         : NameID(next_id++, std::move(name)), creature(std::move(creature)) {}
 
   public:
-    static AbilityBuilder
-    create(std::string name, Creature creature) {
-        return AbilityBuilder(std::move(name), std::move(creature));
-    }
+    static AbilityBuilder create(std::string name, Creature creature);
 
     // Rule of five
     Ability(const Ability&) = default;

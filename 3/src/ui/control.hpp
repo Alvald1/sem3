@@ -3,7 +3,8 @@
 
 #include <functional>
 #include <vector>
-#include "../schools/school/ability/ability.hpp"
+
+#include "schools/school/ability/ability.hpp"
 
 class Control {
   public:

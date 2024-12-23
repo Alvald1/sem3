@@ -1,4 +1,5 @@
 #include "control.hpp"
+
 #include <algorithm>
 #include <iostream>
 #include <limits>
