@@ -4,13 +4,10 @@
 #include "base_troop.hpp"
 
 class AmoralTroop : public BaseTroop {
-  public:
-    explicit AmoralTroop(const Ability& ability) : BaseTroop(ability) {}
+    friend class TroopBuilder;
 
-    [[nodiscard]] virtual Entity*
-    clone() const override {
-        return new AmoralTroop(*this);
-    }
+  private:
+    explicit AmoralTroop(const Ability& ability) : BaseTroop(ability) {}
 };
 
 #endif // AMORAL_TROOP_HPP

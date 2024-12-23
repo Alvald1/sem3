@@ -3,21 +3,26 @@
 
 #include <algorithm>
 #include <type_traits>
-#include "../../schools/school/ability/ability.hpp"
-#include "../../utilities/name_id.hpp"
+#include "src/schools/school/ability/ability.hpp"
+#include "src/utilities/name_id.hpp"
+
+class EntityBuilder; // Forward declaration
 
 class Entity : public NameID {
+    friend class EntityBuilder;
+
   private:
     static inline size_t next_id{1};
     size_t initiative;
     const size_t max_hp;
     size_t hp;
 
-  public:
+  protected:
     explicit Entity(const Ability& ability) noexcept
-        : NameID(next_id++, ability.get_name()), initiative(ability.get_creature()->get_initiative()),
+        : NameID(next_id++, ability.get_name()), initiative(ability.get_creature().get_initiative()),
           max_hp(ability.get_count()), hp(ability.get_count()) {}
 
+  public:
     virtual ~Entity() = 0; // Pure virtual destructor
 
     // Delete assignment operators since we have const members
@@ -65,8 +70,6 @@ class Entity : public NameID {
     is_alive() const noexcept {
         return hp > 0;
     }
-
-    [[nodiscard]] virtual Entity* clone() const = 0; // Pure virtual clone method
 };
 
 // Need to provide implementation for pure virtual destructor

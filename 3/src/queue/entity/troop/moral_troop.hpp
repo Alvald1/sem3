@@ -5,10 +5,11 @@
 #include "i_moral.hpp"
 
 class MoralTroop : public BaseTroop, public IMoral {
+    friend class TroopBuilder;
+
   private:
     int moral;
 
-  public:
     explicit MoralTroop(const Ability& ability, int moral = 0) : BaseTroop(ability), moral(moral) {}
 
     // IMoral interface implementation
@@ -40,11 +41,6 @@ class MoralTroop : public BaseTroop, public IMoral {
     inline void
     set_moral(int new_moral) noexcept {
         moral = new_moral;
-    }
-
-    [[nodiscard]] virtual Entity*
-    clone() const override {
-        return new MoralTroop(*this);
     }
 };
 

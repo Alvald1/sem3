@@ -2,13 +2,19 @@
 #define SUMMONER_HPP
 
 #include <cstddef>
+#include <cstdint>
+#include <limits>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
-#include "../../schools/school/school.hpp"
-#include "../../schools/schools.hpp"
+
 #include "entity.hpp"
+#include "src/schools/school/school.hpp"
+#include "src/schools/schools.hpp"
 
 class Summoner : public Entity {
+    friend class SummonerBuilder;
+
   private:
     size_t energy;
     const size_t max_energy;
@@ -16,7 +22,6 @@ class Summoner : public Entity {
     size_t accum_index;
     std::unordered_map<size_t, size_t> levels;
 
-  public:
     explicit Summoner(const Ability& ability, size_t max_energy, size_t accum_index = 1)
         : Entity(ability), energy(max_energy), max_energy(max_energy), current_experience(0), accum_index(accum_index) {
         if (max_energy == 0) {
@@ -34,6 +39,7 @@ class Summoner : public Entity {
     }
 
     // Optimize getters with noexcept
+  public:
     [[nodiscard]] size_t
     get_energy() const noexcept {
         return energy;
@@ -61,10 +67,14 @@ class Summoner : public Entity {
 
     void
     add_experience(size_t exp) noexcept {
-        if (exp > 0 && current_experience <= SIZE_MAX - exp) {
+        if (exp == 0) {
+            return;
+        }
+
+        if (current_experience > std::numeric_limits<size_t>::max() - exp) {
+            current_experience = std::numeric_limits<size_t>::max();
+        } else {
             current_experience += exp;
-        } else if (exp > 0) {
-            current_experience = SIZE_MAX;
         }
     }
 
@@ -110,11 +120,6 @@ class Summoner : public Entity {
     [[nodiscard]] const std::unordered_map<size_t, size_t>&
     get_levels() const noexcept {
         return levels;
-    }
-
-    [[nodiscard]] virtual Entity*
-    clone() const override {
-        return new Summoner(*this);
     }
 };
 

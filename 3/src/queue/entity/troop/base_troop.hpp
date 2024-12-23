@@ -3,18 +3,23 @@
 
 #include "../entity.hpp"
 
+class TroopBuilder; // Forward declaration
+
 class BaseTroop : public Entity {
+    friend class TroopBuilder;
+
   private:
     size_t speed;
     size_t damage;
     size_t range;
     size_t type;
 
-  public:
+  protected:
     explicit BaseTroop(const Ability& ability)
-        : Entity(ability), speed(ability.get_creature()->get_speed()), damage(ability.get_creature()->get_damage()),
-          range(ability.get_creature()->get_range()), type(ability.get_creature()->get_type()) {}
+        : Entity(ability), speed(ability.get_creature().get_speed()), damage(ability.get_creature().get_damage()),
+          range(ability.get_creature().get_range()), type(ability.get_creature().get_type()) {}
 
+  public:
     // Getters
     [[nodiscard]] inline size_t
     get_speed() const noexcept {
@@ -83,11 +88,6 @@ class BaseTroop : public Entity {
         } else {
             range = static_cast<size_t>(static_cast<int>(range) + delta);
         }
-    }
-
-    [[nodiscard]] virtual Entity*
-    clone() const override {
-        return new BaseTroop(*this);
     }
 };
 
