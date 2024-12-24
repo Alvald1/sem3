@@ -49,6 +49,11 @@ target_link_options(msan PRIVATE ${MSAN_FLAGS})
 add_custom_target(static
     COMMAND clang-tidy
             -p ${CMAKE_BINARY_DIR}
+            --quiet
+            --header-filter='.*'
+            --system-headers=false
+            --config-file=${CMAKE_SOURCE_DIR}/.clang-tidy
+            --use-color
             ${PROJECT_SOURCES}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Running clang-tidy analysis"
