@@ -5,8 +5,6 @@
 #include "queue/entity/builder/moral_troop_builder.hpp"
 #include "utilities/type_system.hpp"
 
-SummonManager* SummonManager::instance_ = nullptr;
-
 void
 SummonManager::summon(Summoner& summoner, const Ability& ability, const Position& position) {
     auto type = TypeSystem::getTroopType(ability.get_creature().get_type());

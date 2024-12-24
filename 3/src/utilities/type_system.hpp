@@ -65,6 +65,6 @@ class TypeSystem {
             }
         }
 
-        return std::move(active_effects);
+        return active_effects;
     }
 };

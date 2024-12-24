@@ -1,5 +1,6 @@
 #include "action_manager.hpp"
 
+#include "summon_manager.hpp"
 #include "ui/control.hpp"
 #include "ui/view.hpp"
 
@@ -26,8 +27,7 @@ ActionManager::handle_summoner_action(Summoner* summoner) {
                     try {
                         summoner->spend_energy(chosen_ability.get_energy());
                         Position target_pos = Control::getInstance()->get_position_choice();
-
-                        // TODO: Use target_pos for troop placement
+                        SummonManager::getInstance().summon(*summoner, chosen_ability, target_pos);
                     } catch (const std::runtime_error& e) {
                         (void)e;
                     }
