@@ -15,8 +15,23 @@ ActionManager::handle_summoner_action(Summoner* summoner) {
             if (!available_abilities.empty()) {
                 View::getInstance().send_abilities(available_abilities, View::AbilityDisplayType::AVAILABLE);
                 size_t chosen_ability_id = Control::getInstance()->get_ability_choice();
-                // TODO: Handle ability choice for summoning using chosen_ability_id
-                (void)chosen_ability_id;
+
+                // Find the chosen ability in available abilities
+                auto it = std::find_if(
+                    available_abilities.begin(), available_abilities.end(),
+                    [chosen_ability_id](const auto& ability) { return ability.get().get_id() == chosen_ability_id; });
+
+                if (it != available_abilities.end()) {
+                    const Ability& chosen_ability = it->get();
+                    try {
+                        summoner->spend_energy(chosen_ability.get_energy());
+                        Position target_pos = Control::getInstance()->get_position_choice();
+
+                        // TODO: Use target_pos for troop placement
+                    } catch (const std::runtime_error& e) {
+                        (void)e;
+                    }
+                }
             }
             break;
         }

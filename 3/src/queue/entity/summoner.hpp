@@ -21,6 +21,7 @@ class Summoner : public Entity {
     size_t current_experience;
     size_t accum_index;
     std::unordered_map<size_t, size_t> levels;
+    std::vector<size_t> ownerships;
 
     explicit Summoner(const Ability& ability) : Entity(ability), current_experience(0) {
         const auto& school_list = Schools::getInstance().get_schools();
@@ -114,6 +115,21 @@ class Summoner : public Entity {
             throw std::invalid_argument("Invalid school ID: " + std::to_string(school_id));
         }
         ++it->second;
+    }
+
+    void
+    add_ownership(size_t entity_id) {
+        ownerships.push_back(entity_id);
+    }
+
+    void
+    delete_ownership(size_t entity_id) {
+        std::erase(ownerships, entity_id);
+    }
+
+    [[nodiscard]] const std::vector<size_t>&
+    get_ownerships() const noexcept {
+        return ownerships;
     }
 
     [[nodiscard]] const std::unordered_map<size_t, size_t>&

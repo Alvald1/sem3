@@ -5,11 +5,15 @@
 #include "queue/entity/summoner.hpp"
 #include "schools/school/ability/ability.hpp"
 #include "schools/school/school.hpp"
+#include "utilities/position.hpp"
 
 class SummonManager {
   private:
     static SummonManager* instance_;
     SummonManager() = default;
+
+    void create_moral(Summoner& summoner, const Ability& ability, const Position& position);
+    void create_amoral(Summoner& summoner, const Ability& ability, const Position& position);
 
   public:
     static SummonManager&
@@ -23,8 +27,7 @@ class SummonManager {
     SummonManager(const SummonManager&) = delete;
     SummonManager& operator=(const SummonManager&) = delete;
 
-    void upgrade(Summoner& summoner, School& school);
-    Entity make_entity(const Ability& ability);
+    void summon(Summoner& summoner, const Ability& ability, const Position& position);
 };
 
 #endif // SUMMON_MANAGER_HPP

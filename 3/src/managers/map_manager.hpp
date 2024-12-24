@@ -1,6 +1,7 @@
 #ifndef MAP_MANAGER_HPP
 #define MAP_MANAGER_HPP
 
+#include <optional>
 #include <vector>
 
 #include "entity_manager.hpp"
@@ -41,6 +42,8 @@ class MapManager : public Map {
     void effect_cells();
     bool can_move_entity(size_t id, Position delta) const;
     bool can_entity_act(size_t id, Position delta) const;
+    bool add_entity(size_t id, Position pos);
+    std::optional<Position> get_entity_position(size_t id) const;
 };
 
 #endif // MAP_MANAGER_HPP

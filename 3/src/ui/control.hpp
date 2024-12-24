@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "schools/school/ability/ability.hpp"
+#include "utilities/position.hpp"
 
 class Control {
   public:
@@ -26,6 +27,7 @@ class Control {
     void update();
     [[nodiscard]] SummonerAction get_summoner_action() const;
     [[nodiscard]] size_t get_ability_choice() const;
+    [[nodiscard]] Position get_position_choice() const;
 
     ~Control() = default;
 };

@@ -2,18 +2,37 @@
 #define POSITION_HPP
 
 class Position {
-private:
+  private:
     int x;
     int y;
 
-public:
+  public:
     Position(int x = 0, int y = 0) : x(x), y(y) {}
 
-    int get_x() const { return x; }
-    int get_y() const { return y; }
+    int
+    get_x() const {
+        return x;
+    }
 
-    void set_x(int new_x) { x = new_x; }
-    void set_y(int new_y) { y = new_y; }
+    int
+    get_y() const {
+        return y;
+    }
+
+    void
+    set_x(int new_x) {
+        x = new_x;
+    }
+
+    void
+    set_y(int new_y) {
+        y = new_y;
+    }
+
+    Position
+    operator+(const Position& other) const {
+        return Position(x + other.x, y + other.y);
+    }
 };
 
 #endif // POSITION_HPP

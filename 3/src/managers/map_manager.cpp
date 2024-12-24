@@ -95,6 +95,26 @@ MapManager::can_entity_act(size_t id, Position delta) const {
     return is_cell_passable(target_pos);
 }
 
+bool
+MapManager::add_entity(size_t id, Position pos) {
+    if (pos.get_x() < 0 || pos.get_y() < 0 || static_cast<size_t>(pos.get_x()) >= get_size().first
+        || static_cast<size_t>(pos.get_y()) >= get_size().second) {
+        return false;
+    }
+
+    Cell* target_cell = matrix(static_cast<size_t>(pos.get_x()), static_cast<size_t>(pos.get_y())).get();
+
+    if (!target_cell->is_empty() || !target_cell->get_passability()) {
+        return false;
+    }
+
+    target_cell->set_busy(true);
+    target_cell->set_id_entity(id);
+    entities_.append(id, target_cell);
+
+    return true;
+}
+
 void
 MapManager::effect_cells() {
     auto& entity_manager = EntityManager::getInstance();
@@ -121,4 +141,13 @@ MapManager::effect_cells() {
             }
         }
     }
+}
+
+std::optional<Position>
+MapManager::get_entity_position(size_t id) const {
+    Cell* cell = entities_.find_by_id(id);
+    if (!cell) {
+        return std::nullopt;
+    }
+    return cell->get_position();
 }

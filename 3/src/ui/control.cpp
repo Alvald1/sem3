@@ -34,3 +34,8 @@ Control::get_summoner_action() const {
 Control::get_ability_choice() const {
     return 1; // Default return for now
 }
+
+[[nodiscard]] Position
+Control::get_position_choice() const {
+    return Position(0, 0); // Default return for now
+}
