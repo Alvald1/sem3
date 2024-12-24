@@ -1,7 +1,9 @@
 #ifndef MAP_MANAGER_HPP
 #define MAP_MANAGER_HPP
 
+#include <future>
 #include <optional>
+#include <thread>
 #include <vector>
 
 #include "entity_manager.hpp"
@@ -23,6 +25,7 @@ class MapManager : public Map {
     std::vector<Cell*> effect_cells_;
     bool is_cell_occupied(Position pos) const;
     bool is_cell_passable(Position pos) const;
+    void process_effects(size_t start, size_t end, EntityManager& entity_manager);
 
   public:
     static MapManager&

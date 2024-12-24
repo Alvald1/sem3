@@ -117,12 +117,47 @@ MapManager::add_entity(size_t id, Position pos) {
 
 void
 MapManager::effect_cells() {
-    auto& entity_manager = EntityManager::getInstance();
+    if (effect_cells_.empty()) {
+        return;
+    }
 
-    for (Cell* cell : effect_cells_) {
+    auto& entity_manager = EntityManager::getInstance();
+    const size_t num_cells = effect_cells_.size();
+    const size_t hardware_threads = std::thread::hardware_concurrency();
+    const size_t num_threads = std::min(hardware_threads, (num_cells + 3) / 4); // Минимум 4 ячейки на поток
+
+    if (num_threads <= 1) {
+        // Для малого количества ячеек используем однопоточное выполнение
+        process_effects(0, num_cells, entity_manager);
+        return;
+    }
+
+    const size_t cells_per_thread = (num_cells + num_threads - 1) / num_threads;
+    std::vector<std::future<void>> futures;
+
+    for (size_t i = 0; i < num_threads; ++i) {
+        size_t start = i * cells_per_thread;
+        if (start >= num_cells) {
+            break;
+        }
+
+        size_t end = std::min(start + cells_per_thread, num_cells);
+        futures.push_back(
+            std::async(std::launch::async, &MapManager::process_effects, this, start, end, std::ref(entity_manager)));
+    }
+
+    for (auto& future : futures) {
+        future.wait();
+    }
+}
+
+void
+MapManager::process_effects(size_t start, size_t end, EntityManager& entity_manager) {
+    for (size_t i = start; i < end; ++i) {
+        Cell* cell = effect_cells_[i];
         if (!cell->is_empty()) {
             size_t entity_id = cell->get_id_entity();
-            auto* entity = entity_manager.get_entity(entity_id); // Now returns non-const Entity*
+            auto* entity = entity_manager.get_entity(entity_id);
 
             if (!entity) {
                 continue;
