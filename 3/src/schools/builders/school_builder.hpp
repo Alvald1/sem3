@@ -1,19 +1,26 @@
 #ifndef SCHOOL_BUILDER_HPP
 #define SCHOOL_BUILDER_HPP
 
-#include <string>
 #include "schools/school/ability/ability.hpp"
-
-class School;
+#include "schools/school/school.hpp"
 
 class SchoolBuilder {
-  public:
-    explicit SchoolBuilder(std::string name);
-    SchoolBuilder& addAbility(Ability ability);
-    School build();
-
   private:
-    School* school_;
+    School school;
+
+  public:
+    explicit SchoolBuilder(std::string name) : school(std::move(name)) {}
+
+    SchoolBuilder&
+    add_ability(Ability ability) {
+        school.add_ability(std::move(ability));
+        return *this;
+    }
+
+    [[nodiscard]] School
+    build() const {
+        return school;
+    }
 };
 
 #endif // SCHOOL_BUILDER_HPP

@@ -33,7 +33,7 @@ class TroopBuilder {
   private:
     Ability ability;
     bool is_moral;
-    int moral_value_;
+    int moral_value_{};
 };
 
 #endif // TROOP_BUILDER_HPP

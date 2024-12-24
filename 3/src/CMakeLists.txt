@@ -22,6 +22,15 @@ add_executable(debug ${MAIN_SOURCE} ${PROJECT_SOURCES})
 add_executable(asan ${MAIN_SOURCE} ${PROJECT_SOURCES})
 add_executable(msan ${MAIN_SOURCE} ${PROJECT_SOURCES})
 
+# Настраиваем выводные имена и директории
+set_target_properties(${PROJECT_NAME} debug asan msan
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+)
+set_target_properties(debug PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_debug)
+set_target_properties(asan PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_asan)
+set_target_properties(msan PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_msan)
+
 # Пример настройки опций компиляции
 target_compile_options(${PROJECT_NAME} PRIVATE ${COMMON_COMPILE_FLAGS})
 target_compile_options(debug PRIVATE ${COMMON_COMPILE_FLAGS} ${DEBUG_FLAGS})
@@ -35,8 +44,3 @@ target_link_libraries(asan PRIVATE ${CURSES_LIBRARIES} project_includes)
 target_link_options(asan PRIVATE ${ASAN_FLAGS})
 target_link_libraries(msan PRIVATE ${CURSES_LIBRARIES} project_includes)
 target_link_options(msan PRIVATE ${MSAN_FLAGS})
-
-# Настраиваем выводные имена
-set_target_properties(debug PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_debug)
-set_target_properties(asan PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_asan)
-set_target_properties(msan PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_msan)

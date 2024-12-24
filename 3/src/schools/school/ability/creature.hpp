@@ -2,10 +2,7 @@
 #define CREATURE_HPP
 
 #include <string>
-#include "utilities/name_id.hpp" // Add this include
-
-// Forward declare CreatureBuilder
-class CreatureBuilder;
+#include "utilities/name_id.hpp"
 
 class Creature : public NameID {
   private:
@@ -17,12 +14,8 @@ class Creature : public NameID {
 
     static inline size_t next_id{1};
 
-    friend class CreatureBuilder;
-
-    explicit Creature(std::string name) : NameID(next_id++, std::move(name)) {}
-
   public:
-    static CreatureBuilder create(std::string name);
+    explicit Creature(std::string name) : NameID(next_id++, std::move(name)) {}
 
     // Rule of five
     Creature(const Creature&) = default;

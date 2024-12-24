@@ -25,10 +25,12 @@ class SortQueue {
     void link_nodes(Node* first, Node* second);
 
     // Fix constructor parameter type
-    explicit SortQueue(EntityManager* manager) : entity_manager(manager) {}
+
     friend class EntityManager;
 
   public:
+    explicit SortQueue(EntityManager* manager) : entity_manager(manager) {}
+
     ~SortQueue() { cleanup(); }
 
     SortQueue(const SortQueue&) = delete;

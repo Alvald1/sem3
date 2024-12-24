@@ -5,29 +5,18 @@
 #include <memory>
 #include <optional>
 #include <set>
-#include <unordered_map>
 #include <vector>
 
 #include "ability/ability.hpp"
-#include "schools/builders/school_builder.hpp"
 #include "utilities/name_id.hpp"
-
-class SchoolBuilder; // Forward declaration
 
 class School : public NameID {
   private:
     static inline size_t next_id = 1;
     std::vector<Ability> abilities;
 
-    explicit School(std::string name) : NameID(next_id++, std::move(name)) {}
-
-    friend class SchoolBuilder;
-
   public:
-    static SchoolBuilder
-    create(const std::string& name) {
-        return SchoolBuilder(std::string(name));
-    }
+    explicit School(std::string name) : NameID(next_id++, std::move(name)) {}
 
     School(const School&) = default;
     School(School&&) noexcept = default;

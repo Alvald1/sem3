@@ -2,4 +2,3 @@ file(GLOB LOCAL_SOURCES *.cpp *.hpp)
 set(PROJECT_SOURCES ${PROJECT_SOURCES} ${LOCAL_SOURCES} PARENT_SCOPE)
 
 add_subdirectory(school)
-add_subdirectory(builders)

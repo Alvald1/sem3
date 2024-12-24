@@ -4,10 +4,7 @@
 #include <memory>
 
 #include "creature.hpp"
-#include "schools/builders/ability_builder.hpp"
 #include "utilities/name_id.hpp"
-
-class AbilityBuilder; // Forward declaration
 
 class Ability : public NameID {
   private:
@@ -21,11 +18,9 @@ class Ability : public NameID {
 
     friend class AbilityBuilder;
 
+  public:
     explicit Ability(std::string name, Creature creature)
         : NameID(next_id++, std::move(name)), creature(std::move(creature)) {}
-
-  public:
-    static AbilityBuilder create(std::string name, Creature creature);
 
     // Rule of five
     Ability(const Ability&) = default;
