@@ -7,10 +7,7 @@
 #include "schools/school/ability/ability.hpp"
 #include "utilities/name_id.hpp"
 
-class EntityBuilder; // Forward declaration
-
 class Entity : public NameID {
-    friend class EntityBuilder;
 
   private:
     static inline size_t next_id{1};

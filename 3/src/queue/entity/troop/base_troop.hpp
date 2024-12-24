@@ -3,10 +3,7 @@
 
 #include "queue/entity/entity.hpp"
 
-class TroopBuilder; // Forward declaration
-
 class BaseTroop : public Entity {
-    friend class TroopBuilder;
 
   private:
     size_t speed;

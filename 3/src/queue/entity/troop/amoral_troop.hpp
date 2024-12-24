@@ -4,7 +4,7 @@
 #include "base_troop.hpp"
 
 class AmoralTroop : public BaseTroop {
-    friend class TroopBuilder;
+    friend class AmoralTroopBuilder;
 
   public:
     // Rule of five

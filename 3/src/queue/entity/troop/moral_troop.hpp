@@ -5,7 +5,7 @@
 #include "i_moral.hpp"
 
 class MoralTroop : public BaseTroop, public IMoral {
-    friend class TroopBuilder;
+    friend class MoralTroopBuilder;
 
   public:
     // Rule of five
@@ -49,7 +49,7 @@ class MoralTroop : public BaseTroop, public IMoral {
   private:
     int moral;
 
-    explicit MoralTroop(const Ability& ability, int moral) : BaseTroop(ability), moral(moral) {}
+    explicit MoralTroop(const Ability& ability) : BaseTroop(ability) {}
 };
 
 #endif // MORAL_TROOP_HPP
