@@ -33,9 +33,9 @@ set_target_properties(msan PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_msan)
 
 # Пример настройки опций компиляции
 target_compile_options(${PROJECT_NAME} PRIVATE ${COMMON_COMPILE_FLAGS})
-target_compile_options(debug PRIVATE ${COMMON_COMPILE_FLAGS} ${DEBUG_FLAGS})
-target_compile_options(asan PRIVATE ${COMMON_COMPILE_FLAGS} ${DEBUG_FLAGS} ${ASAN_FLAGS})
-target_compile_options(msan PRIVATE ${COMMON_COMPILE_FLAGS} ${DEBUG_FLAGS} ${MSAN_FLAGS})
+target_compile_options(debug PRIVATE ${DEBUG_FLAGS})
+target_compile_options(asan PRIVATE ${DEBUG_FLAGS} ${ASAN_FLAGS})
+target_compile_options(msan PRIVATE ${DEBUG_FLAGS} ${MSAN_FLAGS})
 
 # Линкуем project_includes и библиотеки
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CURSES_LIBRARIES} project_includes)
@@ -44,3 +44,20 @@ target_link_libraries(asan PRIVATE ${CURSES_LIBRARIES} project_includes)
 target_link_options(asan PRIVATE ${ASAN_FLAGS})
 target_link_libraries(msan PRIVATE ${CURSES_LIBRARIES} project_includes)
 target_link_options(msan PRIVATE ${MSAN_FLAGS})
+
+# Статический анализ
+add_custom_target(static
+    COMMAND clang-tidy
+            -p ${CMAKE_BINARY_DIR}
+            ${PROJECT_SOURCES}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Running clang-tidy analysis"
+)
+
+# Valgrind
+add_custom_target(valgrind
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target debug -j${N_JOBS}
+    COMMAND ${VALGRIND} --leak-check=full --show-leak-kinds=all 
+            --track-origins=yes --verbose ./${PROJECT_NAME}_debug
+    COMMENT "Running Valgrind"
+)

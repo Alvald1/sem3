@@ -65,21 +65,6 @@ add_subdirectory(test)
 add_subdirectory(doc)
 
 
-# Valgrind
-add_custom_target(valgrind
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target debug -j${N_JOBS}
-    COMMAND ${VALGRIND} --leak-check=full --show-leak-kinds=all 
-            --track-origins=yes --verbose ./${PROJECT_NAME}_debug
-    COMMENT "Running Valgrind"
-)
-
-# Статический анализ
-add_custom_target(static
-    COMMAND ${CLANG_PP} -std=c++2b --analyze -Xanalyzer -analyzer-output=html ${SOURCES} -j${N_JOBS}
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    COMMENT "Running static analysis"
-)
-
 # Очистка артефактов анализа
 add_custom_target(clean_analysis
     COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/analyzer-output
