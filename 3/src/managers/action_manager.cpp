@@ -6,13 +6,13 @@
 #include "utilities/exceptions.hpp"
 
 void
-ActionManager::handle_summoner_action(Summoner* summoner) {
+ActionManager::handle_summoner_action(Summoner& summoner) {
     SummonerAction action = Control::getInstance()->get_summoner_action();
 
     switch (action) {
         case SummonerAction::SUMMON_TROOP: {
             auto available_abilities =
-                Schools::getInstance().get_available_abilities(summoner->get_levels(), summoner->get_energy());
+                Schools::getInstance().get_available_abilities(summoner.get_levels(), summoner.get_energy());
 
             if (available_abilities.empty()) {
                 throw NoAvailableAbilitiesException();
@@ -29,16 +29,16 @@ ActionManager::handle_summoner_action(Summoner* summoner) {
             if (it != available_abilities.end()) {
                 const Ability& chosen_ability = it->get();
                 try {
-                    summoner->spend_energy(chosen_ability.get_energy());
+                    summoner.spend_energy(chosen_ability.get_energy());
                     Position target_pos = Control::getInstance()->get_position_choice();
-                    SummonManager::getInstance().summon(*summoner, chosen_ability, target_pos);
+                    SummonManager::getInstance().summon(summoner, chosen_ability, target_pos);
                 } catch (const NotEnoughEnergyException& e) {
                     throw;
                 } catch (const InvalidPositionException& e) {
-                    summoner->add_energy(chosen_ability.get_energy()); // возвращаем потраченную энергию
+                    summoner.add_energy(chosen_ability.get_energy()); // возвращаем потраченную энергию
                     throw;
                 } catch (const InvalidTroopTypeException& e) {
-                    summoner->add_energy(chosen_ability.get_energy()); // возвращаем потраченную энергию
+                    summoner.add_energy(chosen_ability.get_energy()); // возвращаем потраченную энергию
                     throw;
                 }
             } else {
@@ -47,12 +47,12 @@ ActionManager::handle_summoner_action(Summoner* summoner) {
             break;
         }
         case SummonerAction::ACCUMULATE_ENERGY: {
-            summoner->accum_energy();
+            summoner.accum_energy();
             break;
         }
         case SummonerAction::UPGRADE_SCHOOL: {
             auto upgradable_abilities =
-                Schools::getInstance().get_upgradable_abilities(summoner->get_levels(), summoner->get_experience());
+                Schools::getInstance().get_upgradable_abilities(summoner.get_levels(), summoner.get_experience());
             View::getInstance().send_abilities(upgradable_abilities, View::AbilityDisplayType::UPGRADABLE);
 
             if (!upgradable_abilities.empty()) {
@@ -70,7 +70,7 @@ ActionManager::handle_summoner_action(Summoner* summoner) {
                     // Get required experience directly from ability
                     size_t required_exp = chosen_ability.get_experience();
                     try {
-                        summoner->upgrade_school(school, required_exp);
+                        summoner.upgrade_school(school, required_exp);
                     } catch (const NotEnoughExperienceException& e) {
                         throw; // Пробрасываем дальше для обработки на верхнем уровне
                     } catch (const std::invalid_argument& e) {
@@ -86,7 +86,7 @@ ActionManager::handle_summoner_action(Summoner* summoner) {
 }
 
 void
-ActionManager::handle_troop_action(BaseTroop* troop) {
+ActionManager::handle_troop_action(BaseTroop& troop) {
     (void)troop;
     // TODO: Implement troop-specific actions
 }

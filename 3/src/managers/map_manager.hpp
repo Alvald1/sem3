@@ -23,8 +23,7 @@ class MapManager : public Map {
 
     EntityList entities_;
     std::vector<Cell*> effect_cells_;
-    bool is_cell_occupied(Position pos) const;
-    bool is_cell_passable(Position pos) const;
+
     void process_effects(size_t start, size_t end, EntityManager& entity_manager);
 
   public:
@@ -40,7 +39,8 @@ class MapManager : public Map {
     MapManager& operator=(const MapManager&) = delete;
 
     enum class MoveResult { SUCCESS, ENTITY_NOT_FOUND, OUT_OF_BOUNDS, CELL_NOT_PASSABLE, CELL_OCCUPIED };
-
+    bool is_cell_occupied(Position pos) const;
+    bool is_cell_passable(Position pos) const;
     MoveResult move_entity(size_t id, Position delta);
     void effect_cells();
     bool can_move_entity(size_t id, Position delta) const;

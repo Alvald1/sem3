@@ -11,6 +11,7 @@
 #include "entity.hpp"
 #include "schools/school/school.hpp"
 #include "schools/schools.hpp"
+#include "utilities/exceptions.hpp"
 
 class Summoner : public Entity {
     friend class SummonerBuilder;

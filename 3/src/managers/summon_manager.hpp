@@ -12,8 +12,8 @@ class SummonManager {
     static SummonManager* instance_;
     SummonManager() = default;
 
-    void create_moral(Summoner& summoner, const Ability& ability, const Position& position);
-    void create_amoral(Summoner& summoner, const Ability& ability, const Position& position);
+    void create_moral(Summoner& summoner, const Ability& ability, const Position& delta);
+    void create_amoral(Summoner& summoner, const Ability& ability, const Position& delta);
 
   public:
     static SummonManager&
@@ -27,7 +27,7 @@ class SummonManager {
     SummonManager(const SummonManager&) = delete;
     SummonManager& operator=(const SummonManager&) = delete;
 
-    void summon(Summoner& summoner, const Ability& ability, const Position& position);
+    void summon(Summoner& summoner, const Ability& ability, const Position& delta);
 };
 
 #endif // SUMMON_MANAGER_HPP

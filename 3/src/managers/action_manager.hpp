@@ -18,8 +18,8 @@ class ActionManager {
 
     using SummonerAction = Control::SummonerAction;
 
-    void handle_summoner_action(Summoner* summoner);
-    void handle_troop_action(BaseTroop* troop);
+    void handle_summoner_action(Summoner& summoner);
+    void handle_troop_action(BaseTroop& troop);
 
   public:
     static ActionManager&
@@ -36,9 +36,9 @@ class ActionManager {
     void
     action(Entity& entity) {
         if (auto* summoner = dynamic_cast<Summoner*>(&entity)) {
-            handle_summoner_action(summoner);
+            handle_summoner_action(*summoner);
         } else if (auto* troop = dynamic_cast<BaseTroop*>(&entity)) {
-            handle_troop_action(troop);
+            handle_troop_action(*troop);
         }
     }
 };
