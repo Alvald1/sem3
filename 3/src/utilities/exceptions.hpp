@@ -38,6 +38,13 @@ class AbilityNotFoundException : public GameLogicException {
         : GameLogicException("Selected ability not found" + (id ? ": ID " + std::to_string(id) : "")) {}
 };
 
+class NotEnoughMovementException : public GameLogicException {
+  public:
+    NotEnoughMovementException(size_t have, size_t need)
+        : GameLogicException("Not enough movement points: have " + std::to_string(have) + ", need "
+                             + std::to_string(need)) {}
+};
+
 // Resource exceptions
 class ResourceException : public GameException {
   protected:
@@ -64,6 +71,38 @@ class NotEnoughEnergyException : public NotEnoughResourceException {
 class NotEnoughExperienceException : public NotEnoughResourceException {
   public:
     NotEnoughExperienceException(size_t have, size_t need) : NotEnoughResourceException("experience", have, need) {}
+};
+
+class EntityNotFoundException : public std::exception {
+  public:
+    [[nodiscard]] const char*
+    what() const noexcept override {
+        return "Entity not found";
+    }
+};
+
+class OutOfBoundsException : public std::exception {
+  public:
+    [[nodiscard]] const char*
+    what() const noexcept override {
+        return "Position is out of bounds";
+    }
+};
+
+class CellNotPassableException : public std::exception {
+  public:
+    [[nodiscard]] const char*
+    what() const noexcept override {
+        return "Cell is not passable";
+    }
+};
+
+class CellOccupiedException : public std::exception {
+  public:
+    [[nodiscard]] const char*
+    what() const noexcept override {
+        return "Cell is already occupied";
+    }
 };
 
 #endif // EXCEPTIONS_HPP

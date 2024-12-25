@@ -9,7 +9,8 @@
 
 class Control {
   public:
-    enum class SummonerAction { SUMMON_TROOP, ACCUMULATE_ENERGY, UPGRADE_SCHOOL };
+    enum class SummonerAction { SUMMON_TROOP, ACCUMULATE_ENERGY, UPGRADE_SCHOOL, SKIP_TURN };
+    enum class TroopAction { MOVE, EFFECT, ATTACK, SKIP_TURN };
 
   private:
     static Control* instance;
@@ -28,6 +29,7 @@ class Control {
     [[nodiscard]] SummonerAction get_summoner_action() const;
     [[nodiscard]] size_t get_ability_choice() const;
     [[nodiscard]] Position get_position_choice() const;
+    [[nodiscard]] TroopAction get_troop_action() const;
 
     ~Control() = default;
 };

@@ -15,6 +15,7 @@
 #include "map/entity_list.hpp"
 #include "map/map.hpp"
 #include "utilities/position.hpp"
+#include "utilities/type_system.hpp"
 
 class MapManager : public Map {
   private:
@@ -38,10 +39,9 @@ class MapManager : public Map {
     MapManager(const MapManager&) = delete;
     MapManager& operator=(const MapManager&) = delete;
 
-    enum class MoveResult { SUCCESS, ENTITY_NOT_FOUND, OUT_OF_BOUNDS, CELL_NOT_PASSABLE, CELL_OCCUPIED };
     bool is_cell_occupied(Position pos) const;
     bool is_cell_passable(Position pos) const;
-    MoveResult move_entity(size_t id, Position delta);
+    void move_entity(size_t id, Position delta); // Changed return type to void
     void effect_cells();
     bool can_move_entity(size_t id, Position delta) const;
     bool can_entity_act(size_t id, Position delta) const;

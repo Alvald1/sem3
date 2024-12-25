@@ -10,11 +10,13 @@ class BaseTroop : public Entity {
     size_t damage;
     size_t range;
     size_t type;
+    size_t remaining_movement;
 
   protected:
     explicit BaseTroop(const Ability& ability)
         : Entity(ability), speed(ability.get_creature().get_speed()), damage(ability.get_creature().get_damage()),
-          range(ability.get_creature().get_range()), type(ability.get_creature().get_type()) {}
+          range(ability.get_creature().get_range()), type(ability.get_creature().get_type()),
+          remaining_movement(ability.get_creature().get_speed()) {}
 
   public:
     // Rule of five
@@ -43,6 +45,11 @@ class BaseTroop : public Entity {
     [[nodiscard]] inline size_t
     get_type() const noexcept {
         return type;
+    }
+
+    [[nodiscard]] inline size_t
+    get_remaining_movement() const noexcept {
+        return remaining_movement;
     }
 
     // Setters
@@ -96,6 +103,16 @@ class BaseTroop : public Entity {
         } else {
             range = static_cast<size_t>(static_cast<int>(range) + delta);
         }
+    }
+
+    inline void
+    spend_movement(size_t amount) noexcept {
+        remaining_movement = (amount > remaining_movement) ? 0 : remaining_movement - amount;
+    }
+
+    inline void
+    reset_movement() noexcept {
+        remaining_movement = speed;
     }
 };
 

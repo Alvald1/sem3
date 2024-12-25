@@ -39,3 +39,9 @@ Control::get_ability_choice() const {
 Control::get_position_choice() const {
     return Position(0, 0); // Default return for now
 }
+
+[[nodiscard]] Control::TroopAction
+Control::get_troop_action() const {
+    // TODO: Implement actual UI interaction
+    return TroopAction::SKIP_TURN; // Default return for now
+}

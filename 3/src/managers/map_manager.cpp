@@ -1,30 +1,30 @@
 #include "map_manager.hpp"
+#include "utilities/exceptions.hpp"
 
 #include "queue/entity/troop/base_troop.hpp"
 
-MapManager::MoveResult
+void
 MapManager::move_entity(size_t id, Position delta) {
     Cell* current_cell = entities_.find_by_id(id);
     if (!current_cell) {
-        return MoveResult::ENTITY_NOT_FOUND;
+        throw EntityNotFoundException();
     }
 
     Position curr_pos = current_cell->get_position();
-    Position new_pos(curr_pos.get_x() + delta.get_x(), curr_pos.get_y() + delta.get_y());
+    Position new_pos(curr_pos + delta);
 
     // Check bounds first to avoid unnecessary checks
     if (new_pos.get_x() < 0 || new_pos.get_y() < 0 || static_cast<size_t>(new_pos.get_x()) >= get_size().first
         || static_cast<size_t>(new_pos.get_y()) >= get_size().second) {
-        return MoveResult::OUT_OF_BOUNDS;
+        throw OutOfBoundsException();
     }
 
-    // Use can_move_entity for complete validation
-    if (!can_move_entity(id, delta)) {
-        // Need to determine specific reason for failure
-        if (!is_cell_passable(new_pos)) {
-            return MoveResult::CELL_NOT_PASSABLE;
-        }
-        return MoveResult::CELL_OCCUPIED;
+    // Check if the cell is passable and not occupied
+    if (!is_cell_passable(new_pos)) {
+        throw CellNotPassableException();
+    }
+    if (is_cell_occupied(new_pos)) {
+        throw CellOccupiedException();
     }
 
     // Get target cell and perform the move
@@ -39,8 +39,6 @@ MapManager::move_entity(size_t id, Position delta) {
     // Update entity location in entity list
     entities_.remove(id);
     entities_.append(id, target_cell);
-
-    return MoveResult::SUCCESS;
 }
 
 bool
