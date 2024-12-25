@@ -36,9 +36,9 @@ class Position {
         return Position(x + other.x, y + other.y);
     }
 
-    int
+    [[nodiscard]] size_t
     manhattan_distance(const Position& other) const {
-        return std::abs(x - other.x) + std::abs(y - other.y);
+        return std::abs(x - other.get_x()) + std::abs(y - other.get_y());
     }
 };
 
