@@ -33,6 +33,11 @@ class Position {
     operator+(const Position& other) const {
         return Position(x + other.x, y + other.y);
     }
+
+    int
+    manhattan_distance(const Position& other) const {
+        return std::abs(x - other.x) + std::abs(y - other.y);
+    }
 };
 
 #endif // POSITION_HPP

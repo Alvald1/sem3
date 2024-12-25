@@ -84,8 +84,7 @@ class Summoner : public Entity {
             return;
         }
         if (amount > energy) {
-            throw std::runtime_error("Not enough energy: have " + std::to_string(energy) + ", need "
-                                     + std::to_string(amount));
+            throw NotEnoughEnergyException(energy, amount);
         }
         energy -= amount;
     }
@@ -109,11 +108,26 @@ class Summoner : public Entity {
     }
 
     void
-    upgrade(size_t school_id) {
-        auto it = levels.find(school_id);
-        if (it == levels.end()) {
-            throw std::invalid_argument("Invalid school ID: " + std::to_string(school_id));
+    add_energy(size_t amount) noexcept {
+        if (energy > max_energy - amount) {
+            energy = max_energy;
+        } else {
+            energy += amount;
         }
+    }
+
+    void
+    upgrade_school(const School& school, size_t required_exp) {
+        if (current_experience < required_exp) {
+            throw NotEnoughExperienceException(current_experience, required_exp);
+        }
+
+        auto it = levels.find(school.get_id());
+        if (it == levels.end()) {
+            throw std::invalid_argument("Invalid school ID: " + std::to_string(school.get_id()));
+        }
+
+        current_experience -= required_exp;
         ++it->second;
     }
 

@@ -51,18 +51,28 @@ Schools::get_upgradable_abilities(const std::unordered_map<size_t, size_t>& leve
     return result;
 }
 
-const School*
+std::optional<std::reference_wrapper<const School>>
 Schools::find_school_by_id(size_t id) const {
     auto it =
         std::find_if(schools.begin(), schools.end(), [id](const School& school) { return school.get_id() == id; });
-    return it != schools.end() ? &(*it) : nullptr;
+    return it != schools.end() ? std::optional<std::reference_wrapper<const School>>(std::cref(*it)) : std::nullopt;
 }
 
-const School*
+std::optional<std::reference_wrapper<const School>>
 Schools::find_school_by_name(const std::string& name) const {
     auto it = std::find_if(schools.begin(), schools.end(),
                            [&name](const School& school) { return school.get_name() == name; });
-    return it != schools.end() ? &(*it) : nullptr;
+    return it != schools.end() ? std::optional<std::reference_wrapper<const School>>(std::cref(*it)) : std::nullopt;
+}
+
+std::optional<std::reference_wrapper<const School>>
+Schools::find_school_by_ability_id(size_t ability_id) const {
+    for (const auto& school : schools) {
+        if (school.has_ability(ability_id)) {
+            return std::cref(school);
+        }
+    }
+    return std::nullopt;
 }
 
 size_t
@@ -76,7 +86,7 @@ Schools::count_total_abilities() const {
 
 bool
 Schools::has_school(size_t id) const {
-    return find_school_by_id(id) != nullptr;
+    return find_school_by_id(id).has_value();
 }
 
 bool

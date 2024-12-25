@@ -33,9 +33,6 @@ class ActionManager {
     ActionManager(const ActionManager&) = delete;
     ActionManager& operator=(const ActionManager&) = delete;
 
-    std::tuple<Position, Position, int> request(Entity& entity);
-    Ability choose_ability(bool type, std::vector<Ability>& abilities);
-
     void
     action(Entity& entity) {
         if (auto* summoner = dynamic_cast<Summoner*>(&entity)) {

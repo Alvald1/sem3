@@ -1,6 +1,7 @@
 #ifndef SCHOOLS_HPP
 #define SCHOOLS_HPP
 
+#include <optional>
 #include <unordered_map>
 #include <vector>
 
@@ -40,9 +41,10 @@ class Schools {
     get_upgradable_abilities(const std::unordered_map<size_t, size_t>& levels, size_t exp) const;
 
     // New methods
-    const School* find_school_by_id(size_t id) const;
-    const School* find_school_by_name(const std::string& name) const;
+    std::optional<std::reference_wrapper<const School>> find_school_by_id(size_t id) const;
+    std::optional<std::reference_wrapper<const School>> find_school_by_name(const std::string& name) const;
     size_t count_total_abilities() const;
+    std::optional<std::reference_wrapper<const School>> find_school_by_ability_id(size_t ability_id) const;
 
     const std::vector<School>&
     get_schools() const {
