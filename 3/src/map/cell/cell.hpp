@@ -4,6 +4,12 @@
 #include <cstddef>
 #include "utilities/position.hpp"
 
+class CellBuilder;
+class EffectCellSpeedBuilder;
+class EffectCellRangeBuilder;
+class EffectCellHPBuilder;
+class EffectCellDamageBuilder;
+
 class Cell {
   private:
     size_t id;
@@ -12,13 +18,19 @@ class Cell {
     bool busy;
     size_t id_entity;
 
+    friend class CellBuilder;
+    friend class EffectCellSpeedBuilder;
+    friend class EffectCellRangeBuilder;
+    friend class EffectCellHPBuilder;
+    friend class EffectCellDamageBuilder;
+
+  protected:
+    Cell(size_t id, Position position, bool passability = true, bool busy = false, size_t id_entity = 0)
+        : id(id), position(position), passability(passability), busy(busy), id_entity(id_entity) {}
+
   public:
     // Add virtual destructor to make the class polymorphic
     virtual ~Cell() = default;
-
-    // Constructors
-    Cell(size_t id, Position position, bool passability = true, bool busy = false, size_t id_entity = 0)
-        : id(id), position(position), passability(passability), busy(busy), id_entity(id_entity) {}
 
     // Getters
     inline Position

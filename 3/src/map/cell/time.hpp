@@ -3,9 +3,19 @@
 
 #include <cstddef>
 
+class EffectCellSpeedBuilder;
+class EffectCellRangeBuilder;
+class EffectCellHPBuilder;
+class EffectCellDamageBuilder;
+
 class Time {
   private:
     size_t time;
+
+    friend class EffectCellSpeedBuilder;
+    friend class EffectCellRangeBuilder;
+    friend class EffectCellHPBuilder;
+    friend class EffectCellDamageBuilder;
 
   public:
     explicit Time(size_t t) : time(t) {}
