@@ -1,3 +1,6 @@
+#ifndef TYPE_SYSTEM_HPP
+#define TYPE_SYSTEM_HPP
+
 #include <cstdint>
 #include <utility>
 #include <vector>
@@ -61,3 +64,5 @@ class TypeSystem {
         return active_effects;
     }
 };
+
+#endif // TYPE_SYSTEM_HPP
