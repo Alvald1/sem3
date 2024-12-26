@@ -142,6 +142,12 @@ Board::draw() {
     auto [map_height, map_width] = map.get_size();
     auto current_entity = EntityManager::getInstance().get_current_entity();
 
+    // Get allied entities if there's a current entity
+    std::vector<Entity*> allied_entities;
+    if (current_entity) {
+        allied_entities = EntityManager::getInstance().get_allied_entities(current_entity->get_id());
+    }
+
     // Calculate visible rows and columns based on window size
     const size_t visible_rows = std::min(static_cast<size_t>(LINES / CELL_HEIGHT), map_height);
     const size_t visible_cols = std::min(static_cast<size_t>(COLS / CELL_WIDTH), map_width);
@@ -231,11 +237,20 @@ Board::draw() {
 
             if (entity_ids(y, x) != 0) {
                 // Draw entity ID in top-left corner
-                wattron(window, COLOR_PAIR(4) | A_DIM); // Используем желтый цвет и уменьшенную яркость
+                wattron(window, COLOR_PAIR(4) | A_DIM);
                 mvwprintw(window, grid_y + 1, grid_x + 1, "%zu", entity_ids(y, x));
                 wattroff(window, COLOR_PAIR(4) | A_DIM);
 
                 const std::string& icon = view.get_ability_icon(entity_ids(y, x));
+
+                // Check if this entity is allied
+                bool is_allied = false;
+                for (const auto& allied : allied_entities) {
+                    if (allied && allied->get_id() == entity_ids(y, x)) {
+                        is_allied = true;
+                        break;
+                    }
+                }
 
                 // Split icon into lines
                 std::vector<std::string> lines;
@@ -266,8 +281,8 @@ Board::draw() {
                     padding_top = 1; // Minimum top padding
                 }
 
-                // Draw each line centered horizontally
-                wattron(window, COLOR_PAIR(2));
+                // Draw each line with appropriate color
+                wattron(window, COLOR_PAIR(is_allied ? 2 : 3));                    // Green for allied, Red for enemies
                 for (size_t i = 0; i < lines.size() && i < CELL_HEIGHT - 1; i++) { // -1 to leave space for ID
                     const std::string& line = lines[i];
                     int x_padding = (CELL_WIDTH - line.length()) / 2;
@@ -278,7 +293,7 @@ Board::draw() {
                     mvwprintw(window, cell_start_y + padding_top + i + 1, // +1 to move down for ID
                               (x - offset_x) * CELL_WIDTH + x_padding, "%s", line.c_str());
                 }
-                wattroff(window, COLOR_PAIR(2));
+                wattroff(window, COLOR_PAIR(is_allied ? 2 : 3));
             }
         }
     }
