@@ -92,64 +92,73 @@ ActionManager::handle_summoner_action(Summoner& summoner) {
 
 void
 ActionManager::handle_troop_action(BaseTroop& troop) {
-    auto action = Control::getInstance()->get_troop_action();
 
-    switch (action) {
-        case Control::TroopAction::MOVE: {
-            Position current_pos = *MapManager::getInstance().get_entity_position(troop.get_id());
-            Position delta = Control::getInstance()->get_position_choice();
-            Position target_pos(current_pos + delta);
+    while (troop.get_remaining_movement() != 0) {
+        auto action = Control::getInstance()->get_troop_action();
 
-            // Calculate required movement points
-            size_t distance = current_pos.manhattan_distance(target_pos);
+        switch (action) {
+            case Control::TroopAction::MOVE: {
+                Position current_pos = *MapManager::getInstance().get_entity_position(troop.get_id());
+                Position delta = Control::getInstance()->get_position_choice();
+                Position target_pos(current_pos + delta);
 
-            // Check if troop has enough movement points
-            if (distance > troop.get_remaining_movement()) {
-                throw NotEnoughMovementException(troop.get_remaining_movement(), distance);
-            }
+                // Calculate required movement points
+                size_t distance = current_pos.manhattan_distance(target_pos);
 
-            auto& map = MapManager::getInstance();
-            try {
-                map.move_entity(troop.get_id(), delta);
-                troop.spend_movement(distance);
-                if (troop.get_remaining_movement() == 0) {
-                    // End turn if no movement points left
-                    troop.reset_movement();
+                // Check if troop has enough movement points
+                if (distance > troop.get_remaining_movement()) {
+                    throw NotEnoughMovementException(troop.get_remaining_movement(), distance);
                 }
-            } catch (const std::exception& e) {
-                throw;
+
+                auto& map = MapManager::getInstance();
+                try {
+                    map.move_entity(troop.get_id(), delta);
+                    troop.spend_movement(distance);
+                } catch (const std::exception& e) {
+                    throw;
+                }
+                break;
             }
-            break;
-        }
-        case Control::TroopAction::EFFECT: {
-            // Position target = Control::getInstance()->get_position_choice();
-            // auto& map = MapManager::getInstance();
+            case Control::TroopAction::EFFECT: {
+                auto& map = MapManager::getInstance();
 
-            // if (map.can_entity_act(troop.get_id(), target)) {
-            //     // TODO: Implement effect application
-            // }
-            break;
-        }
-        case Control::TroopAction::ATTACK: {
-            // Position target = Control::getInstance()->get_position_choice();
-            // auto& map = MapManager::getInstance();
-            // auto& entity_manager = EntityManager::getInstance();
+                auto effect = TypeSystem::get_effects(troop.get_type());
+                if (effect.empty()) {
+                    throw NoEffectAvailableException();
+                }
 
-            // if (map.can_entity_act(troop.get_id(), target)) {
-            //     // Find target entity at position and apply damage
-            //     auto target_pos = map.get_entity_position(troop.get_id());
-            //     if (target_pos && *target_pos == target) {
-            //         if (auto* target_entity =
-            //                 entity_manager.get_entity(map.matrix(target.get_x(), target.get_y())->get_id_entity())) {
-            //             target_entity->modify_hp(-troop.get_damage());
-            //         }
-            //     }
-            // }
-            break;
+                Position current_pos = *MapManager::getInstance().get_entity_position(troop.get_id());
+                Position delta = Control::getInstance()->get_position_choice();
+                Position target_pos(current_pos + delta);
+
+                if (map.can_entity_act(troop.get_id(), target_pos)) {
+                    map.change_cell_type(target_pos, effect[0].first, troop.get_damage() * (effect[0].second ? 1 : -1),
+                                         3);
+                    troop.spend_movement(1);
+                }
+                break;
+            }
+            case Control::TroopAction::ATTACK: {
+                // Position target = Control::getInstance()->get_position_choice();
+                // auto& map = MapManager::getInstance();
+                // auto& entity_manager = EntityManager::getInstance();
+
+                // if (map.can_entity_act(troop.get_id(), target)) {
+                //     // Find target entity at position and apply damage
+                //     auto target_pos = map.get_entity_position(troop.get_id());
+                //     if (target_pos && *target_pos == target) {
+                //         if (auto* target_entity =
+                //                 entity_manager.get_entity(map.matrix(target.get_x(), target.get_y())->get_id_entity())) {
+                //             target_entity->modify_hp(-troop.get_damage());
+                //         }
+                //     }
+                // }
+                break;
+            }
+            case Control::TroopAction::SKIP_TURN:
+                // Do nothing, just skip the turn
+                break;
         }
-        case Control::TroopAction::SKIP_TURN:
-            troop.reset_movement();
-            // Do nothing, just skip the turn
-            break;
+        troop.reset_movement();
     }
 }

@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 
-enum class EffectType : uint8_t { DAMAGE = 0, SPEED = 1, RANGE = 2, HEALTH = 3 };
+enum class EffectType : uint8_t { DAMAGE = 0, SPEED = 1, RANGE = 2, HEALTH = 3, NONE };
 enum class TroopType : uint8_t { SUMMONER = 0, MORAL = 1, AMORAL = 2 };
 
 class TypeSystem {

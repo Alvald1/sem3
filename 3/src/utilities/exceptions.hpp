@@ -105,4 +105,14 @@ class CellOccupiedException : public std::exception {
     }
 };
 
+class EffectExpiredException : public GameLogicException {
+  public:
+    EffectExpiredException() : GameLogicException("Effect time has expired") {}
+};
+
+class NoEffectAvailableException : public GameLogicException {
+  public:
+    NoEffectAvailableException() : GameLogicException("This troop has no effects available") {}
+};
+
 #endif // EXCEPTIONS_HPP
