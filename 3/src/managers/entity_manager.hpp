@@ -45,6 +45,7 @@ class EntityManager {
     [[nodiscard]] size_t get_entity_count() const;
     void clear();
     [[nodiscard]] std::vector<Entity*> get_queue_entities();
+    [[nodiscard]] std::vector<Entity*> get_allied_entities(size_t id);
 };
 
 #endif // ENTITY_MANAGER_HPP

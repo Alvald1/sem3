@@ -79,3 +79,31 @@ EntityManager::get_queue_entities() {
 
     return result;
 }
+
+std::vector<Entity*>
+EntityManager::get_allied_entities(size_t id) {
+    std::vector<Entity*> allies;
+    Entity* entity = get_entity(id);
+
+    // Try to cast entity to BaseTroop first
+    if (auto* troop = dynamic_cast<BaseTroop*>(entity)) {
+        // If it's a troop, get its summoner
+        auto* summoner = dynamic_cast<Summoner*>(get_entity(troop->get_id_summoner()));
+        allies.push_back(summoner); // Add summoner
+
+        // Add all entities owned by the summoner
+        for (size_t owned_id : summoner->get_ownerships()) {
+            allies.push_back(get_entity(owned_id));
+        }
+    } else if (auto* summoner = dynamic_cast<Summoner*>(entity)) {
+        // If it's already a summoner
+        allies.push_back(summoner); // Add the summoner itself
+
+        // Add all entities owned by the summoner
+        for (size_t owned_id : summoner->get_ownerships()) {
+            allies.push_back(get_entity(owned_id));
+        }
+    }
+
+    return allies;
+}
