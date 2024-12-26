@@ -45,7 +45,6 @@ Board::draw_info_panel() {
     werase(info_window);
     box(info_window, 0, 0);
 
-    // Красивый заголовок
     wattron(info_window, A_BOLD);
     mvwprintw(info_window, 0, (INFO_PANEL_WIDTH - 7) / 2, " QUEUE ");
     wattroff(info_window, A_BOLD);
@@ -68,6 +67,12 @@ Board::draw_info_panel() {
             break;
         }
 
+        // Текущий активный entity выделяем цветом
+        bool is_current = (i == 0);
+        if (is_current) {
+            wattron(info_window, COLOR_PAIR(2) | A_BOLD);
+        }
+
         // Рисуем рамку с красивыми углами
         mvwaddch(info_window, box_y, 1, ACS_ULCORNER);
         mvwaddch(info_window, box_y, QUEUE_BOX_WIDTH, ACS_URCORNER);
@@ -84,12 +89,6 @@ Board::draw_info_panel() {
             mvwaddch(info_window, y, QUEUE_BOX_WIDTH, ACS_VLINE);
         }
 
-        // Текущий активный entity выделяем цветом
-        bool is_current = (i == 0);
-        if (is_current) {
-            wattron(info_window, COLOR_PAIR(2) | A_BOLD);
-        }
-
         // Имя entity по центру
         std::string name = entities[i]->get_name();
         if (name.length() > QUEUE_BOX_WIDTH - 4) {
@@ -104,11 +103,18 @@ Board::draw_info_panel() {
         int filled_width = static_cast<int>(hp_width * hp_percent / 100.0);
 
         mvwprintw(info_window, box_y + 2, 3, "HP:");
-        wattron(info_window, COLOR_PAIR(3)); // Красный для пустой части
+        if (!is_current) {
+            wattron(info_window, COLOR_PAIR(3)); // Красный для пустой части
+        }
         mvwhline(info_window, box_y + 2, 6, '=', hp_width);
-        wattron(info_window, COLOR_PAIR(2)); // Зеленый для заполненной части
+        if (!is_current) {
+            wattroff(info_window, COLOR_PAIR(3));
+            wattron(info_window, COLOR_PAIR(2)); // Зеленый для заполненной части
+        }
         mvwhline(info_window, box_y + 2, 6, '#', filled_width);
-        wattroff(info_window, COLOR_PAIR(2));
+        if (!is_current) {
+            wattroff(info_window, COLOR_PAIR(2));
+        }
 
         // Числовое значение HP
         mvwprintw(info_window, box_y + 2, QUEUE_BOX_WIDTH - 8, "%zu/%zu", static_cast<size_t>(entities[i]->get_hp()),
@@ -126,8 +132,9 @@ void
 Board::draw() {
     werase(window);
 
-    // Get map dimensions
+    // Get map dimensions and current entity
     auto [map_height, map_width] = map.get_size();
+    auto current_entity = EntityManager::getInstance().get_current_entity();
 
     // Calculate visible rows and columns based on window size
     const size_t visible_rows = std::min(static_cast<size_t>(LINES / CELL_HEIGHT), map_height);
@@ -140,21 +147,29 @@ Board::draw() {
     size_t row_end = std::min(offset_y + visible_rows, map_height);
     size_t col_end = std::min(offset_x + visible_cols, map_width);
 
-    // Draw only the visible portion of the grid
+    // Find current entity position first
+    Matrix<size_t> entity_ids = map.export_entity_ids_matrix();
+    Position current_pos;
+    bool found_current = false;
+    if (current_entity) {
+        for (size_t y = 0; y < map_height && !found_current; y++) {
+            for (size_t x = 0; x < map_width; x++) {
+                if (entity_ids(y, x) == current_entity->get_id()) {
+                    current_pos = Position(x, y);
+                    found_current = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    // Draw the basic grid first
     for (size_t y = offset_y; y <= row_end; y++) {
         for (size_t x = offset_x; x <= col_end; x++) {
-            // Calculate screen positions
             int grid_y = (y - offset_y) * CELL_HEIGHT;
             int grid_x = (x - offset_x) * CELL_WIDTH;
 
-            if (y < map_height && x < map_width) {
-                // Clear cell interior
-                for (int i = 1; i < CELL_HEIGHT; i++) {
-                    mvwhline(window, grid_y + i, grid_x + 1, ' ', CELL_WIDTH - 1);
-                }
-            }
-
-            // Draw borders
+            // Draw standard cell borders
             if (x < map_width) {
                 mvwhline(window, grid_y, grid_x, ACS_HLINE, CELL_WIDTH);
             }
@@ -162,7 +177,7 @@ Board::draw() {
                 mvwvline(window, grid_y, grid_x, ACS_VLINE, CELL_HEIGHT);
             }
 
-            // Draw corners
+            // Draw standard corners
             if (x < map_width && y < map_height) {
                 mvwaddch(window, grid_y, grid_x,
                          y == 0 && x == 0 ? ACS_ULCORNER
@@ -173,8 +188,36 @@ Board::draw() {
         }
     }
 
+    // Draw the highlighted cell for current entity separately
+    if (found_current && current_pos.get_x() >= offset_x && current_pos.get_x() < col_end
+        && current_pos.get_y() >= offset_y && current_pos.get_y() < row_end) {
+
+        int grid_y = (current_pos.get_y() - offset_y) * CELL_HEIGHT;
+        int grid_x = (current_pos.get_x() - offset_x) * CELL_WIDTH;
+
+        wattron(window, COLOR_PAIR(2) | A_BOLD);
+
+        // Draw complete cell border
+        // Top and bottom borders
+        mvwhline(window, grid_y, grid_x, ACS_HLINE, CELL_WIDTH + 1);
+        mvwhline(window, grid_y + CELL_HEIGHT, grid_x, ACS_HLINE, CELL_WIDTH + 1);
+
+        // Left and right borders
+        for (int i = 0; i <= CELL_HEIGHT; i++) {
+            mvwaddch(window, grid_y + i, grid_x, ACS_VLINE);
+            mvwaddch(window, grid_y + i, grid_x + CELL_WIDTH, ACS_VLINE);
+        }
+
+        // Corners
+        mvwaddch(window, grid_y, grid_x, ACS_ULCORNER);
+        mvwaddch(window, grid_y, grid_x + CELL_WIDTH, ACS_URCORNER);
+        mvwaddch(window, grid_y + CELL_HEIGHT, grid_x, ACS_LLCORNER);
+        mvwaddch(window, grid_y + CELL_HEIGHT, grid_x + CELL_WIDTH, ACS_LRCORNER);
+
+        wattroff(window, COLOR_PAIR(2) | A_BOLD);
+    }
+
     // Draw entities, again restricting to visible section
-    Matrix<size_t> entity_ids = map.export_entity_ids_matrix();
     for (size_t y = offset_y; y < row_end; y++) {
         for (size_t x = offset_x; x < col_end; x++) {
             if (entity_ids(y, x) != 0) {
