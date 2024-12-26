@@ -51,6 +51,36 @@ Control::get_map_size() const {
     }
 }
 
+int
+Control::get_player_count() const {
+    int player_count = 2; // Default minimum players
+    auto& view = View::getInstance();
+
+    while (true) {
+        view.show_player_count_menu(player_count);
+        int ch = getch();
+
+        switch (ch) {
+            case 'q':
+            case 'Q':
+            case 27:      // ESC key
+                return 0; // Special value indicating exit
+            case KEY_UP:
+                if (player_count < 4) {
+                    player_count++;
+                }
+                break;
+            case KEY_DOWN:
+                if (player_count > 2) {
+                    player_count--;
+                }
+                break;
+            case '\n':
+            case KEY_ENTER: return player_count;
+        }
+    }
+}
+
 bool
 Control::handle_input() {
     int ch = getch();
@@ -90,4 +120,37 @@ Control::get_position_choice() const {
 Control::get_troop_action() const {
     // TODO: Implement actual UI interaction
     return TroopAction::SKIP_TURN; // Default return for now
+}
+
+std::optional<size_t>
+Control::select_summoner(const std::vector<std::reference_wrapper<const Ability>>& summoners,
+                         const std::vector<bool>& selected, int current_player) const {
+    auto& view = View::getInstance();
+    int current_selection = 0;
+
+    while (true) {
+        view.show_summoners_selection(summoners, selected, current_player, current_selection);
+        int ch = getch();
+
+        switch (ch) {
+            case KEY_UP:
+                if (current_selection > 0) {
+                    current_selection--;
+                }
+                break;
+            case KEY_DOWN:
+                if (current_selection < static_cast<int>(summoners.size() - 1)) {
+                    current_selection++;
+                }
+                break;
+            case '\n':
+            case KEY_ENTER:
+                if (!selected[current_selection]) {
+                    return current_selection;
+                }
+                break;
+            case 27: // ESC
+                return std::nullopt;
+        }
+    }
 }

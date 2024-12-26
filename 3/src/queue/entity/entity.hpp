@@ -18,7 +18,7 @@ class Entity : public NameID {
   protected:
     explicit Entity(const Ability& ability) noexcept
         : NameID(next_id++, ability.get_name()), initiative(ability.get_creature().get_initiative()),
-          max_hp(ability.get_count()), hp(ability.get_count()) {}
+          max_hp(ability.get_hp()), hp(ability.get_hp()) {}
 
   public:
     // Rule of five

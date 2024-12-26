@@ -99,3 +99,16 @@ Schools::remove_school(size_t id) {
     }
     return false;
 }
+
+std::vector<std::reference_wrapper<const Ability>>
+Schools::find_summoner_abilities() const {
+    std::vector<std::reference_wrapper<const Ability>> summoner_abilities;
+    for (const auto& school : schools) {
+        for (const auto& ability : school.get_abilities()) {
+            if (ability.get_creature().get_type() == 0) {
+                summoner_abilities.push_back(std::cref(ability));
+            }
+        }
+    }
+    return summoner_abilities;
+}

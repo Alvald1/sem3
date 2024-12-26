@@ -2,6 +2,7 @@
 #define CONTROL_HPP
 
 #include <functional>
+#include <optional>
 #include <utility>
 #include <vector>
 
@@ -34,6 +35,10 @@ class Control {
 
     std::pair<int, int> get_map_size() const;
     bool handle_input();
+    int get_player_count() const;
+
+    std::optional<size_t> select_summoner(const std::vector<std::reference_wrapper<const Ability>>& summoners,
+                                          const std::vector<bool>& selected, int current_player) const;
 
     ~Control() = default;
 };

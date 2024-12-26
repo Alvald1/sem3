@@ -45,6 +45,12 @@ target_link_options(asan PRIVATE ${ASAN_FLAGS})
 target_link_libraries(msan PRIVATE ${CURSES_LIBRARIES} project_includes)
 target_link_options(msan PRIVATE ${MSAN_FLAGS})
 
+# Линкуем RapidJSON
+target_include_directories(${PROJECT_NAME} PRIVATE ${RAPIDJSON_INCLUDE_DIRS})
+target_include_directories(debug PRIVATE ${RAPIDJSON_INCLUDE_DIRS})
+target_include_directories(asan PRIVATE ${RAPIDJSON_INCLUDE_DIRS})
+target_include_directories(msan PRIVATE ${RAPIDJSON_INCLUDE_DIRS})
+
 # Статический анализ
 add_custom_target(static
     COMMAND clang-tidy

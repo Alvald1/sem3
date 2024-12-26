@@ -59,6 +59,10 @@ set(MSAN_FLAGS -fsanitize=memory -fsanitize=undefined)
 find_package(Curses REQUIRED)
 include_directories(${CURSES_INCLUDE_DIR})
 
+# Find RapidJSON
+find_package(RapidJSON REQUIRED)
+include_directories(${RAPIDJSON_INCLUDE_DIRS})
+
 # Делегируем в src, test, doc
 add_subdirectory(src)
 add_subdirectory(test)

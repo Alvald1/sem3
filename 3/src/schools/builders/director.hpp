@@ -6,7 +6,7 @@
 #include "school_builder.hpp"
 
 class Director {
-  private:
+  public:
     static Creature
     buildCreature(const std::string& creatureName, size_t speed, size_t damage, size_t range, size_t type,
                   size_t initiative) {
@@ -21,12 +21,12 @@ class Director {
 
     static Ability
     buildAbility(const std::string& abilityName, const Creature& creature, size_t level, size_t energy,
-                 size_t experience, size_t count) {
+                 size_t experience, size_t hp) {
         return AbilityBuilder(abilityName, creature)
             .set_level(level)
             .set_energy(energy)
             .set_experience(experience)
-            .set_count(count)
+            .set_hp(hp)
             .build();
     }
 

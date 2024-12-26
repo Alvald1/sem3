@@ -93,7 +93,13 @@ View::refresh_display() const {
 
 void
 View::cleanup() {
-    endwin();
+    clear();             // Clear the screen
+    refresh();           // Refresh to show the clear screen
+    curs_set(1);         // Show cursor
+    echo();              // Enable echo
+    nocbreak();          // Disable cbreak mode
+    endwin();            // End curses mode
+    printf("\033[?25h"); // Show cursor (ANSI escape sequence)
 }
 
 const char*
@@ -118,17 +124,101 @@ void
 View::send_abilities(const std::vector<std::reference_wrapper<const Ability>>& abilities,
                      AbilityDisplayType type) const {
     clear_screen();
-
-    // Display title with proper format string
     mvprintw(0, 0, "%s", get_title(type));
 
     if (abilities.empty()) {
         mvprintw(2, 0, "%s", get_empty_message(type));
     } else {
-        // Display abilities list
         int y = 2;
         for (const auto& ability : abilities) {
-            mvprintw(y++, 2, "- %s", ability.get().get_name().c_str());
+            const auto& icon = get_ability_icon(ability.get().get_id());
+            mvprintw(y++, 2, "- %s %s", ability.get().get_name().c_str(), icon.c_str());
+        }
+    }
+    refresh_display();
+}
+
+void
+View::add_ability_icon(size_t ability_id, std::string icon) {
+    ability_icons[ability_id] = std::move(icon);
+}
+
+const std::string&
+View::get_ability_icon(size_t ability_id) const {
+    static const std::string empty_icon = "?";
+    auto it = ability_icons.find(ability_id);
+    return it != ability_icons.end() ? it->second : empty_icon;
+}
+
+bool
+View::has_ability_icon(size_t ability_id) const {
+    return ability_icons.find(ability_id) != ability_icons.end();
+}
+
+void
+View::show_player_count_menu(int current_count) const {
+    clear_screen();
+    int center_y = LINES / 2;
+    int center_x = COLS / 2;
+
+    mvprintw(center_y - 4, center_x - 15, "Select number of players");
+    attron(A_REVERSE);
+    mvprintw(center_y - 2, center_x - 5, "[ %d ]", current_count);
+    attroff(A_REVERSE);
+    mvprintw(center_y + 2, center_x - 25, "Use Up/Down to change, Enter to confirm");
+    refresh_display();
+}
+
+void
+View::show_summoners_selection(const std::vector<std::reference_wrapper<const Ability>>& summoners,
+                               const std::vector<bool>& selected, int current_player, int current_selection) const {
+    clear_screen();
+
+    mvprintw(1, COLS / 2 - 15, "Player %d: Choose your summoner", current_player + 1);
+    mvprintw(3, 2, "Use UP/DOWN to navigate, ENTER to select, ESC to exit");
+
+    int start_y = 5;
+    int start_x = 2;
+    int box_width = 40;
+    int box_height = 6; // Reduced height since we're showing fewer fields
+    int cols = COLS / (box_width + 2);
+
+    for (size_t i = 0; i < summoners.size(); ++i) {
+        const auto& ability = summoners[i].get();
+        const auto& summoner = ability.get_creature();
+        int y = start_y + (i / cols) * (box_height + 1);
+        int x = start_x + (i % cols) * (box_width + 2);
+
+        bool is_selected = (i == static_cast<size_t>(current_selection));
+        bool is_taken = selected[i];
+
+        if (is_selected) {
+            attron(A_REVERSE);
+        }
+        if (is_taken) {
+            attron(COLOR_PAIR(2));
+        }
+
+        // Draw box borders
+        for (int by = 0; by < box_height; ++by) {
+            mvhline(y + by, x, ' ', box_width);
+        }
+
+        // Draw summoner info (modified)
+        mvprintw(y + 1, x + 2, "Name: %s", ability.get_name().c_str());
+        mvprintw(y + 2, x + 2, "HP: %zu  Energy: %zu", ability.get_hp(), ability.get_energy());
+        mvprintw(y + 3, x + 2, "Experience: %zu", ability.get_experience());
+        mvprintw(y + 4, x + 2, "Accum Index: %zu  Range: %zu", summoner.get_damage(), summoner.get_range());
+
+        if (is_taken) {
+            mvprintw(y + box_height - 1, x + 2, "[TAKEN]");
+        }
+
+        if (is_selected) {
+            attroff(A_REVERSE);
+        }
+        if (is_taken) {
+            attroff(COLOR_PAIR(2));
         }
     }
 

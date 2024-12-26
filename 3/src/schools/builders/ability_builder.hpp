@@ -30,8 +30,8 @@ class AbilityBuilder {
     }
 
     AbilityBuilder&
-    set_count(size_t count) {
-        ability.set_count(count);
+    set_hp(size_t hp) {
+        ability.set_hp(hp);
         return *this;
     }
 

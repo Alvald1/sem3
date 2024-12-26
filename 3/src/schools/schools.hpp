@@ -45,6 +45,7 @@ class Schools {
     std::optional<std::reference_wrapper<const School>> find_school_by_name(const std::string& name) const;
     size_t count_total_abilities() const;
     std::optional<std::reference_wrapper<const School>> find_school_by_ability_id(size_t ability_id) const;
+    std::vector<std::reference_wrapper<const Ability>> find_summoner_abilities() const;
 
     const std::vector<School>&
     get_schools() const {

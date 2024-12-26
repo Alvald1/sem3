@@ -12,7 +12,7 @@ class Ability : public NameID {
     size_t level{0};
     size_t energy{0};
     size_t experience{0};
-    size_t count{0};
+    size_t hp{0};
 
     static inline size_t next_id{1};
 
@@ -51,8 +51,8 @@ class Ability : public NameID {
     }
 
     [[nodiscard]] inline size_t
-    get_count() const noexcept {
-        return count;
+    get_hp() const noexcept {
+        return hp;
     }
 
     // Setters
@@ -77,8 +77,8 @@ class Ability : public NameID {
     }
 
     inline void
-    set_count(size_t new_count) noexcept {
-        count = new_count;
+    set_hp(size_t new_hp) noexcept {
+        hp = new_hp;
     }
 
     [[nodiscard]] constexpr bool
