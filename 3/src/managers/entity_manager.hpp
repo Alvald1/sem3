@@ -5,9 +5,7 @@
 #include <unordered_map>
 #include <vector>
 #include "queue/entity/entity.hpp"
-
-// Forward declare SortQueue
-class SortQueue;
+#include "queue/queue.hpp" // Заменяем forward declaration на полное включение
 
 class EntityManager {
   private:
@@ -25,6 +23,12 @@ class EntityManager {
             instance_ = new EntityManager();
         }
         return *instance_;
+    }
+
+    static void
+    destroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
     }
 
     ~EntityManager() = default;

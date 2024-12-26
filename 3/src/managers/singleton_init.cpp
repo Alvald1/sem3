@@ -12,4 +12,3 @@ DamageManager* DamageManager::instance_ = nullptr;
 EntityManager* EntityManager::instance_ = nullptr;
 GameManager* GameManager::instance_ = nullptr;
 MapManager* MapManager::instance_ = nullptr;
-SummonManager* SummonManager::instance_ = nullptr;

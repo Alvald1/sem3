@@ -17,11 +17,17 @@ class SummonManager {
 
   public:
     static SummonManager&
-    getInstance() {
+    getInstance() { // убедитесь, что возвращается ссылка
         if (instance_ == nullptr) {
             instance_ = new SummonManager();
         }
         return *instance_;
+    }
+
+    static void
+    destroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
     }
 
     SummonManager(const SummonManager&) = delete;

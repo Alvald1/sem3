@@ -31,6 +31,12 @@ class Schools {
         return *instance_;
     }
 
+    static void
+    destroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
+    }
+
     // Existing methods
     void add_school(School school);
     size_t count_schools() const;

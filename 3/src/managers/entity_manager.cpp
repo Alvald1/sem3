@@ -3,7 +3,7 @@
 #include "queue/entity/troop/base_troop.hpp"
 #include "queue/queue.hpp"
 
-EntityManager::EntityManager() : queue_(std::make_unique<SortQueue>(this)) {}
+EntityManager::EntityManager() : queue_(std::make_unique<SortQueue>(*this)) {}
 
 void
 EntityManager::add_entity(std::unique_ptr<Entity> entity) {

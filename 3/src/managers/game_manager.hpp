@@ -25,10 +25,16 @@ class GameManager {
         return *instance_;
     }
 
+    static void
+    destroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
+    }
+
     GameManager(const GameManager&) = delete;
     GameManager& operator=(const GameManager&) = delete;
 
-    ~GameManager();
+    ~GameManager() = default;
     void do_step();
 };
 

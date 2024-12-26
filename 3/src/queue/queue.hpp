@@ -18,7 +18,7 @@ class SortQueue {
     };
 
     // Change member variable type to match constructor
-    EntityManager* entity_manager;
+    EntityManager& entity_manager;
     Node* head = nullptr;
     size_t size = 0;
 
@@ -30,7 +30,7 @@ class SortQueue {
     friend class EntityManager;
 
   public:
-    explicit SortQueue(EntityManager* manager) : entity_manager(manager) {}
+    explicit SortQueue(EntityManager& manager) : entity_manager(manager) {}
 
     ~SortQueue() { cleanup(); }
 

@@ -6,6 +6,8 @@
 #include "queue/entity/builder/moral_troop_builder.hpp"
 #include "utilities/type_system.hpp"
 
+SummonManager* SummonManager::instance_ = nullptr;
+
 void
 SummonManager::summon(Summoner& summoner, const Ability& ability, const Position& position) {
     auto type = TypeSystem::getTroopType(ability.get_creature().get_type());
@@ -26,6 +28,7 @@ SummonManager::create_moral(Summoner& summoner, const Ability& ability, const Po
         throw InvalidPositionException();
     }
     auto troop = EntityDirector::createMoralTroop(ability, 0, summoner.get_id());
+    summoner.add_ownership(troop.get_id());
     MapManager::getInstance().add_entity(troop.get_id(), position);
     EntityManager::getInstance().add_entity(std::make_unique<MoralTroop>(troop));
 }
@@ -40,6 +43,7 @@ SummonManager::create_amoral(Summoner& summoner, const Ability& ability, const P
         throw InvalidPositionException();
     }
     auto troop = EntityDirector::createAmoralTroop(ability, summoner.get_id());
+    summoner.add_ownership(troop.get_id());
     MapManager::getInstance().add_entity(troop.get_id(), position);
     EntityManager::getInstance().add_entity(std::make_unique<AmoralTroop>(troop));
 }

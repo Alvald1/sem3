@@ -37,6 +37,12 @@ class MapManager : public Map {
         return *instance_;
     }
 
+    static void
+    destroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
+    }
+
     EntityList entities_;
 
     MapManager(const MapManager&) = delete;

@@ -30,6 +30,12 @@ class ActionManager {
         return *instance_;
     }
 
+    static void
+    destroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
+    }
+
     ActionManager(const ActionManager&) = delete;
     ActionManager& operator=(const ActionManager&) = delete;
 

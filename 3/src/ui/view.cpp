@@ -169,15 +169,13 @@ View::send_abilities(size_t current_energy, const std::vector<std::reference_wra
             }
             mvprintw(box_y + 1, COLS - INFO_PANEL_WIDTH + 4, "Name: %s", ability.get_name().c_str());
             mvprintw(box_y + 2, COLS - INFO_PANEL_WIDTH + 4, "Energy Cost: %zu", ability.get_energy());
-            if (ability.get_energy() > current_energy) {
-                attroff(COLOR_PAIR(2));
-            }
+            mvprintw(box_y + 3, COLS - INFO_PANEL_WIDTH + 4, "ID: %zu", ability.get_id());
 
             // Rest of the content
-            mvprintw(box_y + 3, COLS - INFO_PANEL_WIDTH + 4, "HP: %zu", ability.get_hp());
-            mvprintw(box_y + 4, COLS - INFO_PANEL_WIDTH + 4, "Damage: %zu", creature.get_damage());
-            mvprintw(box_y + 5, COLS - INFO_PANEL_WIDTH + 4, "Speed: %zu", creature.get_speed());
-            mvprintw(box_y + 6, COLS - INFO_PANEL_WIDTH + 4, "Range: %zu", creature.get_range());
+            mvprintw(box_y + 4, COLS - INFO_PANEL_WIDTH + 4, "HP: %zu", ability.get_hp());
+            mvprintw(box_y + 5, COLS - INFO_PANEL_WIDTH + 4, "Damage: %zu", creature.get_damage());
+            mvprintw(box_y + 6, COLS - INFO_PANEL_WIDTH + 4, "Speed: %zu", creature.get_speed());
+            mvprintw(box_y + 7, COLS - INFO_PANEL_WIDTH + 4, "Range: %zu", creature.get_range());
         }
     } else {
         mvprintw(6, COLS - INFO_PANEL_WIDTH + 2, "%s", get_empty_message(type));

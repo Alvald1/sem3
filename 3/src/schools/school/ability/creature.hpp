@@ -9,7 +9,7 @@ class Creature : public NameID {
     size_t speed_{0};
     size_t damage_{0};
     size_t range_{0};
-    uint8_t type_{0};
+    size_t type_{0};
     size_t initiative_{0};
 
     static inline size_t next_id{1};
@@ -40,7 +40,7 @@ class Creature : public NameID {
         return range_;
     }
 
-    [[nodiscard]] inline uint8_t
+    [[nodiscard]] inline size_t
     get_type() const noexcept {
         return type_;
     }
@@ -73,7 +73,7 @@ class Creature : public NameID {
     }
 
     inline void
-    set_type(uint8_t new_type) noexcept {
+    set_type(size_t new_type) noexcept {
         type_ = new_type;
     }
 

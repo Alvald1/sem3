@@ -31,7 +31,7 @@
                         "speed": 2,
                         "damage": 3,
                         "range": 2,
-                        "type": 33,
+                        "type": 769,
                         "initiative": 3,
                         "icon": " ( ) \n  |  \n /|\\ \n / \\ "
                     }
@@ -47,7 +47,7 @@
                         "speed": 3,
                         "damage": 4,
                         "range": 3,
-                        "type": 41,
+                        "type": 769,
                         "initiative": 4,
                         "icon": " ~~~~ \n( oo )\n \\__/ "
                     }
@@ -63,7 +63,7 @@
                         "speed": 2,
                         "damage": 6,
                         "range": 3,
-                        "type": 45,
+                        "type": 5,
                         "initiative": 2,
                         "icon": "  O==O \n /####\\\n/######\\"
                     }
@@ -101,7 +101,7 @@
                         "speed": 2,
                         "damage": 3,
                         "range": 0,
-                        "type": 130,
+                        "type": 2,
                         "initiative": 2,
                         "icon": "  O== \n /|  \n / \\ "
                     }
@@ -117,7 +117,7 @@
                         "speed": 3,
                         "damage": 5,
                         "range": 2,
-                        "type": 134,
+                        "type": 258,
                         "initiative": 5,
                         "icon": " ~~~~ \n ~()~ \n ~~~~ "
                     }
@@ -133,7 +133,7 @@
                         "speed": 2,
                         "damage": 7,
                         "range": 3,
-                        "type": 135,
+                        "type": 258,
                         "initiative": 4,
                         "icon": "  o o  \n \\-+-/ \n  | |  "
                     }
@@ -171,7 +171,7 @@
                         "speed": 6,
                         "damage": 4,
                         "range": 2,
-                        "type": 3,
+                        "type": 18,
                         "initiative": 6,
                         "icon": " (><) \n  |   \n / \\ "
                     }
@@ -187,7 +187,7 @@
                         "speed": 5,
                         "damage": 6,
                         "range": 3,
-                        "type": 3,
+                        "type": 66,
                         "initiative": 7,
                         "icon": "  ^   \n / \\  \n/_ _\\ "
                     }
@@ -203,7 +203,7 @@
                         "speed": 6,
                         "damage": 8,
                         "range": 4,
-                        "type": 3,
+                        "type": 258,
                         "initiative": 8,
                         "icon": "  <>   \n /||\\  \n /__\\ "
                     }
@@ -241,7 +241,7 @@
                         "speed": 7,
                         "damage": 3,
                         "range": 3,
-                        "type": 4,
+                        "type": 13,
                         "initiative": 8,
                         "icon": " ~<>~ \n  ||   \n /__\\ "
                     }
@@ -257,7 +257,7 @@
                         "speed": 8,
                         "damage": 5,
                         "range": 4,
-                        "type": 4,
+                        "type": 193,
                         "initiative": 9,
                         "icon": "  *~*  \n ~()~ \n ~~~ "
                     }
@@ -273,7 +273,7 @@
                         "speed": 6,
                         "damage": 8,
                         "range": 5,
-                        "type": 4,
+                        "type": 769,
                         "initiative": 8,
                         "icon": "  ~o~  \n <===> \n  ~o~  "
                     }
@@ -311,7 +311,7 @@
                         "speed": 5,
                         "damage": 3,
                         "range": 4,
-                        "type": 5,
+                        "type": 13,
                         "initiative": 6,
                         "icon": "  []  \n [||] \n /||\\ "
                     }
@@ -327,7 +327,7 @@
                         "speed": 6,
                         "damage": 5,
                         "range": 3,
-                        "type": 5,
+                        "type": 49,
                         "initiative": 7,
                         "icon": "  oo  \n ()() \n  oo  "
                     }
@@ -343,7 +343,7 @@
                         "speed": 4,
                         "damage": 8,
                         "range": 5,
-                        "type": 5,
+                        "type": 769,
                         "initiative": 8,
                         "icon": " [@@] \n |==| \n /MM\\ "
                     }

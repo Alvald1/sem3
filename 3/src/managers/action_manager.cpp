@@ -35,7 +35,8 @@ ActionManager::handle_summoner_action(Summoner& summoner) {
                     auto summoner_pos = MapManager::getInstance().get_entity_position(summoner.get_id());
                     summoner.spend_energy(chosen_ability.get_energy());
                     Position target_pos = Control::getInstance().get_position_choice(*summoner_pos);
-                    SummonManager::getInstance().summon(summoner, chosen_ability, target_pos);
+                    auto& summon_manager = SummonManager::getInstance();
+                    summon_manager.summon(summoner, chosen_ability, target_pos);
                 } catch (const NotEnoughEnergyException& e) {
                     throw;
                 } catch (const InvalidPositionException& e) {

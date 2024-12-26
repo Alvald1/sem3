@@ -18,6 +18,12 @@ class DamageManager {
         return *instance_;
     }
 
+    static void
+    destroyInstance() {
+        delete instance_;
+        instance_ = nullptr;
+    }
+
     DamageManager(const DamageManager&) = delete;
     DamageManager& operator=(const DamageManager&) = delete;
 
