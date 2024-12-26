@@ -130,8 +130,11 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
                 Position current_pos = *MapManager::getInstance().get_entity_position(troop.get_id());
                 Position delta = Control::getInstance()->get_position_choice();
                 Position target_pos(current_pos + delta);
+                if (target_pos.manhattan_distance(current_pos) > troop.get_range()) {
+                    throw OutOfRangeException();
+                }
 
-                if (map.can_entity_act(troop.get_id(), target_pos)) {
+                if (map.can_entity_act(troop.get_id(), delta)) {
                     map.change_cell_type(target_pos, effect[0].first, troop.get_damage() * (effect[0].second ? 1 : -1),
                                          3);
                     troop.spend_movement(1);
@@ -139,20 +142,18 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
                 break;
             }
             case Control::TroopAction::ATTACK: {
-                // Position target = Control::getInstance()->get_position_choice();
-                // auto& map = MapManager::getInstance();
-                // auto& entity_manager = EntityManager::getInstance();
+                auto& map = MapManager::getInstance();
+                auto& entity_manager = EntityManager::getInstance();
+                Position current_pos = *MapManager::getInstance().get_entity_position(troop.get_id());
+                Position delta = Control::getInstance()->get_position_choice();
+                Position target_pos(current_pos + delta);
+                if (target_pos.manhattan_distance(current_pos) > troop.get_range()) {
+                    throw OutOfRangeException();
+                }
 
-                // if (map.can_entity_act(troop.get_id(), target)) {
-                //     // Find target entity at position and apply damage
-                //     auto target_pos = map.get_entity_position(troop.get_id());
-                //     if (target_pos && *target_pos == target) {
-                //         if (auto* target_entity =
-                //                 entity_manager.get_entity(map.matrix(target.get_x(), target.get_y())->get_id_entity())) {
-                //             target_entity->modify_hp(-troop.get_damage());
-                //         }
-                //     }
-                // }
+                if (map.can_entity_attack(troop.get_id(), delta)) {
+                    // Find target entity at position and apply damage
+                }
                 break;
             }
             case Control::TroopAction::SKIP_TURN:

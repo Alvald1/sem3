@@ -15,12 +15,6 @@ class Map {
     std::pair<size_t, size_t> size;
 
   public:
-    // Add getter for matrix
-    Matrix<std::shared_ptr<Cell>>&
-    get_matrix() {
-        return matrix;
-    }
-
     const Matrix<std::shared_ptr<Cell>>&
     get_matrix() const {
         return matrix;
@@ -38,13 +32,13 @@ class Map {
     // Load map from passability matrix
     void load_from_passability_matrix(const Matrix<bool>& passability_matrix);
 
-    // Replace cell at given position with new cell
-    template <typename CellType>
-    void replace_cell(std::shared_ptr<CellType> new_cell);
-
     // Export map data as matrices
     Matrix<bool> export_passability_matrix() const;
     Matrix<int> export_cell_types_matrix() const;
+
+    // Get cell by position
+    std::shared_ptr<Cell>& get_cell(const Position& pos);
+    const std::shared_ptr<Cell>& get_cell(const Position& pos) const;
 };
 
 #endif // MAP_HPP

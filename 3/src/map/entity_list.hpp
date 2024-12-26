@@ -1,6 +1,7 @@
 #ifndef ENTITY_LIST_HPP
 #define ENTITY_LIST_HPP
 
+#include <memory>
 #include <unordered_map>
 
 #include "cell/cell.hpp"
@@ -8,13 +9,13 @@
 
 class EntityList {
   private:
-    std::unordered_map<size_t, Cell*> id_to_cell;
-    std::unordered_map<Cell*, size_t> cell_to_id;
+    std::unordered_map<size_t, std::shared_ptr<Cell>> id_to_cell;
+    std::unordered_map<std::shared_ptr<Cell>, size_t> cell_to_id;
 
   public:
-    Cell* find_by_id(size_t id) const;
-    size_t find_by_cell(Cell* cell) const;
-    void append(size_t id, Cell* cell);
+    std::shared_ptr<Cell> find_by_id(size_t id) const;
+    size_t find_by_cell(const std::shared_ptr<Cell>& cell) const;
+    void append(size_t id, const std::shared_ptr<Cell>& cell);
     void remove(size_t id);
 };
 

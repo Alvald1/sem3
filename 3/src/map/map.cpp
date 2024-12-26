@@ -60,3 +60,21 @@ Map::export_cell_types_matrix() const {
 
     return types_matrix;
 }
+
+std::shared_ptr<Cell>&
+Map::get_cell(const Position& pos) {
+    if (pos.get_x() < 0 || static_cast<size_t>(pos.get_x()) >= size.first || pos.get_y() < 0
+        || static_cast<size_t>(pos.get_y()) >= size.second) {
+        throw std::out_of_range("Position is out of map bounds");
+    }
+    return matrix(pos.get_x(), pos.get_y());
+}
+
+const std::shared_ptr<Cell>&
+Map::get_cell(const Position& pos) const {
+    if (pos.get_x() < 0 || static_cast<size_t>(pos.get_x()) >= size.first || pos.get_y() < 0
+        || static_cast<size_t>(pos.get_y()) >= size.second) {
+        throw std::out_of_range("Position is out of map bounds");
+    }
+    return matrix(pos.get_x(), pos.get_y());
+}

@@ -6,7 +6,7 @@
 
 void
 MapManager::move_entity(size_t id, Position delta) {
-    Cell* current_cell = entities_.find_by_id(id);
+    auto current_cell = entities_.find_by_id(id);
     if (!current_cell) {
         throw EntityNotFoundException();
     }
@@ -14,13 +14,12 @@ MapManager::move_entity(size_t id, Position delta) {
     Position curr_pos = current_cell->get_position();
     Position new_pos(curr_pos + delta);
 
-    // Check bounds first to avoid unnecessary checks
+    // Check bounds and passability
     if (new_pos.get_x() < 0 || new_pos.get_y() < 0 || static_cast<size_t>(new_pos.get_x()) >= get_size().first
         || static_cast<size_t>(new_pos.get_y()) >= get_size().second) {
         throw OutOfBoundsException();
     }
 
-    // Check if the cell is passable and not occupied
     if (!is_cell_passable(new_pos)) {
         throw CellNotPassableException();
     }
@@ -28,8 +27,8 @@ MapManager::move_entity(size_t id, Position delta) {
         throw CellOccupiedException();
     }
 
-    // Get target cell and perform the move
-    Cell* target_cell = matrix(static_cast<size_t>(new_pos.get_x()), static_cast<size_t>(new_pos.get_y())).get();
+    // Get target cell
+    auto target_cell = get_cell(new_pos);
 
     // Update cells
     current_cell->set_busy(false);
@@ -37,40 +36,34 @@ MapManager::move_entity(size_t id, Position delta) {
     target_cell->set_busy(true);
     target_cell->set_id_entity(id);
 
-    // Update entity location in entity list
+    // Update entity location
     entities_.remove(id);
     entities_.append(id, target_cell);
 }
 
 bool
 MapManager::is_cell_occupied(Position pos) const {
-    // Check if position is within bounds
-    if (pos.get_x() < 0 || pos.get_y() < 0 || static_cast<size_t>(pos.get_x()) >= get_size().first
-        || static_cast<size_t>(pos.get_y()) >= get_size().second) {
+    try {
+        auto cell = get_cell(pos);
+        return !cell->is_empty();
+    } catch (const std::out_of_range&) {
         return false;
     }
-
-    // Get cell and check if it's occupied
-    Cell* cell = matrix(static_cast<size_t>(pos.get_x()), static_cast<size_t>(pos.get_y())).get();
-    return !cell->is_empty();
 }
 
 bool
 MapManager::is_cell_passable(Position pos) const {
-    // Check if position is within bounds
-    if (pos.get_x() < 0 || pos.get_y() < 0 || static_cast<size_t>(pos.get_x()) >= get_size().first
-        || static_cast<size_t>(pos.get_y()) >= get_size().second) {
+    try {
+        auto cell = get_cell(pos);
+        return cell->get_passability();
+    } catch (const std::out_of_range&) {
         return false;
     }
-
-    // Get cell and check if it's passable
-    Cell* cell = matrix(static_cast<size_t>(pos.get_x()), static_cast<size_t>(pos.get_y())).get();
-    return cell->get_passability();
 }
 
 bool
 MapManager::can_move_entity(size_t id, Position delta) const {
-    Cell* current_cell = entities_.find_by_id(id);
+    auto current_cell = entities_.find_by_id(id);
     if (!current_cell) {
         return false;
     }
@@ -83,7 +76,7 @@ MapManager::can_move_entity(size_t id, Position delta) const {
 
 bool
 MapManager::can_entity_act(size_t id, Position delta) const {
-    Cell* current_cell = entities_.find_by_id(id);
+    auto current_cell = entities_.find_by_id(id);
     if (!current_cell) {
         return false;
     }
@@ -96,22 +89,19 @@ MapManager::can_entity_act(size_t id, Position delta) const {
 
 bool
 MapManager::add_entity(size_t id, Position pos) {
-    if (pos.get_x() < 0 || pos.get_y() < 0 || static_cast<size_t>(pos.get_x()) >= get_size().first
-        || static_cast<size_t>(pos.get_y()) >= get_size().second) {
+    try {
+        auto target_cell = get_cell(pos);
+        if (!target_cell->is_empty() || !target_cell->get_passability()) {
+            return false;
+        }
+
+        target_cell->set_busy(true);
+        target_cell->set_id_entity(id);
+        entities_.append(id, target_cell);
+        return true;
+    } catch (const std::out_of_range&) {
         return false;
     }
-
-    Cell* target_cell = matrix(static_cast<size_t>(pos.get_x()), static_cast<size_t>(pos.get_y())).get();
-
-    if (!target_cell->is_empty() || !target_cell->get_passability()) {
-        return false;
-    }
-
-    target_cell->set_busy(true);
-    target_cell->set_id_entity(id);
-    entities_.append(id, target_cell);
-
-    return true;
 }
 
 void
@@ -153,7 +143,7 @@ MapManager::effect_cells() {
 void
 MapManager::process_effects(size_t start, size_t end, EntityManager& entity_manager) {
     for (size_t i = start; i < end; ++i) {
-        Cell* cell = effect_cells_[i];
+        auto cell = effect_cells_[i];
         if (!cell->is_empty()) {
             size_t entity_id = cell->get_id_entity();
             auto* entity = entity_manager.get_entity(entity_id);
@@ -163,14 +153,14 @@ MapManager::process_effects(size_t start, size_t end, EntityManager& entity_mana
             }
 
             try {
-                if (auto* hp_cell = dynamic_cast<EffectCellHP*>(cell)) {
+                if (auto hp_cell = std::dynamic_pointer_cast<EffectCellHP>(cell)) {
                     entity->modify_hp(hp_cell->give_effect());
                 } else if (auto* troop = dynamic_cast<BaseTroop*>(entity)) {
-                    if (auto* damage_cell = dynamic_cast<EffectCellDamage*>(cell)) {
+                    if (auto damage_cell = std::dynamic_pointer_cast<EffectCellDamage>(cell)) {
                         troop->modify_damage(damage_cell->give_effect());
-                    } else if (auto* speed_cell = dynamic_cast<EffectCellSpeed*>(cell)) {
+                    } else if (auto speed_cell = std::dynamic_pointer_cast<EffectCellSpeed>(cell)) {
                         troop->modify_speed(speed_cell->give_effect());
-                    } else if (auto* range_cell = dynamic_cast<EffectCellRange*>(cell)) {
+                    } else if (auto range_cell = std::dynamic_pointer_cast<EffectCellRange>(cell)) {
                         troop->modify_range(range_cell->give_effect());
                     }
                 }
@@ -187,7 +177,7 @@ MapManager::process_effects(size_t start, size_t end, EntityManager& entity_mana
 
 std::optional<Position>
 MapManager::get_entity_position(size_t id) const {
-    Cell* cell = entities_.find_by_id(id);
+    auto cell = entities_.find_by_id(id);
     if (!cell) {
         return std::nullopt;
     }
@@ -195,16 +185,13 @@ MapManager::get_entity_position(size_t id) const {
 }
 
 void
-MapManager::change_cell_type(Position pos, EffectType type, int effect_value = 0, size_t duration = 0) {
+MapManager::change_cell_type(Position pos, EffectType type, int effect_value, size_t duration) {
     if (pos.get_x() < 0 || pos.get_y() < 0 || static_cast<size_t>(pos.get_x()) >= get_size().first
         || static_cast<size_t>(pos.get_y()) >= get_size().second) {
         throw OutOfBoundsException();
     }
 
-    size_t x = static_cast<size_t>(pos.get_x());
-    size_t y = static_cast<size_t>(pos.get_y());
-    Cell* old_cell = matrix(x, y).get();
-    size_t cell_id = old_cell->get_id();
+    auto old_cell = get_cell(pos);
 
     // Remove old cell from effect_cells_ if it exists
     auto it = std::find(effect_cells_.begin(), effect_cells_.end(), old_cell);
@@ -212,38 +199,59 @@ MapManager::change_cell_type(Position pos, EffectType type, int effect_value = 0
         effect_cells_.erase(it);
     }
 
-    // If type is NONE, create a basic cell using CellDirector
+    std::shared_ptr<Cell> new_cell;
     if (type == EffectType::NONE) {
-        Cell* new_cell = new Cell(CellDirector::createBasicCell(pos, old_cell->get_passability()));
-        new_cell->set_busy(!old_cell->is_empty());
-        new_cell->set_id_entity(old_cell->get_id_entity());
-        matrix(x, y).reset(new_cell);
-        return;
+        new_cell = std::make_shared<Cell>(CellDirector::createBasicCell(pos, old_cell->get_passability()));
+    } else {
+        switch (type) {
+            case EffectType::DAMAGE:
+                new_cell =
+                    std::make_shared<EffectCellDamage>(CellDirector::createDamageCell(pos, effect_value, duration));
+                break;
+            case EffectType::SPEED:
+                new_cell =
+                    std::make_shared<EffectCellSpeed>(CellDirector::createSpeedCell(pos, effect_value, duration));
+                break;
+            case EffectType::RANGE:
+                new_cell =
+                    std::make_shared<EffectCellRange>(CellDirector::createRangeCell(pos, effect_value, duration));
+                break;
+            case EffectType::HEALTH:
+                new_cell = std::make_shared<EffectCellHP>(CellDirector::createHPCell(pos, effect_value, duration));
+                break;
+            default: return;
+        }
     }
 
-    Cell* new_cell = nullptr;
-    switch (type) {
-        case EffectType::DAMAGE:
-            new_cell = new EffectCellDamage(CellDirector::createDamageCell(pos, effect_value, duration));
-            break;
-        case EffectType::SPEED:
-            new_cell = new EffectCellSpeed(CellDirector::createSpeedCell(pos, effect_value, duration));
-            break;
-        case EffectType::RANGE:
-            new_cell = new EffectCellRange(CellDirector::createRangeCell(pos, effect_value, duration));
-            break;
-        case EffectType::HEALTH:
-            new_cell = new EffectCellHP(CellDirector::createHPCell(pos, effect_value, duration));
-            break;
-    }
+    // Preserve the busy state and entity ID
+    new_cell->set_busy(!old_cell->is_empty());
+    new_cell->set_id_entity(old_cell->get_id_entity());
 
-    if (new_cell) {
-        // Preserve the busy state and entity ID from the old cell
-        new_cell->set_busy(!old_cell->is_empty());
-        new_cell->set_id_entity(old_cell->get_id_entity());
+    // Replace the old cell
+    matrix(pos.get_x(), pos.get_y()) = new_cell;
 
-        // Replace the old cell
-        matrix(x, y).reset(new_cell);
+    // Add to effect cells if it's an effect cell
+    if (type != EffectType::NONE) {
         effect_cells_.push_back(new_cell);
     }
+}
+
+bool
+MapManager::can_entity_attack(size_t id, Position delta) const {
+    auto current_cell = entities_.find_by_id(id);
+    if (!current_cell) {
+        return false;
+    }
+
+    Position curr_pos = current_cell->get_position();
+    Position target_pos(curr_pos.get_x() + delta.get_x(), curr_pos.get_y() + delta.get_y());
+
+    // Check if target position is within bounds
+    if (target_pos.get_x() < 0 || target_pos.get_y() < 0 || static_cast<size_t>(target_pos.get_x()) >= get_size().first
+        || static_cast<size_t>(target_pos.get_y()) >= get_size().second) {
+        return false;
+    }
+
+    // Check if target cell is occupied by another entity
+    return is_cell_occupied(target_pos);
 }

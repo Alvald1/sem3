@@ -45,6 +45,11 @@ class NotEnoughMovementException : public GameLogicException {
                              + std::to_string(need)) {}
 };
 
+class OutOfRangeException : public GameLogicException {
+  public:
+    OutOfRangeException() : GameLogicException("Target is out of attack range") {}
+};
+
 // Resource exceptions
 class ResourceException : public GameException {
   protected:

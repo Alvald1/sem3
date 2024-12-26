@@ -12,11 +12,12 @@ class EffectCellDamageBuilder;
 
 class Cell {
   private:
-    static size_t id;
+    size_t id;
     Position position;
     bool passability;
     bool busy;
     size_t id_entity;
+    static size_t next_id; // только объявление
 
     friend class CellBuilder;
     friend class EffectCellSpeedBuilder;
@@ -27,10 +28,42 @@ class Cell {
   protected:
     Cell(Position position, bool passability = true, bool busy = false, size_t id_entity = 0)
         : position(position), passability(passability), busy(busy), id_entity(id_entity) {
-        ++id;
+        id = next_id++;
     }
 
+    Cell(const Cell& other)
+        : id(other.id), position(other.position), passability(other.passability), busy(other.busy),
+          id_entity(other.id_entity) {}
+
   public:
+    Cell(Cell&& other) noexcept
+        : id(other.id), position(std::move(other.position)), passability(other.passability), busy(other.busy),
+          id_entity(other.id_entity) {}
+
+    Cell&
+    operator=(const Cell& other) {
+        if (this != &other) {
+            id = other.id;
+            position = other.position;
+            passability = other.passability;
+            busy = other.busy;
+            id_entity = other.id_entity;
+        }
+        return *this;
+    }
+
+    Cell&
+    operator=(Cell&& other) noexcept {
+        if (this != &other) {
+            id = other.id;
+            position = std::move(other.position);
+            passability = other.passability;
+            busy = other.busy;
+            id_entity = other.id_entity;
+        }
+        return *this;
+    }
+
     // Add virtual destructor to make the class polymorphic
     virtual ~Cell() = default;
 

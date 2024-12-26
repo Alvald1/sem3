@@ -2,6 +2,7 @@
 #define MAP_MANAGER_HPP
 
 #include <future>
+#include <memory>
 #include <optional>
 #include <thread>
 #include <vector>
@@ -22,8 +23,8 @@ class MapManager : public Map {
     static MapManager* instance_;
     MapManager() = default; // Private constructor
 
-    EntityList entities_;
-    std::vector<Cell*> effect_cells_;
+    // Change from raw pointers to shared_ptr
+    std::vector<std::shared_ptr<Cell>> effect_cells_;
 
     void process_effects(size_t start, size_t end, EntityManager& entity_manager);
 
@@ -36,6 +37,8 @@ class MapManager : public Map {
         return *instance_;
     }
 
+    EntityList entities_;
+
     MapManager(const MapManager&) = delete;
     MapManager& operator=(const MapManager&) = delete;
 
@@ -47,7 +50,8 @@ class MapManager : public Map {
     bool can_entity_act(size_t id, Position delta) const;
     bool add_entity(size_t id, Position pos);
     std::optional<Position> get_entity_position(size_t id) const;
-    void change_cell_type(Position pos, EffectType type, int effect_value, size_t duration);
+    void change_cell_type(Position pos, EffectType type, int effect_value = 0, size_t duration = 0);
+    bool can_entity_attack(size_t id, Position delta) const;
 };
 
 #endif // MAP_MANAGER_HPP
