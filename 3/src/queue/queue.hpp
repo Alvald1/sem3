@@ -2,6 +2,7 @@
 #define QUEUE_HPP
 
 #include <cstddef> // for size_t
+#include <vector>  // for std::vector
 
 // Forward declare EntityManager
 class EntityManager;
@@ -47,6 +48,8 @@ class SortQueue {
     empty() const {
         return head == nullptr;
     }
+
+    [[nodiscard]] std::vector<size_t> to_vector() const;
 };
 
 #endif // QUEUE_HPP

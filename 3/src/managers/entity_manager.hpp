@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include <vector>
 #include "queue/entity/entity.hpp"
 
 // Forward declare SortQueue
@@ -43,6 +44,7 @@ class EntityManager {
     [[nodiscard]] bool has_entity(size_t id) const;
     [[nodiscard]] size_t get_entity_count() const;
     void clear();
+    [[nodiscard]] std::vector<Entity*> get_queue_entities();
 };
 
 #endif // ENTITY_MANAGER_HPP

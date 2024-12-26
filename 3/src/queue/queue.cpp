@@ -101,8 +101,9 @@ SortQueue::insert(size_t entity_id) {
     } while (current != max_node);
 
     // Вставка после max_node если новый элемент имеет наименьший приоритет
+    auto last = max_node->next;
     link_nodes(max_node, new_node);
-    link_nodes(new_node, max_node->next);
+    link_nodes(new_node, last);
     size++;
 }
 
@@ -149,4 +150,21 @@ SortQueue::remove(size_t id) {
     } while (current != head);
 
     throw std::runtime_error("Entity not found in queue");
+}
+
+std::vector<size_t>
+SortQueue::to_vector() const {
+    std::vector<size_t> result;
+    if (!head) {
+        return result;
+    }
+
+    result.reserve(size);
+    Node* current = head;
+    do {
+        result.push_back(current->entity_id);
+        current = current->next;
+    } while (current != head);
+
+    return result;
 }

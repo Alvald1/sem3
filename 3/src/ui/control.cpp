@@ -16,7 +16,7 @@ Control::getInstance() {
 
 std::pair<int, int>
 Control::get_map_size() const {
-    int width = 10, height = 10;
+    int width = 5, height = 5;
     bool width_selected = true;
     auto& view = View::getInstance();
 

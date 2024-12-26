@@ -9,9 +9,11 @@ class Board {
   private:
     static const int CELL_WIDTH = 11;       // Увеличиваем для многострочных иконок
     static const int CELL_HEIGHT = 6;       // Высота клетки для лучших пропорций
-    static const int INFO_PANEL_WIDTH = 30; // Added: width for info panel
-    size_t offset_x = 0;                    // Horizontal scroll offset
-    size_t offset_y = 0;                    // Vertical scroll offset
+    static const int INFO_PANEL_WIDTH = 32; // Увеличил ширину для красивого отображения
+    static const int QUEUE_BOX_HEIGHT = 4; // Увеличил высоту для доп. информации
+    static const int QUEUE_BOX_WIDTH = 30; // Увеличил ширину для HP bar
+    size_t offset_x = 0;                   // Horizontal scroll offset
+    size_t offset_y = 0;                   // Vertical scroll offset
 
     WINDOW* window;
     WINDOW* info_window; // Added: window for info panel

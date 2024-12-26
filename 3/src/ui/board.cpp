@@ -1,5 +1,6 @@
 #include "board.hpp"
 #include <string>
+#include "managers/entity_manager.hpp"
 
 Board::Board(const Map& game_map) : map(game_map), view(View::getInstance()), offset_x(0), offset_y(0) {
     // Полностью очищаем экран перед созданием окна
@@ -37,11 +38,86 @@ Board::init_colors() {
 
 void
 Board::draw_info_panel() {
+    if (!info_window) {
+        return;
+    }
+
     werase(info_window);
     box(info_window, 0, 0);
 
-    // Добавляем заголовок
-    mvwprintw(info_window, 0, 2, " Queue ");
+    // Красивый заголовок
+    wattron(info_window, A_BOLD);
+    mvwprintw(info_window, 0, (INFO_PANEL_WIDTH - 7) / 2, " QUEUE ");
+    wattroff(info_window, A_BOLD);
+
+    auto entities = EntityManager::getInstance().get_queue_entities();
+    if (entities.empty()) {
+        mvwprintw(info_window, 2, 2, "Queue is empty");
+        wrefresh(info_window);
+        return;
+    }
+
+    int start_y = 1;
+    for (size_t i = 0; i < entities.size(); ++i) {
+        if (!entities[i]) {
+            continue;
+        }
+
+        int box_y = start_y + i * (QUEUE_BOX_HEIGHT + 1);
+        if (box_y + QUEUE_BOX_HEIGHT >= getmaxy(info_window)) {
+            break;
+        }
+
+        // Рисуем рамку с красивыми углами
+        mvwaddch(info_window, box_y, 1, ACS_ULCORNER);
+        mvwaddch(info_window, box_y, QUEUE_BOX_WIDTH, ACS_URCORNER);
+        mvwaddch(info_window, box_y + QUEUE_BOX_HEIGHT - 1, 1, ACS_LLCORNER);
+        mvwaddch(info_window, box_y + QUEUE_BOX_HEIGHT - 1, QUEUE_BOX_WIDTH, ACS_LRCORNER);
+
+        // Горизонтальные линии
+        mvwhline(info_window, box_y, 2, ACS_HLINE, QUEUE_BOX_WIDTH - 2);
+        mvwhline(info_window, box_y + QUEUE_BOX_HEIGHT - 1, 2, ACS_HLINE, QUEUE_BOX_WIDTH - 2);
+
+        // Вертикальные линии
+        for (int y = box_y + 1; y < box_y + QUEUE_BOX_HEIGHT - 1; y++) {
+            mvwaddch(info_window, y, 1, ACS_VLINE);
+            mvwaddch(info_window, y, QUEUE_BOX_WIDTH, ACS_VLINE);
+        }
+
+        // Текущий активный entity выделяем цветом
+        bool is_current = (i == 0);
+        if (is_current) {
+            wattron(info_window, COLOR_PAIR(2) | A_BOLD);
+        }
+
+        // Имя entity по центру
+        std::string name = entities[i]->get_name();
+        if (name.length() > QUEUE_BOX_WIDTH - 4) {
+            name = name.substr(0, QUEUE_BOX_WIDTH - 7) + "...";
+        }
+        int name_x = 2 + (QUEUE_BOX_WIDTH - 2 - name.length()) / 2;
+        mvwprintw(info_window, box_y + 1, name_x, "%s", name.c_str());
+
+        // HP bar и значение
+        int hp_width = QUEUE_BOX_WIDTH - 8;
+        double hp_percent = entities[i]->get_health_percentage();
+        int filled_width = static_cast<int>(hp_width * hp_percent / 100.0);
+
+        mvwprintw(info_window, box_y + 2, 3, "HP:");
+        wattron(info_window, COLOR_PAIR(3)); // Красный для пустой части
+        mvwhline(info_window, box_y + 2, 6, '=', hp_width);
+        wattron(info_window, COLOR_PAIR(2)); // Зеленый для заполненной части
+        mvwhline(info_window, box_y + 2, 6, '#', filled_width);
+        wattroff(info_window, COLOR_PAIR(2));
+
+        // Числовое значение HP
+        mvwprintw(info_window, box_y + 2, QUEUE_BOX_WIDTH - 8, "%zu/%zu", static_cast<size_t>(entities[i]->get_hp()),
+                  static_cast<size_t>(entities[i]->get_max_hp()));
+
+        if (is_current) {
+            wattroff(info_window, COLOR_PAIR(2) | A_BOLD);
+        }
+    }
 
     wrefresh(info_window);
 }
@@ -54,8 +130,12 @@ Board::draw() {
     auto [map_height, map_width] = map.get_size();
 
     // Calculate visible rows and columns based on window size
-    const size_t visible_rows = LINES / CELL_HEIGHT;
-    const size_t visible_cols = COLS / CELL_WIDTH;
+    const size_t visible_rows = std::min(static_cast<size_t>(LINES / CELL_HEIGHT), map_height);
+    const size_t visible_cols = std::min(static_cast<size_t>(COLS / CELL_WIDTH), map_width);
+
+    // Убедимся, что offset не выходит за пределы
+    offset_x = std::min(offset_x, map_width > 0 ? map_width - 1 : 0);
+    offset_y = std::min(offset_y, map_height > 0 ? map_height - 1 : 0);
 
     size_t row_end = std::min(offset_y + visible_rows, map_height);
     size_t col_end = std::min(offset_x + visible_cols, map_width);
@@ -161,12 +241,9 @@ Board::draw() {
     // Draw borders
     box(window, 0, 0);
 
-    // Draw info panel
+    // Draw info panel и сразу делаем refresh
     draw_info_panel();
-
-    // Refresh windows
     wrefresh(window);
-    wrefresh(info_window);
 }
 
 void

@@ -66,3 +66,16 @@ void
 EntityManager::clear() {
     entities_.clear();
 }
+
+std::vector<Entity*>
+EntityManager::get_queue_entities() {
+    std::vector<Entity*> result;
+    auto ids = queue_->to_vector();
+    result.reserve(ids.size());
+
+    for (size_t id : ids) {
+        result.push_back(get_entity(id));
+    }
+
+    return result;
+}
