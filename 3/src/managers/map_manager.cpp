@@ -255,3 +255,18 @@ MapManager::can_entity_attack(size_t id, Position delta) const {
     // Check if target cell is occupied by another entity
     return is_cell_occupied(target_pos);
 }
+
+void
+MapManager::remove_entity(size_t id) {
+    auto cell = entities_.find_by_id(id);
+    if (!cell) {
+        return;
+    }
+
+    // Reset the cell's state
+    cell->set_busy(false);
+    cell->set_id_entity(0);
+
+    // Remove entity from entities list
+    entities_.remove(id);
+}

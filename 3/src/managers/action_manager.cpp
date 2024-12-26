@@ -147,12 +147,17 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
                 Position current_pos = *MapManager::getInstance().get_entity_position(troop.get_id());
                 Position delta = Control::getInstance()->get_position_choice();
                 Position target_pos(current_pos + delta);
-                if (target_pos.manhattan_distance(current_pos) > troop.get_range()) {
+                if (troop.get_range() > 0 && target_pos.manhattan_distance(current_pos) > troop.get_range()
+                    || target_pos.manhattan_distance(current_pos) > 1) {
                     throw OutOfRangeException();
                 }
 
                 if (map.can_entity_attack(troop.get_id(), delta)) {
-                    // Find target entity at position and apply damage
+                    auto cell = map.get_cell(target_pos);
+                    size_t target_id = cell->get_id_entity();
+                    auto target = entity_manager.get_entity(target_id);
+                    target->modify_hp(-static_cast<int>(troop.get_damage()));
+                    troop.spend_movement(1);
                 }
                 break;
             }

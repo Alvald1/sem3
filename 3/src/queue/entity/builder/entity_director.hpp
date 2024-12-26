@@ -8,13 +8,13 @@
 class EntityDirector {
   public:
     static MoralTroop
-    createMoralTroop(Ability ability, int moral_value) {
-        return MoralTroopBuilder(ability).moral_value(moral_value).build();
+    createMoralTroop(Ability ability, int moral_value, size_t id_summoner) {
+        return MoralTroopBuilder(ability).moral_value(moral_value).id_summoner(id_summoner).build();
     }
 
     static AmoralTroop
-    createAmoralTroop(Ability ability) {
-        return AmoralTroopBuilder(ability).build();
+    createAmoralTroop(Ability ability, size_t id_summoner) {
+        return AmoralTroopBuilder(ability).id_summoner(id_summoner).build();
     }
 
     static Summoner

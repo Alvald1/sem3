@@ -27,7 +27,7 @@ SummonManager::create_moral(Summoner& summoner, const Ability& ability, const Po
         || MapManager::getInstance().is_cell_occupied(target_pos)) {
         throw InvalidPositionException();
     }
-    auto troop = EntityDirector::createMoralTroop(ability, 0);
+    auto troop = EntityDirector::createMoralTroop(ability, 0, summoner.get_id());
     MapManager::getInstance().add_entity(troop.get_id(), target_pos);
     EntityManager::getInstance().add_entity(std::make_unique<MoralTroop>(troop));
 }
@@ -43,7 +43,7 @@ SummonManager::create_amoral(Summoner& summoner, const Ability& ability, const P
         || MapManager::getInstance().is_cell_occupied(target_pos)) {
         throw InvalidPositionException();
     }
-    auto troop = EntityDirector::createAmoralTroop(ability);
+    auto troop = EntityDirector::createAmoralTroop(ability, summoner.get_id());
     MapManager::getInstance().add_entity(troop.get_id(), target_pos);
     EntityManager::getInstance().add_entity(std::make_unique<AmoralTroop>(troop));
 }

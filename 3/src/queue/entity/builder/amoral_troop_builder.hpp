@@ -7,6 +7,12 @@ class AmoralTroopBuilder {
   public:
     explicit AmoralTroopBuilder(Ability ability) : amoral_troop_(ability) {}
 
+    AmoralTroopBuilder&
+    id_summoner(int value) {
+        amoral_troop_.id_summoner_ = value;
+        return *this;
+    }
+
     AmoralTroop
     build() {
         return std::move(amoral_troop_);

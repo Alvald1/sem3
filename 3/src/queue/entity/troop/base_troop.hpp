@@ -18,6 +18,8 @@ class BaseTroop : public Entity {
           range(ability.get_creature().get_range()), type(ability.get_creature().get_type()),
           remaining_movement(ability.get_creature().get_speed()) {}
 
+    size_t id_summoner_;
+
   public:
     // Rule of five
     BaseTroop(const BaseTroop&) = default;
@@ -52,6 +54,11 @@ class BaseTroop : public Entity {
         return remaining_movement;
     }
 
+    [[nodiscard]] inline size_t
+    get_id_summoner() const noexcept {
+        return id_summoner_;
+    }
+
     // Setters
     inline void
     set_speed(size_t new_speed) noexcept {
@@ -66,6 +73,11 @@ class BaseTroop : public Entity {
     inline void
     set_range(size_t new_range) noexcept {
         range = new_range;
+    }
+
+    inline void
+    set_id_summoner(size_t id_summoner) noexcept {
+        id_summoner_ = id_summoner;
     }
 
     inline void

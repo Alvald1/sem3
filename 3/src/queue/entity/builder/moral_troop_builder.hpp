@@ -13,6 +13,12 @@ class MoralTroopBuilder {
         return *this;
     }
 
+    MoralTroopBuilder&
+    id_summoner(int value) {
+        moral_troop_.id_summoner_ = value;
+        return *this;
+    }
+
     MoralTroop
     build() {
         return std::move(moral_troop_);

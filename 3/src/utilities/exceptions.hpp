@@ -120,4 +120,9 @@ class NoEffectAvailableException : public GameLogicException {
     NoEffectAvailableException() : GameLogicException("This troop has no effects available") {}
 };
 
+class FriendlyFireException : public GameLogicException {
+  public:
+    FriendlyFireException() : GameLogicException("Cannot attack friendly units") {}
+};
+
 #endif // EXCEPTIONS_HPP

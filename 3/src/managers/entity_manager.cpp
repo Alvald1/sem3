@@ -1,4 +1,6 @@
 #include "entity_manager.hpp"
+#include "queue/entity/summoner.hpp"
+#include "queue/entity/troop/base_troop.hpp"
 #include "queue/queue.hpp"
 
 EntityManager::EntityManager() : queue_(std::make_unique<SortQueue>(this)) {}
@@ -15,6 +17,9 @@ EntityManager::add_entity(std::unique_ptr<Entity> entity) {
 void
 EntityManager::remove_entity(size_t id) {
     if (has_entity(id)) {
+        auto entity = dynamic_cast<BaseTroop*>(get_entity(id));
+        auto summoner = dynamic_cast<Summoner*>(get_entity(entity->get_id_summoner()));
+        summoner->delete_ownership(id);
         queue_->remove(id);
         entities_.erase(id);
     }
