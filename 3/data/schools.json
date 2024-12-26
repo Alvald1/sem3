@@ -1,0 +1,354 @@
+{
+    "schools": [
+        {
+            "name": "Biomancy",
+            "alignment": "moral",
+            "abilities": [
+                {
+                    "name": "Bio-Engineer",
+                    "level": 1,
+                    "energy": 10,
+                    "experience": 100,
+                    "hp": 15,
+                    "creature": {
+                        "name": "Master Geneticist",
+                        "speed": 0,
+                        "damage": 2,
+                        "range": 3,
+                        "type": 0,
+                        "initiative": 10,
+                        "icon": "  __o__  \n /  |  \\ \n/___|___\\\n |  o  |\n |_____|"
+                    }
+                },
+                {
+                    "name": "Healing Spores",
+                    "level": 1,
+                    "energy": 3,
+                    "experience": 100,
+                    "hp": 8,
+                    "creature": {
+                        "name": "Cell Guardian",
+                        "speed": 2,
+                        "damage": 3,
+                        "range": 2,
+                        "type": 33,
+                        "initiative": 3,
+                        "icon": " ( ) \n  |  \n /|\\ \n / \\ "
+                    }
+                },
+                {
+                    "name": "Regeneration",
+                    "level": 2,
+                    "energy": 5,
+                    "experience": 200,
+                    "hp": 12,
+                    "creature": {
+                        "name": "Symbiote",
+                        "speed": 3,
+                        "damage": 4,
+                        "range": 3,
+                        "type": 41,
+                        "initiative": 4,
+                        "icon": " ~~~~ \n( oo )\n \\__/ "
+                    }
+                },
+                {
+                    "name": "Evolution Burst",
+                    "level": 3,
+                    "energy": 7,
+                    "experience": 350,
+                    "hp": 14,
+                    "creature": {
+                        "name": "Biotic Titan",
+                        "speed": 2,
+                        "damage": 6,
+                        "range": 3,
+                        "type": 45,
+                        "initiative": 2,
+                        "icon": "  O==O \n /####\\\n/######\\"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Necromancy",
+            "alignment": "immoral",
+            "abilities": [
+                {
+                    "name": "Necromancer",
+                    "level": 1,
+                    "energy": 12,
+                    "experience": 150,
+                    "hp": 12,
+                    "creature": {
+                        "name": "Dark Sorcerer",
+                        "speed": 0,
+                        "damage": 3,
+                        "range": 4,
+                        "type": 0,
+                        "initiative": 9,
+                        "icon": "  ^   \n /|\\  \n /_\\ "
+                    }
+                },
+                {
+                    "name": "Raise Dead",
+                    "level": 1,
+                    "energy": 3,
+                    "experience": 100,
+                    "hp": 10,
+                    "creature": {
+                        "name": "Skeleton Warriors",
+                        "speed": 2,
+                        "damage": 3,
+                        "range": 0,
+                        "type": 130,
+                        "initiative": 2,
+                        "icon": "  O== \n /|  \n / \\ "
+                    }
+                },
+                {
+                    "name": "Death Cloud",
+                    "level": 2,
+                    "energy": 6,
+                    "experience": 250,
+                    "hp": 9,
+                    "creature": {
+                        "name": "Wraith",
+                        "speed": 3,
+                        "damage": 5,
+                        "range": 2,
+                        "type": 134,
+                        "initiative": 5,
+                        "icon": " ~~~~ \n ~()~ \n ~~~~ "
+                    }
+                },
+                {
+                    "name": "Plague Legion",
+                    "level": 3,
+                    "energy": 8,
+                    "experience": 400,
+                    "hp": 8,
+                    "creature": {
+                        "name": "Lich Lord",
+                        "speed": 2,
+                        "damage": 7,
+                        "range": 3,
+                        "type": 135,
+                        "initiative": 4,
+                        "icon": "  o o  \n \\-+-/ \n  | |  "
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Demonology",
+            "alignment": "immoral",
+            "abilities": [
+                {
+                    "name": "Demon Master",
+                    "level": 1,
+                    "energy": 15,
+                    "experience": 200,
+                    "hp": 10,
+                    "creature": {
+                        "name": "Infernal Warlock",
+                        "speed": 0,
+                        "damage": 4,
+                        "range": 3,
+                        "type": 0,
+                        "initiative": 9,
+                        "icon": "  /\\  \n /__\\ \n/    \\"
+                    }
+                },
+                {
+                    "name": "Summon Imp",
+                    "level": 1,
+                    "energy": 4,
+                    "experience": 150,
+                    "hp": 6,
+                    "creature": {
+                        "name": "Lesser Demon",
+                        "speed": 6,
+                        "damage": 4,
+                        "range": 2,
+                        "type": 3,
+                        "initiative": 6,
+                        "icon": " (><) \n  |   \n / \\ "
+                    }
+                },
+                {
+                    "name": "Hellfire",
+                    "level": 2,
+                    "energy": 7,
+                    "experience": 300,
+                    "hp": 7,
+                    "creature": {
+                        "name": "Pit Fiend",
+                        "speed": 5,
+                        "damage": 6,
+                        "range": 3,
+                        "type": 3,
+                        "initiative": 7,
+                        "icon": "  ^   \n / \\  \n/_ _\\ "
+                    }
+                },
+                {
+                    "name": "Demonic Portal",
+                    "level": 3,
+                    "energy": 9,
+                    "experience": 450,
+                    "hp": 6,
+                    "creature": {
+                        "name": "Demon Prince",
+                        "speed": 6,
+                        "damage": 8,
+                        "range": 4,
+                        "type": 3,
+                        "initiative": 8,
+                        "icon": "  <>   \n /||\\  \n /__\\ "
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Quantum Magic",
+            "alignment": "moral",
+            "abilities": [
+                {
+                    "name": "Time Mage",
+                    "level": 1,
+                    "energy": 8,
+                    "experience": 50,
+                    "hp": 14,
+                    "creature": {
+                        "name": "Quantum Sage",
+                        "speed": 0,
+                        "damage": 2,
+                        "range": 3,
+                        "type": 0,
+                        "initiative": 10,
+                        "icon": "  @   \n ( )  \n \\_/  "
+                    }
+                },
+                {
+                    "name": "Time Slip",
+                    "level": 1,
+                    "energy": 3,
+                    "experience": 150,
+                    "hp": 7,
+                    "creature": {
+                        "name": "Quantum Entity",
+                        "speed": 7,
+                        "damage": 3,
+                        "range": 3,
+                        "type": 4,
+                        "initiative": 8,
+                        "icon": " ~<>~ \n  ||   \n /__\\ "
+                    }
+                },
+                {
+                    "name": "Reality Shift",
+                    "level": 2,
+                    "energy": 6,
+                    "experience": 300,
+                    "hp": 9,
+                    "creature": {
+                        "name": "Phase Walker",
+                        "speed": 8,
+                        "damage": 5,
+                        "range": 4,
+                        "type": 4,
+                        "initiative": 9,
+                        "icon": "  *~*  \n ~()~ \n ~~~ "
+                    }
+                },
+                {
+                    "name": "Dimensional Rift",
+                    "level": 3,
+                    "energy": 8,
+                    "experience": 400,
+                    "hp": 7,
+                    "creature": {
+                        "name": "Cosmic Being",
+                        "speed": 6,
+                        "damage": 8,
+                        "range": 5,
+                        "type": 4,
+                        "initiative": 8,
+                        "icon": "  ~o~  \n <===> \n  ~o~  "
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Technomancy",
+            "alignment": "moral",
+            "abilities": [
+                {
+                    "name": "Tech Lord",
+                    "level": 1,
+                    "energy": 12,
+                    "experience": 100,
+                    "hp": 13,
+                    "creature": {
+                        "name": "Master Engineer",
+                        "speed": 0,
+                        "damage": 2,
+                        "range": 4,
+                        "type": 0,
+                        "initiative": 9,
+                        "icon": " [++] \n |==| \n  ||  "
+                    }
+                },
+                {
+                    "name": "Deploy Drone",
+                    "level": 1,
+                    "energy": 3,
+                    "experience": 100,
+                    "hp": 7,
+                    "creature": {
+                        "name": "Combat Bot",
+                        "speed": 5,
+                        "damage": 3,
+                        "range": 4,
+                        "type": 5,
+                        "initiative": 6,
+                        "icon": "  []  \n [||] \n /||\\ "
+                    }
+                },
+                {
+                    "name": "Nanite Swarm",
+                    "level": 2,
+                    "energy": 5,
+                    "experience": 250,
+                    "hp": 8,
+                    "creature": {
+                        "name": "Nanoborg",
+                        "speed": 6,
+                        "damage": 5,
+                        "range": 3,
+                        "type": 5,
+                        "initiative": 7,
+                        "icon": "  oo  \n ()() \n  oo  "
+                    }
+                },
+                {
+                    "name": "Mech Warrior",
+                    "level": 3,
+                    "energy": 8,
+                    "experience": 400,
+                    "hp": 7,
+                    "creature": {
+                        "name": "War Machine",
+                        "speed": 4,
+                        "damage": 8,
+                        "range": 5,
+                        "type": 5,
+                        "initiative": 8,
+                        "icon": " [@@] \n |==| \n /MM\\ "
+                    }
+                }
+            ]
+        }
+    ]
+}
