@@ -66,8 +66,8 @@ Game::start() {
 
     // Create fixed positions for 2 players
     std::vector<Position> summoner_positions = {
-        Position(0, height - 1), // Player 1: bottom-left
-        Position(width - 1, 0)   // Player 2: top-right
+        Position(height - 1, 0), // Player 1: bottom-left
+        Position(0, width - 1)   // Player 2: top-right
     };
 
     // Create and place summoners
@@ -96,20 +96,26 @@ Game::start() {
         }
     }
 
-    // Create board for game display
-    board_ = std::make_unique<Board>(map_manager);
+    // Remove board creation since we'll use singleton
+    auto& board = Board::getInstance(map_manager);
 
     // Main game loop
-    int ch;
-    while ((ch = getch()) != 'q') {
+    bool game_running = true;
+
+    while (game_running) {
+        board.draw();
+        board.refresh_display();
+        GameManager::getInstance().do_step();
+
+        int ch = getch();
+
         switch (ch) {
-            case KEY_UP: board_->scroll_up(); break;
-            case KEY_DOWN: board_->scroll_down(); break;
-            case KEY_LEFT: board_->scroll_left(); break;
-            case KEY_RIGHT: board_->scroll_right(); break;
+            case 'q': game_running = false; break;
+            case KEY_UP: board.scroll_up(); break;
+            case KEY_DOWN: board.scroll_down(); break;
+            case KEY_LEFT: board.scroll_left(); break;
+            case KEY_RIGHT: board.scroll_right(); break;
         }
-        board_->draw();
-        board_->refresh_display();
     }
 }
 

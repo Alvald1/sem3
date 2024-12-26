@@ -17,6 +17,7 @@ class Control {
   private:
     static Control* instance;
     Control() = default;
+    size_t current_ability_selection{0};
 
   public:
     static Control& getInstance();
@@ -29,8 +30,9 @@ class Control {
     void handleInput();
     void update();
     [[nodiscard]] SummonerAction get_summoner_action() const;
-    [[nodiscard]] size_t get_ability_choice() const;
-    [[nodiscard]] Position get_position_choice() const;
+    [[nodiscard]] size_t get_ability_choice(const std::vector<std::reference_wrapper<const Ability>>& abilities,
+                                            size_t current_energy);
+    [[nodiscard]] Position get_position_choice(Position current_pos) const;
     [[nodiscard]] TroopAction get_troop_action() const;
 
     std::pair<int, int> get_map_size() const;

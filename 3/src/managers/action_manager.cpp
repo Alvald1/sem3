@@ -20,9 +20,9 @@ ActionManager::handle_summoner_action(Summoner& summoner) {
             if (available_abilities.empty()) {
                 throw NoAvailableAbilitiesException();
             }
-            View::getInstance().send_abilities(available_abilities, View::AbilityDisplayType::AVAILABLE);
 
-            size_t chosen_ability_id = Control::getInstance().get_ability_choice();
+            size_t chosen_ability_id =
+                Control::getInstance().get_ability_choice(available_abilities, summoner.get_energy());
 
             // Find the chosen ability in available abilities
             auto it = std::find_if(
@@ -32,8 +32,9 @@ ActionManager::handle_summoner_action(Summoner& summoner) {
             if (it != available_abilities.end()) {
                 const Ability& chosen_ability = it->get();
                 try {
+                    auto summoner_pos = MapManager::getInstance().get_entity_position(summoner.get_id());
                     summoner.spend_energy(chosen_ability.get_energy());
-                    Position target_pos = Control::getInstance().get_position_choice();
+                    Position target_pos = Control::getInstance().get_position_choice(*summoner_pos);
                     SummonManager::getInstance().summon(summoner, chosen_ability, target_pos);
                 } catch (const NotEnoughEnergyException& e) {
                     throw;
@@ -56,10 +57,10 @@ ActionManager::handle_summoner_action(Summoner& summoner) {
         case Control::SummonerAction::UPGRADE_SCHOOL: {
             auto upgradable_abilities =
                 Schools::getInstance().get_upgradable_abilities(summoner.get_levels(), summoner.get_experience());
-            View::getInstance().send_abilities(upgradable_abilities, View::AbilityDisplayType::UPGRADABLE);
 
             if (!upgradable_abilities.empty()) {
-                size_t chosen_ability_id = Control::getInstance().get_ability_choice();
+                size_t chosen_ability_id =
+                    Control::getInstance().get_ability_choice(upgradable_abilities, summoner.get_experience());
                 auto it = std::find_if(
                     upgradable_abilities.begin(), upgradable_abilities.end(),
                     [chosen_ability_id](const auto& ability) { return ability.get().get_id() == chosen_ability_id; });
@@ -100,11 +101,10 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
         switch (action) {
             case Control::TroopAction::MOVE: {
                 Position current_pos = *MapManager::getInstance().get_entity_position(troop.get_id());
-                Position delta = Control::getInstance().get_position_choice();
-                Position target_pos(current_pos + delta);
+                Position position = Control::getInstance().get_position_choice(current_pos);
 
                 // Calculate required movement points
-                size_t distance = current_pos.manhattan_distance(target_pos);
+                size_t distance = current_pos.manhattan_distance(position);
 
                 // Check if troop has enough movement points
                 if (distance > troop.get_remaining_movement()) {
@@ -113,7 +113,7 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
 
                 auto& map = MapManager::getInstance();
                 try {
-                    map.move_entity(troop.get_id(), delta);
+                    map.move_entity(troop.get_id(), position);
                     troop.spend_movement(distance);
                 } catch (const std::exception& e) {
                     throw;
@@ -129,14 +129,13 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
                 }
 
                 Position current_pos = *MapManager::getInstance().get_entity_position(troop.get_id());
-                Position delta = Control::getInstance().get_position_choice();
-                Position target_pos(current_pos + delta);
-                if (target_pos.manhattan_distance(current_pos) > troop.get_range()) {
+                Position position = Control::getInstance().get_position_choice(current_pos);
+                if (position.manhattan_distance(current_pos) > troop.get_range()) {
                     throw OutOfRangeException();
                 }
 
-                if (map.can_entity_act(troop.get_id(), delta)) {
-                    map.change_cell_type(target_pos, effect[0].first, troop.get_damage() * (effect[0].second ? 1 : -1),
+                if (map.can_entity_act(troop.get_id(), position)) {
+                    map.change_cell_type(position, effect[0].first, troop.get_damage() * (effect[0].second ? 1 : -1),
                                          3);
                     troop.spend_movement(troop.get_speed());
                 }
@@ -146,15 +145,15 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
                 auto& map = MapManager::getInstance();
                 auto& entity_manager = EntityManager::getInstance();
                 Position current_pos = *MapManager::getInstance().get_entity_position(troop.get_id());
-                Position delta = Control::getInstance().get_position_choice();
-                Position target_pos(current_pos + delta);
-                if ((troop.get_range() > 0 && target_pos.manhattan_distance(current_pos) > troop.get_range())
-                    || target_pos.manhattan_distance(current_pos) > 1) {
+                Position position = Control::getInstance().get_position_choice(current_pos);
+
+                if ((troop.get_range() > 0 && position.manhattan_distance(current_pos) > troop.get_range())
+                    || position.manhattan_distance(current_pos) > 1) {
                     throw OutOfRangeException();
                 }
 
-                if (map.can_entity_attack(troop.get_id(), delta)) {
-                    auto cell = map.get_cell(target_pos);
+                if (map.can_entity_attack(troop.get_id(), position)) {
+                    auto cell = map.get_cell(position);
                     size_t target_id = cell->get_id_entity();
                     auto target = entity_manager.get_entity(target_id);
                     if (target == nullptr) {

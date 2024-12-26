@@ -81,18 +81,18 @@ Map::export_entity_ids_matrix() const {
 
 std::shared_ptr<Cell>&
 Map::get_cell(const Position& pos) {
-    if (pos.get_x() < 0 || static_cast<size_t>(pos.get_x()) >= size.first || pos.get_y() < 0
-        || static_cast<size_t>(pos.get_y()) >= size.second) {
+    if (pos.get_x() < 0 || static_cast<size_t>(pos.get_x()) >= size.second || pos.get_y() < 0
+        || static_cast<size_t>(pos.get_y()) >= size.first) {
         throw std::out_of_range("Position is out of map bounds");
     }
-    return matrix(pos.get_x(), pos.get_y());
+    return matrix(pos.get_y(), pos.get_x());
 }
 
 const std::shared_ptr<Cell>&
 Map::get_cell(const Position& pos) const {
-    if (pos.get_x() < 0 || static_cast<size_t>(pos.get_x()) >= size.first || pos.get_y() < 0
-        || static_cast<size_t>(pos.get_y()) >= size.second) {
+    if (pos.get_x() < 0 || static_cast<size_t>(pos.get_x()) >= size.second || pos.get_y() < 0
+        || static_cast<size_t>(pos.get_y()) >= size.first) {
         throw std::out_of_range("Position is out of map bounds");
     }
-    return matrix(pos.get_x(), pos.get_y());
+    return matrix(pos.get_y(), pos.get_x());
 }

@@ -14,7 +14,7 @@ School::get_available_abilities(size_t level, size_t energy) const {
     std::vector<std::reference_wrapper<const Ability>> available;
     available.reserve(abilities.size());
     for (const auto& ability : abilities) {
-        if (ability.get_level() <= level && ability.get_energy() <= energy) {
+        if (ability.get_level() <= level && ability.get_energy() <= energy && ability.get_creature().get_type() != 0) {
             available.push_back(std::cref(ability));
         }
     }
@@ -25,7 +25,7 @@ std::vector<std::reference_wrapper<const Ability>>
 School::get_upgradable_abilities(size_t level, size_t exp) const {
     std::vector<std::reference_wrapper<const Ability>> upgradable;
     for (const auto& ability : abilities) {
-        if (ability.can_upgrade(exp, level)) {
+        if (ability.can_upgrade(exp, level) && ability.get_creature().get_type() != 0) {
             upgradable.push_back(std::cref(ability));
         }
     }

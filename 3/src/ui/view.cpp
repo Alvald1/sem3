@@ -32,8 +32,9 @@ View::init() {
 
 void
 View::init_colors() {
-    init_pair(1, COLOR_WHITE, COLOR_BLACK); // Default/Menu
-    init_pair(2, COLOR_RED, COLOR_BLACK);   // For taken summoners
+    init_pair(1, COLOR_WHITE, COLOR_BLACK);  // Default/Menu
+    init_pair(2, COLOR_RED, COLOR_BLACK);    // For taken/unavailable
+    init_pair(3, COLOR_YELLOW, COLOR_BLACK); // For selection highlight
 }
 
 void
@@ -126,19 +127,60 @@ View::get_empty_message(AbilityDisplayType type) const {
 }
 
 void
-View::send_abilities(const std::vector<std::reference_wrapper<const Ability>>& abilities,
-                     AbilityDisplayType type) const {
-    clear_screen();
-    mvprintw(0, 0, "%s", get_title(type));
+View::send_abilities(size_t current_energy, const std::vector<std::reference_wrapper<const Ability>>& abilities,
+                     AbilityDisplayType type, size_t selected_index) const {
+    if (!abilities.empty()) {
+        int start_y = 6;
+        mvprintw(start_y - 2, COLS - INFO_PANEL_WIDTH + 2, "Current Energy: %zu", current_energy);
+        mvprintw(start_y - 1, COLS - INFO_PANEL_WIDTH + 2, "%s", get_title(type));
 
-    if (abilities.empty()) {
-        mvprintw(2, 0, "%s", get_empty_message(type));
-    } else {
-        int y = 2;
-        for (const auto& ability : abilities) {
-            const auto& icon = get_ability_icon(ability.get().get_id());
-            mvprintw(y++, 2, "- %s %s", ability.get().get_name().c_str(), icon.c_str());
+        const int BOX_HEIGHT = 8;
+        const int BOX_WIDTH = INFO_PANEL_WIDTH - 4;
+
+        for (size_t i = 0; i < abilities.size(); ++i) {
+            const auto& ability = abilities[i].get();
+            const auto& creature = ability.get_creature();
+            int box_y = start_y + i * (BOX_HEIGHT + 1);
+
+            // Draw box with yellow border for selected ability
+            if (i == selected_index) {
+                attron(COLOR_PAIR(3) | A_BOLD);
+            }
+
+            // Draw box borders
+            mvhline(box_y, COLS - INFO_PANEL_WIDTH + 2, ACS_HLINE, BOX_WIDTH);
+            mvhline(box_y + BOX_HEIGHT, COLS - INFO_PANEL_WIDTH + 2, ACS_HLINE, BOX_WIDTH);
+            mvvline(box_y, COLS - INFO_PANEL_WIDTH + 2, ACS_VLINE, BOX_HEIGHT);
+            mvvline(box_y, COLS - INFO_PANEL_WIDTH + BOX_WIDTH + 1, ACS_VLINE, BOX_HEIGHT);
+
+            // Corners
+            mvaddch(box_y, COLS - INFO_PANEL_WIDTH + 2, ACS_ULCORNER);
+            mvaddch(box_y, COLS - INFO_PANEL_WIDTH + BOX_WIDTH + 1, ACS_URCORNER);
+            mvaddch(box_y + BOX_HEIGHT, COLS - INFO_PANEL_WIDTH + 2, ACS_LLCORNER);
+            mvaddch(box_y + BOX_HEIGHT, COLS - INFO_PANEL_WIDTH + BOX_WIDTH + 1, ACS_LRCORNER);
+
+            if (i == selected_index) {
+                attroff(COLOR_PAIR(3) | A_BOLD);
+            }
+
+            // Content (red if not enough energy)
+            if (ability.get_energy() > current_energy) {
+                attron(COLOR_PAIR(2));
+            }
+            mvprintw(box_y + 1, COLS - INFO_PANEL_WIDTH + 4, "Name: %s", ability.get_name().c_str());
+            mvprintw(box_y + 2, COLS - INFO_PANEL_WIDTH + 4, "Energy Cost: %zu", ability.get_energy());
+            if (ability.get_energy() > current_energy) {
+                attroff(COLOR_PAIR(2));
+            }
+
+            // Rest of the content
+            mvprintw(box_y + 3, COLS - INFO_PANEL_WIDTH + 4, "HP: %zu", ability.get_hp());
+            mvprintw(box_y + 4, COLS - INFO_PANEL_WIDTH + 4, "Damage: %zu", creature.get_damage());
+            mvprintw(box_y + 5, COLS - INFO_PANEL_WIDTH + 4, "Speed: %zu", creature.get_speed());
+            mvprintw(box_y + 6, COLS - INFO_PANEL_WIDTH + 4, "Range: %zu", creature.get_range());
         }
+    } else {
+        mvprintw(6, COLS - INFO_PANEL_WIDTH + 2, "%s", get_empty_message(type));
     }
     refresh_display();
 }

@@ -46,6 +46,8 @@ class EntityManager {
     void clear();
     [[nodiscard]] std::vector<Entity*> get_queue_entities();
     [[nodiscard]] std::vector<Entity*> get_allied_entities(size_t id);
+    [[nodiscard]] bool is_summoner(size_t id) const;
+    [[nodiscard]] bool is_troop(size_t id) const;
 };
 
 #endif // ENTITY_MANAGER_HPP

@@ -2,13 +2,15 @@
 #include <string>
 #include "managers/entity_manager.hpp"
 
+Board* Board::instance = nullptr;
+
 Board::Board(const Map& game_map) : map(game_map), view(View::getInstance()), offset_x(0), offset_y(0) {
     // Полностью очищаем экран перед созданием окна
     clear();
     refresh();
 
-    // Calculate window sizes and positions
-    int map_height = map.get_size().first * CELL_HEIGHT + 1;
+    // Calculate window sizes and positions with extra space for commands
+    int map_height = map.get_size().first * CELL_HEIGHT + 1 + COMMAND_TEXT_HEIGHT;
     int map_width = map.get_size().second * CELL_WIDTH + 1;
 
     // Create both windows
@@ -22,7 +24,18 @@ Board::Board(const Map& game_map) : map(game_map), view(View::getInstance()), of
     box(info_window, 0, 0);
 }
 
+Board&
+Board::getInstance(const Map& game_map) {
+    if (instance == nullptr) {
+        instance = new Board(game_map);
+    }
+    return *instance;
+}
+
 Board::~Board() {
+    if (this == instance) {
+        instance = nullptr;
+    }
     delwin(info_window);
     cleanup();
 }
@@ -34,6 +47,18 @@ Board::init_colors() {
     init_pair(2, COLOR_GREEN, COLOR_BLACK);  // Friendly unit
     init_pair(3, COLOR_RED, COLOR_BLACK);    // Enemy unit
     init_pair(4, COLOR_YELLOW, COLOR_BLACK); // Neutral unit
+    init_pair(5, COLOR_GREEN, COLOR_BLACK);  // For highlighted cell
+}
+
+void
+Board::highlight_cell(Position pos) {
+    highlighted_cell = pos;
+    has_highlight = true;
+}
+
+void
+Board::clear_highlight() {
+    has_highlight = false;
 }
 
 void
@@ -167,7 +192,7 @@ Board::draw() {
         for (size_t y = 0; y < map_height && !found_current; y++) {
             for (size_t x = 0; x < map_width; x++) {
                 if (entity_ids(y, x) == current_entity->get_id()) {
-                    current_pos = Position(x, y);
+                    current_pos = Position(y, x);
                     found_current = true;
                     break;
                 }
@@ -227,6 +252,28 @@ Board::draw() {
         mvwaddch(window, grid_y + CELL_HEIGHT, grid_x + CELL_WIDTH, ACS_LRCORNER);
 
         wattroff(window, COLOR_PAIR(2) | A_BOLD);
+    }
+
+    // Add highlight drawing in the cell drawing section
+    if (has_highlight) {
+        int grid_y = (highlighted_cell.get_y() - offset_y) * CELL_HEIGHT;
+        int grid_x = (highlighted_cell.get_x() - offset_x) * CELL_WIDTH;
+
+        wattron(window, COLOR_PAIR(5) | A_BOLD);
+
+        // Draw highlighted border
+        mvwhline(window, grid_y, grid_x, ACS_HLINE, CELL_WIDTH);
+        mvwhline(window, grid_y + CELL_HEIGHT, grid_x, ACS_HLINE, CELL_WIDTH);
+        mvwvline(window, grid_y, grid_x, ACS_VLINE, CELL_HEIGHT);
+        mvwvline(window, grid_y, grid_x + CELL_WIDTH, ACS_VLINE, CELL_HEIGHT);
+
+        // Corners
+        mvwaddch(window, grid_y, grid_x, ACS_ULCORNER);
+        mvwaddch(window, grid_y, grid_x + CELL_WIDTH, ACS_URCORNER);
+        mvwaddch(window, grid_y + CELL_HEIGHT, grid_x, ACS_LLCORNER);
+        mvwaddch(window, grid_y + CELL_HEIGHT, grid_x + CELL_WIDTH, ACS_LRCORNER);
+
+        wattroff(window, COLOR_PAIR(5) | A_BOLD);
     }
 
     // Draw entities, again restricting to visible section
@@ -312,6 +359,22 @@ Board::draw() {
 
     // Draw borders
     box(window, 0, 0);
+
+    // Add command options text based on current entity type
+    auto& entity_manager = EntityManager::getInstance();
+    if (auto current_entity = entity_manager.get_current_entity()) {
+        size_t current_id = current_entity->get_id();
+        // Position just above the bottom border
+        int command_y = getmaxy(window) - 2;
+
+        wattron(window, A_BOLD); // Make commands more visible
+        if (entity_manager.is_summoner(current_id)) {
+            mvwprintw(window, command_y, 2, "Commands: 1-Summon  2-Accumulate Energy  3-Upgrade School  4-Skip Turn");
+        } else if (entity_manager.is_troop(current_id)) {
+            mvwprintw(window, command_y, 2, "Commands: 1-Move  2-Apply Effect  3-Attack  4-Skip Turn");
+        }
+        wattroff(window, A_BOLD);
+    }
 
     // Draw info panel и сразу делаем refresh
     draw_info_panel();

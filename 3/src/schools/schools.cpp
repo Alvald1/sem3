@@ -32,7 +32,11 @@ Schools::get_available_abilities(const std::unordered_map<size_t, size_t>& level
         auto it = levels.find(school.get_id());
         if (it != levels.end()) {
             auto school_abilities = school.get_available_abilities(it->second, energy);
-            result.insert(result.end(), school_abilities.begin(), school_abilities.end());
+            for (const auto& ability : school_abilities) {
+                if (ability.get().get_creature().get_type() != 0) {
+                    result.push_back(ability);
+                }
+            }
         }
     }
     return result;
@@ -45,7 +49,11 @@ Schools::get_upgradable_abilities(const std::unordered_map<size_t, size_t>& leve
         auto it = levels.find(school.get_id());
         if (it != levels.end()) {
             auto school_abilities = school.get_upgradable_abilities(it->second, exp);
-            result.insert(result.end(), school_abilities.begin(), school_abilities.end());
+            for (const auto& ability : school_abilities) {
+                if (ability.get().get_creature().get_type() != 0) {
+                    result.push_back(ability);
+                }
+            }
         }
     }
     return result;

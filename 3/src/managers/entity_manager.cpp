@@ -107,3 +107,21 @@ EntityManager::get_allied_entities(size_t id) {
 
     return allies;
 }
+
+bool
+EntityManager::is_summoner(size_t id) const {
+    auto it = entities_.find(id);
+    if (it == entities_.end()) {
+        return false;
+    }
+    return dynamic_cast<Summoner*>(it->second.get()) != nullptr;
+}
+
+bool
+EntityManager::is_troop(size_t id) const {
+    auto it = entities_.find(id);
+    if (it == entities_.end()) {
+        return false;
+    }
+    return dynamic_cast<BaseTroop*>(it->second.get()) != nullptr;
+}

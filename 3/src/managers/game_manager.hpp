@@ -4,13 +4,12 @@
 #include "action_manager.hpp"
 #include "damage_manager.hpp"
 #include "entity_manager.hpp"
-#include "game/game.hpp"
 #include "map_manager.hpp"
 #include "queue/queue.hpp"
 #include "schools/schools.hpp"
 #include "summon_manager.hpp"
 
-class GameManager : public Game {
+class GameManager {
   private:
     static GameManager* instance_;
 

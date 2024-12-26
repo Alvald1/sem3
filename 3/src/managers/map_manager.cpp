@@ -5,30 +5,21 @@
 #include "queue/entity/troop/base_troop.hpp"
 
 void
-MapManager::move_entity(size_t id, Position delta) {
+MapManager::move_entity(size_t id, Position position) {
     auto current_cell = entities_.find_by_id(id);
     if (!current_cell) {
         throw EntityNotFoundException();
     }
 
-    Position curr_pos = current_cell->get_position();
-    Position new_pos(curr_pos + delta);
-
-    // Check bounds and passability
-    if (new_pos.get_x() < 0 || new_pos.get_y() < 0 || static_cast<size_t>(new_pos.get_x()) >= get_size().first
-        || static_cast<size_t>(new_pos.get_y()) >= get_size().second) {
-        throw OutOfBoundsException();
-    }
-
-    if (!is_cell_passable(new_pos)) {
+    if (!is_cell_passable(position)) {
         throw CellNotPassableException();
     }
-    if (is_cell_occupied(new_pos)) {
+    if (is_cell_occupied(position)) {
         throw CellOccupiedException();
     }
 
     // Get target cell
-    auto target_cell = get_cell(new_pos);
+    auto target_cell = get_cell(position);
 
     // Update cells
     current_cell->set_busy(false);
@@ -62,35 +53,29 @@ MapManager::is_cell_passable(Position pos) const {
 }
 
 bool
-MapManager::can_move_entity(size_t id, Position delta) const {
+MapManager::can_move_entity(size_t id, Position position) const {
     auto current_cell = entities_.find_by_id(id);
     if (!current_cell) {
         return false;
     }
 
-    Position curr_pos = current_cell->get_position();
-    Position new_pos(curr_pos.get_x() + delta.get_x(), curr_pos.get_y() + delta.get_y());
-
-    return is_cell_passable(new_pos) && !is_cell_occupied(new_pos);
+    return is_cell_passable(position) && !is_cell_occupied(position);
 }
 
 bool
-MapManager::can_entity_act(size_t id, Position delta) const {
+MapManager::can_entity_act(size_t id, Position position) const {
     auto current_cell = entities_.find_by_id(id);
     if (!current_cell) {
         return false;
     }
 
-    Position curr_pos = current_cell->get_position();
-    Position target_pos(curr_pos.get_x() + delta.get_x(), curr_pos.get_y() + delta.get_y());
-
-    return is_cell_passable(target_pos);
+    return is_cell_passable(position);
 }
 
 bool
-MapManager::add_entity(size_t id, Position pos) {
+MapManager::add_entity(size_t id, Position position) {
     try {
-        auto target_cell = get_cell(pos);
+        auto target_cell = get_cell(position);
         if (!target_cell->is_empty() || !target_cell->get_passability()) {
             return false;
         }
@@ -186,8 +171,8 @@ MapManager::get_entity_position(size_t id) const {
 
 void
 MapManager::change_cell_type(Position pos, EffectType type, int effect_value, size_t duration) {
-    if (pos.get_x() < 0 || pos.get_y() < 0 || static_cast<size_t>(pos.get_x()) >= get_size().first
-        || static_cast<size_t>(pos.get_y()) >= get_size().second) {
+    if (pos.get_x() < 0 || pos.get_y() < 0 || static_cast<size_t>(pos.get_x()) >= get_size().second
+        || static_cast<size_t>(pos.get_y()) >= get_size().first) {
         throw OutOfBoundsException();
     }
 
@@ -228,7 +213,7 @@ MapManager::change_cell_type(Position pos, EffectType type, int effect_value, si
     new_cell->set_id_entity(old_cell->get_id_entity());
 
     // Replace the old cell
-    matrix(pos.get_x(), pos.get_y()) = new_cell;
+    matrix(pos.get_y(), pos.get_x()) = new_cell;
 
     // Add to effect cells if it's an effect cell
     if (type != EffectType::NONE) {
@@ -237,23 +222,14 @@ MapManager::change_cell_type(Position pos, EffectType type, int effect_value, si
 }
 
 bool
-MapManager::can_entity_attack(size_t id, Position delta) const {
+MapManager::can_entity_attack(size_t id, Position position) const {
     auto current_cell = entities_.find_by_id(id);
     if (!current_cell) {
         return false;
     }
 
-    Position curr_pos = current_cell->get_position();
-    Position target_pos(curr_pos.get_x() + delta.get_x(), curr_pos.get_y() + delta.get_y());
-
-    // Check if target position is within bounds
-    if (target_pos.get_x() < 0 || target_pos.get_y() < 0 || static_cast<size_t>(target_pos.get_x()) >= get_size().first
-        || static_cast<size_t>(target_pos.get_y()) >= get_size().second) {
-        return false;
-    }
-
     // Check if target cell is occupied by another entity
-    return is_cell_occupied(target_pos);
+    return is_cell_occupied(position);
 }
 
 void

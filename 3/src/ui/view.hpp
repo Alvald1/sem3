@@ -10,6 +10,7 @@
 
 class View {
   private:
+    static const int INFO_PANEL_WIDTH = 32; // Add this constant
     View();
     static View* instance;
     WINDOW* window;
@@ -37,8 +38,10 @@ class View {
 
     const char* get_title(AbilityDisplayType type) const;
     const char* get_empty_message(AbilityDisplayType type) const;
-    void send_abilities(const std::vector<std::reference_wrapper<const Ability>>& abilities,
+    void send_abilities(size_t current_energy, const std::vector<std::reference_wrapper<const Ability>>& abilities,
                         AbilityDisplayType type) const;
+    void send_abilities(size_t current_energy, const std::vector<std::reference_wrapper<const Ability>>& abilities,
+                        AbilityDisplayType type, size_t selected_index) const;
 
     void add_ability_icon(size_t ability_id, std::string icon);
     const std::string& get_ability_icon(size_t ability_id) const;

@@ -5,11 +5,11 @@
 
 class Position {
   private:
-    int x;
     int y;
+    int x;
 
   public:
-    Position(int x = 0, int y = 0) : x(x), y(y) {}
+    Position(int y = 0, int x = 0) : y(y), x(x) {}
 
     int
     get_x() const {
@@ -33,7 +33,12 @@ class Position {
 
     Position
     operator+(const Position& other) const {
-        return Position(x + other.x, y + other.y);
+        return Position(y + other.y, x + other.x);
+    }
+
+    bool
+    operator==(const Position& other) const {
+        return x == other.x && y == other.y;
     }
 
     [[nodiscard]] size_t
