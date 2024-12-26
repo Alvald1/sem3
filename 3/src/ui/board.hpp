@@ -7,8 +7,8 @@
 
 class Board {
   private:
-    static const int CELL_WIDTH = 11;       // Увеличиваем для многострочных иконок
-    static const int CELL_HEIGHT = 6;       // Высота клетки для лучших пропорций
+    static const int CELL_WIDTH = 13;       // Увеличиваем для многострочных иконок
+    static const int CELL_HEIGHT = 7;       // Высота клетки для лучших пропорций
     static const int INFO_PANEL_WIDTH = 32; // Увеличил ширину для красивого отображения
     static const int QUEUE_BOX_HEIGHT = 4; // Увеличил высоту для доп. информации
     static const int QUEUE_BOX_WIDTH = 30; // Увеличил ширину для HP bar

@@ -67,13 +67,12 @@ Board::draw_info_panel() {
             break;
         }
 
-        // Текущий активный entity выделяем цветом
         bool is_current = (i == 0);
         if (is_current) {
             wattron(info_window, COLOR_PAIR(2) | A_BOLD);
         }
 
-        // Рисуем рамку с красивыми углами
+        // Draw box frame
         mvwaddch(info_window, box_y, 1, ACS_ULCORNER);
         mvwaddch(info_window, box_y, QUEUE_BOX_WIDTH, ACS_URCORNER);
         mvwaddch(info_window, box_y + QUEUE_BOX_HEIGHT - 1, 1, ACS_LLCORNER);
@@ -89,12 +88,17 @@ Board::draw_info_panel() {
             mvwaddch(info_window, y, QUEUE_BOX_WIDTH, ACS_VLINE);
         }
 
-        // Имя entity по центру
+        // Draw ID in top-right corner
+        wattron(info_window, COLOR_PAIR(4) | A_DIM); // Желтый цвет и уменьшенная яркость для ID
+        mvwprintw(info_window, box_y + 1, QUEUE_BOX_WIDTH - 4, "#%zu", entities[i]->get_id());
+        wattroff(info_window, COLOR_PAIR(4) | A_DIM);
+
+        // Имя entity по центру (сдвигаем влево для освобождения места под ID)
         std::string name = entities[i]->get_name();
-        if (name.length() > QUEUE_BOX_WIDTH - 4) {
-            name = name.substr(0, QUEUE_BOX_WIDTH - 7) + "...";
+        if (name.length() > QUEUE_BOX_WIDTH - 8) { // Уменьшаем доступную ширину для имени
+            name = name.substr(0, QUEUE_BOX_WIDTH - 11) + "...";
         }
-        int name_x = 2 + (QUEUE_BOX_WIDTH - 2 - name.length()) / 2;
+        int name_x = 3; // Фиксированное положение слева
         mvwprintw(info_window, box_y + 1, name_x, "%s", name.c_str());
 
         // HP bar и значение
@@ -103,26 +107,28 @@ Board::draw_info_panel() {
         int filled_width = static_cast<int>(hp_width * hp_percent / 100.0);
 
         mvwprintw(info_window, box_y + 2, 3, "HP:");
-        if (!is_current) {
-            wattron(info_window, COLOR_PAIR(3)); // Красный для пустой части
-        }
+
+        // Сначала красная (пустая) часть шкалы
+        wattron(info_window, COLOR_PAIR(3));
         mvwhline(info_window, box_y + 2, 6, '=', hp_width);
-        if (!is_current) {
-            wattroff(info_window, COLOR_PAIR(3));
-            wattron(info_window, COLOR_PAIR(2)); // Зеленый для заполненной части
+        wattroff(info_window, COLOR_PAIR(3));
+
+        // Затем зеленая (заполненная) часть шкалы
+        if (is_current) {
+            wattron(info_window, COLOR_PAIR(2) | A_BOLD);
+        } else {
+            wattron(info_window, COLOR_PAIR(2));
         }
         mvwhline(info_window, box_y + 2, 6, '#', filled_width);
-        if (!is_current) {
+        if (is_current) {
+            wattroff(info_window, COLOR_PAIR(2) | A_BOLD);
+        } else {
             wattroff(info_window, COLOR_PAIR(2));
         }
 
         // Числовое значение HP
         mvwprintw(info_window, box_y + 2, QUEUE_BOX_WIDTH - 8, "%zu/%zu", static_cast<size_t>(entities[i]->get_hp()),
                   static_cast<size_t>(entities[i]->get_max_hp()));
-
-        if (is_current) {
-            wattroff(info_window, COLOR_PAIR(2) | A_BOLD);
-        }
     }
 
     wrefresh(info_window);
@@ -210,7 +216,7 @@ Board::draw() {
 
         // Corners
         mvwaddch(window, grid_y, grid_x, ACS_ULCORNER);
-        mvwaddch(window, grid_y, grid_x + CELL_WIDTH, ACS_URCORNER);
+        mvwaddch(window, grid_x + CELL_WIDTH, grid_x, ACS_URCORNER);
         mvwaddch(window, grid_y + CELL_HEIGHT, grid_x, ACS_LLCORNER);
         mvwaddch(window, grid_y + CELL_HEIGHT, grid_x + CELL_WIDTH, ACS_LRCORNER);
 
@@ -220,7 +226,15 @@ Board::draw() {
     // Draw entities, again restricting to visible section
     for (size_t y = offset_y; y < row_end; y++) {
         for (size_t x = offset_x; x < col_end; x++) {
+            int grid_y = (y - offset_y) * CELL_HEIGHT;
+            int grid_x = (x - offset_x) * CELL_WIDTH;
+
             if (entity_ids(y, x) != 0) {
+                // Draw entity ID in top-left corner
+                wattron(window, COLOR_PAIR(4) | A_DIM); // Используем желтый цвет и уменьшенную яркость
+                mvwprintw(window, grid_y + 1, grid_x + 1, "%zu", entity_ids(y, x));
+                wattroff(window, COLOR_PAIR(4) | A_DIM);
+
                 const std::string& icon = view.get_ability_icon(entity_ids(y, x));
 
                 // Split icon into lines
@@ -254,15 +268,15 @@ Board::draw() {
 
                 // Draw each line centered horizontally
                 wattron(window, COLOR_PAIR(2));
-                for (size_t i = 0; i < lines.size() && i < CELL_HEIGHT; i++) {
+                for (size_t i = 0; i < lines.size() && i < CELL_HEIGHT - 1; i++) { // -1 to leave space for ID
                     const std::string& line = lines[i];
                     int x_padding = (CELL_WIDTH - line.length()) / 2;
                     if (x_padding < 1) {
                         x_padding = 1;
                     }
 
-                    mvwprintw(window, cell_start_y + padding_top + i, (x - offset_x) * CELL_WIDTH + x_padding, "%s",
-                              line.c_str());
+                    mvwprintw(window, cell_start_y + padding_top + i + 1, // +1 to move down for ID
+                              (x - offset_x) * CELL_WIDTH + x_padding, "%s", line.c_str());
                 }
                 wattroff(window, COLOR_PAIR(2));
             }
