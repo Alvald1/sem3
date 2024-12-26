@@ -6,13 +6,25 @@ Board::Board(const Map& game_map) : map(game_map), view(View::getInstance()), of
     clear();
     refresh();
 
-    int height = map.get_size().first * CELL_HEIGHT + 1;
-    int width = map.get_size().second * CELL_WIDTH + 1;
-    window = newwin(height, width, 0, 0);
+    // Calculate window sizes and positions
+    int map_height = map.get_size().first * CELL_HEIGHT + 1;
+    int map_width = map.get_size().second * CELL_WIDTH + 1;
+
+    // Create both windows
+    window = newwin(map_height, map_width, 0, 0);
+    info_window = newwin(map_height, INFO_PANEL_WIDTH, 0, map_width + 1);
+
     init_colors();
+
+    // Initial borders
+    box(window, 0, 0);
+    box(info_window, 0, 0);
 }
 
-Board::~Board() { cleanup(); }
+Board::~Board() {
+    delwin(info_window);
+    cleanup();
+}
 
 void
 Board::init_colors() {
@@ -21,6 +33,17 @@ Board::init_colors() {
     init_pair(2, COLOR_GREEN, COLOR_BLACK);  // Friendly unit
     init_pair(3, COLOR_RED, COLOR_BLACK);    // Enemy unit
     init_pair(4, COLOR_YELLOW, COLOR_BLACK); // Neutral unit
+}
+
+void
+Board::draw_info_panel() {
+    werase(info_window);
+    box(info_window, 0, 0);
+
+    // Добавляем заголовок
+    mvwprintw(info_window, 0, 2, " Queue ");
+
+    wrefresh(info_window);
 }
 
 void
@@ -135,12 +158,21 @@ Board::draw() {
     mvwaddch(window, 0, (col_end - offset_x) * CELL_WIDTH, ACS_URCORNER);
     mvwaddch(window, (row_end - offset_y) * CELL_HEIGHT, 0, ACS_LLCORNER);
 
+    // Draw borders
+    box(window, 0, 0);
+
+    // Draw info panel
+    draw_info_panel();
+
+    // Refresh windows
     wrefresh(window);
+    wrefresh(info_window);
 }
 
 void
 Board::refresh_display() {
     wrefresh(window);
+    wrefresh(info_window);
 }
 
 void
