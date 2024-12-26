@@ -8,7 +8,7 @@ class EffectCellRangeBuilder {
     EffectCellRange cell;
 
   public:
-    EffectCellRangeBuilder(size_t id, Position pos) : cell(id, pos) {}
+    EffectCellRangeBuilder(Position pos) : cell(pos) {}
 
     EffectCellRangeBuilder&
     set_effect(int range, size_t time) {

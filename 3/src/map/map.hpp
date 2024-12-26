@@ -47,20 +47,4 @@ class Map {
     Matrix<int> export_cell_types_matrix() const;
 };
 
-template <typename CellType>
-void
-Map::replace_cell(std::shared_ptr<CellType> new_cell) {
-    if (dynamic_cast<Cell*>(new_cell.get()) == nullptr) {
-        throw std::invalid_argument("Invalid cell type: must be derived from Cell");
-    }
-
-    Position pos = new_cell->get_position();
-    if (pos.get_x() < 0 || pos.get_y() < 0 || static_cast<size_t>(pos.get_x()) >= size.first
-        || static_cast<size_t>(pos.get_y()) >= size.second) {
-        throw std::out_of_range("Cell position out of range");
-    }
-
-    matrix(static_cast<size_t>(pos.get_x()), static_cast<size_t>(pos.get_y())) = new_cell;
-}
-
 #endif // MAP_HPP

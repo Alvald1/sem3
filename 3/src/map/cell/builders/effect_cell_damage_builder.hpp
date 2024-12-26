@@ -8,7 +8,7 @@ class EffectCellDamageBuilder {
     EffectCellDamage cell;
 
   public:
-    EffectCellDamageBuilder(size_t id, Position pos) : cell(id, pos) {}
+    EffectCellDamageBuilder(Position pos) : cell(pos) {}
 
     EffectCellDamageBuilder&
     set_effect(int damage, size_t time) {

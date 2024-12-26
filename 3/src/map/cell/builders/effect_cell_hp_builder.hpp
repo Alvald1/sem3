@@ -8,7 +8,7 @@ class EffectCellHPBuilder {
     EffectCellHP cell;
 
   public:
-    EffectCellHPBuilder(size_t id, Position pos) : cell(id, pos) {}
+    EffectCellHPBuilder(Position pos) : cell(pos) {}
 
     EffectCellHPBuilder&
     set_effect(int hp, size_t time) {

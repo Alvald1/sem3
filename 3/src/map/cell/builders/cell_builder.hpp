@@ -9,7 +9,7 @@ class CellBuilder {
     Cell cell;
 
   public:
-    CellBuilder(size_t id, Position pos) : cell(id, pos) {}
+    CellBuilder(Position pos) : cell(pos) {}
 
     CellBuilder&
     set_passability(bool passability) {

@@ -12,7 +12,7 @@ class EffectCellDamageBuilder;
 
 class Cell {
   private:
-    size_t id;
+    static size_t id;
     Position position;
     bool passability;
     bool busy;
@@ -25,8 +25,10 @@ class Cell {
     friend class EffectCellDamageBuilder;
 
   protected:
-    Cell(size_t id, Position position, bool passability = true, bool busy = false, size_t id_entity = 0)
-        : id(id), position(position), passability(passability), busy(busy), id_entity(id_entity) {}
+    Cell(Position position, bool passability = true, bool busy = false, size_t id_entity = 0)
+        : position(position), passability(passability), busy(busy), id_entity(id_entity) {
+        ++id;
+    }
 
   public:
     // Add virtual destructor to make the class polymorphic

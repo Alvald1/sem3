@@ -8,7 +8,7 @@ class EffectCellSpeedBuilder {
     EffectCellSpeed cell;
 
   public:
-    EffectCellSpeedBuilder(size_t id, Position pos) : cell(id, pos) {}
+    EffectCellSpeedBuilder(Position pos) : cell(pos) {}
 
     EffectCellSpeedBuilder&
     set_effect(int speed, size_t time) {

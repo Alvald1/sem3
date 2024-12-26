@@ -10,46 +10,34 @@
 class CellDirector {
   public:
     static Cell
-    createBasicCell(size_t id, Position pos, bool passability = true) {
-        return CellBuilder(id, pos).set_passability(passability).set_busy(false).build();
+    createBasicCell(Position pos, bool passability = true) {
+        return CellBuilder(pos).set_passability(passability).set_busy(false).build();
     }
 
     static EffectCellSpeed
-    createSpeedCell(size_t id, Position pos, int speed, size_t duration) {
-        return EffectCellSpeedBuilder(id, pos)
-            .set_effect(speed, duration)
-            .set_passability(true)
-            .set_busy(false)
-            .build();
+    createSpeedCell(Position pos, int speed, size_t duration) {
+        return EffectCellSpeedBuilder(pos).set_effect(speed, duration).set_passability(true).set_busy(false).build();
     }
 
     static EffectCellRange
-    createRangeCell(size_t id, Position pos, int range, size_t duration) {
-        return EffectCellRangeBuilder(id, pos)
-            .set_effect(range, duration)
-            .set_passability(true)
-            .set_busy(false)
-            .build();
+    createRangeCell(Position pos, int range, size_t duration) {
+        return EffectCellRangeBuilder(pos).set_effect(range, duration).set_passability(true).set_busy(false).build();
     }
 
     static EffectCellHP
-    createHPCell(size_t id, Position pos, int hp, size_t duration) {
-        return EffectCellHPBuilder(id, pos).set_effect(hp, duration).set_passability(true).set_busy(false).build();
+    createHPCell(Position pos, int hp, size_t duration) {
+        return EffectCellHPBuilder(pos).set_effect(hp, duration).set_passability(true).set_busy(false).build();
     }
 
     static EffectCellDamage
-    createDamageCell(size_t id, Position pos, int damage, size_t duration) {
-        return EffectCellDamageBuilder(id, pos)
-            .set_effect(damage, duration)
-            .set_passability(true)
-            .set_busy(false)
-            .build();
+    createDamageCell(Position pos, int damage, size_t duration) {
+        return EffectCellDamageBuilder(pos).set_effect(damage, duration).set_passability(true).set_busy(false).build();
     }
 
     // Create a wall (impassable cell)
     static Cell
-    createWall(size_t id, Position pos) {
-        return CellBuilder(id, pos).set_passability(false).set_busy(true).build();
+    createWall(Position pos) {
+        return CellBuilder(pos).set_passability(false).set_busy(true).build();
     }
 };
 
