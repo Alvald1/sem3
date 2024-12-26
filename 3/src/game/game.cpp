@@ -7,10 +7,8 @@
 Game::Game() = default;
 
 Game::~Game() {
-    // Clear screen and reset cursor position before exit
-    printf("\033[2J");   // Clear screen
-    printf("\033[H");    // Move cursor to home position
-    printf("\033[?25h"); // Show cursor
+    // Let View handle the cleanup
+    View::getInstance().cleanup();
 }
 
 void

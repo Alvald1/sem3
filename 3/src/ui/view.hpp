@@ -16,10 +16,10 @@ class View {
     std::unordered_map<size_t, std::string> ability_icons;
 
     void init_colors();
-    void cleanup(); // Remains private
     void draw_input_form(int width, int height, bool width_selected) const;
 
   public:
+    void cleanup(); // Remains private
     ~View();
     View(const View&) = delete;
     View& operator=(const View&) = delete;

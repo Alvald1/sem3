@@ -99,16 +99,12 @@ View::refresh_display() const {
 
 void
 View::cleanup() {
-    clear();             // Clear the screen
-    refresh();           // Refresh to show the clear screen
-    curs_set(1);         // Show cursor
-    echo();              // Enable echo
-    nocbreak();          // Disable cbreak mode
-    nl();                // Enable new-line translation
-    endwin();            // End curses mode
-    printf("\033[2J");   // Clear entire screen
-    printf("\033[H");    // Move cursor to home position
-    printf("\033[?25h"); // Show cursor
+    clear();   // Clear the screen
+    refresh(); // Refresh to show the clear screen
+    endwin();  // End curses mode
+
+    // Reset terminal completely
+    system("reset"); // This ensures terminal is completely reset
 }
 
 const char*
