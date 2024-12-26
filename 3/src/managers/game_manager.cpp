@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "action_manager.hpp"
+
 void
 GameManager::do_step() {
     MapManager::getInstance().effect_cells();
@@ -9,4 +11,5 @@ GameManager::do_step() {
     if (cur_entity == nullptr) {
         return;
     }
+    ActionManager::getInstance().action(*cur_entity);
 }
