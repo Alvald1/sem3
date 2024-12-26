@@ -76,15 +76,22 @@ Control::update() {
 
 [[nodiscard]] Control::SummonerAction
 Control::get_summoner_action() const {
+    auto& board = Board::getInstance(MapManager::getInstance());
     while (true) {
         int ch = getch();
         switch (ch) {
+            case KEY_UP: board.scroll_up(); break;
+            case KEY_DOWN: board.scroll_down(); break;
+            case KEY_LEFT: board.scroll_left(); break;
+            case KEY_RIGHT: board.scroll_right(); break;
             case '1': return SummonerAction::SUMMON_TROOP;
             case '2': return SummonerAction::ACCUMULATE_ENERGY;
             case '3': return SummonerAction::UPGRADE_SCHOOL;
             case '4': return SummonerAction::SKIP_TURN;
             default: continue; // Игнорируем другие клавиши
         }
+        board.draw();
+        board.refresh_display();
     }
 }
 
@@ -92,6 +99,7 @@ Control::get_summoner_action() const {
 Control::get_ability_choice(const std::vector<std::reference_wrapper<const Ability>>& abilities,
                             size_t current_energy) {
     auto& view = View::getInstance();
+    auto& board = Board::getInstance(MapManager::getInstance());
     current_ability_selection = 0;
 
     if (abilities.empty()) {
@@ -99,34 +107,39 @@ Control::get_ability_choice(const std::vector<std::reference_wrapper<const Abili
     }
 
     while (true) {
-        // Display abilities with current selection highlighted
         view.send_abilities(current_energy, abilities, View::AbilityDisplayType::AVAILABLE, current_ability_selection);
 
         int ch = getch();
         switch (ch) {
-            case KEY_NPAGE: // Page Down
+            case KEY_UP: board.scroll_up(); break;
+            case KEY_DOWN: board.scroll_down(); break;
+            case KEY_LEFT: board.scroll_left(); break;
+            case KEY_RIGHT: board.scroll_right(); break;
+            case '\t': // Use Tab to navigate abilities instead
                 if (current_ability_selection < abilities.size() - 1) {
                     current_ability_selection++;
+                } else {
+                    current_ability_selection = 0;
                 }
                 break;
-
-            case KEY_PPAGE: // Page Up
+            case KEY_BTAB: // Shift+Tab for reverse navigation
                 if (current_ability_selection > 0) {
                     current_ability_selection--;
+                } else {
+                    current_ability_selection = abilities.size() - 1;
                 }
                 break;
-
             case '\n':
             case KEY_ENTER:
-                // Check if we have enough energy for the selected ability
                 if (abilities[current_ability_selection].get().get_energy() <= current_energy) {
                     return abilities[current_ability_selection].get().get_id();
                 }
                 break;
-
-            case 27:             // ESC
-                return SIZE_MAX; // Special value indicating cancellation
+            case 27: // ESC
+                return SIZE_MAX;
         }
+        board.draw();
+        board.refresh_display();
     }
 }
 
@@ -138,7 +151,6 @@ Control::get_position_choice(Position current_pos) const {
     auto [height, width] = map_manager.get_size();
 
     while (true) {
-        // Highlight current cursor position
         board.highlight_cell(cursor_pos);
         board.draw();
         board.refresh_display();
@@ -147,42 +159,43 @@ Control::get_position_choice(Position current_pos) const {
         Position new_pos = cursor_pos;
 
         switch (ch) {
+            case KEY_UP: board.scroll_up(); break;
+            case KEY_DOWN: board.scroll_down(); break;
+            case KEY_LEFT: board.scroll_left(); break;
+            case KEY_RIGHT: board.scroll_right(); break;
             case 'w':
             case 'W':
                 if (cursor_pos.get_y() > 0) {
                     new_pos = Position(cursor_pos.get_y() - 1, cursor_pos.get_x());
                 }
                 break;
-
             case 's':
             case 'S':
                 if (cursor_pos.get_y() < height - 1) {
                     new_pos = Position(cursor_pos.get_y() + 1, cursor_pos.get_x());
                 }
                 break;
-
             case 'a':
             case 'A':
                 if (cursor_pos.get_x() > 0) {
                     new_pos = Position(cursor_pos.get_y(), cursor_pos.get_x() - 1);
                 }
                 break;
-
             case 'd':
             case 'D':
                 if (cursor_pos.get_x() < width - 1) {
                     new_pos = Position(cursor_pos.get_y(), cursor_pos.get_x() + 1);
                 }
                 break;
-
             case '\n':
             case KEY_ENTER: return cursor_pos;
-
-            case 27:                   // ESC
-                return Position(0, 0); // Cancel selection
+            case 27: // ESC
+                return Position(0, 0);
         }
 
         cursor_pos = new_pos;
+        board.draw();
+        board.refresh_display();
     }
 }
 
