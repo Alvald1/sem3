@@ -47,6 +47,7 @@ class MapManager : public Map {
     bool can_entity_act(size_t id, Position delta) const;
     bool add_entity(size_t id, Position pos);
     std::optional<Position> get_entity_position(size_t id) const;
+    void change_cell_type(Position pos, EffectType type, int effect_value, size_t duration);
 };
 
 #endif // MAP_MANAGER_HPP

@@ -1,6 +1,7 @@
 #include "map_manager.hpp"
 #include "utilities/exceptions.hpp"
 
+#include "map/cell/builders/cell_director.hpp"
 #include "queue/entity/troop/base_troop.hpp"
 
 void
@@ -161,16 +162,24 @@ MapManager::process_effects(size_t start, size_t end, EntityManager& entity_mana
                 continue;
             }
 
-            if (auto* hp_cell = dynamic_cast<EffectCellHP*>(cell)) {
-                entity->modify_hp(hp_cell->give_effect());
-            } else if (auto* troop = dynamic_cast<BaseTroop*>(entity)) {
-                if (auto* damage_cell = dynamic_cast<EffectCellDamage*>(cell)) {
-                    troop->modify_damage(damage_cell->give_effect());
-                } else if (auto* speed_cell = dynamic_cast<EffectCellSpeed*>(cell)) {
-                    troop->modify_speed(speed_cell->give_effect());
-                } else if (auto* range_cell = dynamic_cast<EffectCellRange*>(cell)) {
-                    troop->modify_range(range_cell->give_effect());
+            try {
+                if (auto* hp_cell = dynamic_cast<EffectCellHP*>(cell)) {
+                    entity->modify_hp(hp_cell->give_effect());
+                } else if (auto* troop = dynamic_cast<BaseTroop*>(entity)) {
+                    if (auto* damage_cell = dynamic_cast<EffectCellDamage*>(cell)) {
+                        troop->modify_damage(damage_cell->give_effect());
+                    } else if (auto* speed_cell = dynamic_cast<EffectCellSpeed*>(cell)) {
+                        troop->modify_speed(speed_cell->give_effect());
+                    } else if (auto* range_cell = dynamic_cast<EffectCellRange*>(cell)) {
+                        troop->modify_range(range_cell->give_effect());
+                    }
                 }
+            } catch (...) {
+                // Convert effect cell to basic cell using existing method
+                change_cell_type(cell->get_position(), EffectType::NONE);
+
+                // Since change_cell_type updates effect_cells_, adjust the counter
+                --i;
             }
         }
     }
@@ -183,4 +192,58 @@ MapManager::get_entity_position(size_t id) const {
         return std::nullopt;
     }
     return cell->get_position();
+}
+
+void
+MapManager::change_cell_type(Position pos, EffectType type, int effect_value = 0, size_t duration = 0) {
+    if (pos.get_x() < 0 || pos.get_y() < 0 || static_cast<size_t>(pos.get_x()) >= get_size().first
+        || static_cast<size_t>(pos.get_y()) >= get_size().second) {
+        throw OutOfBoundsException();
+    }
+
+    size_t x = static_cast<size_t>(pos.get_x());
+    size_t y = static_cast<size_t>(pos.get_y());
+    Cell* old_cell = matrix(x, y).get();
+    size_t cell_id = old_cell->get_id();
+
+    // Remove old cell from effect_cells_ if it exists
+    auto it = std::find(effect_cells_.begin(), effect_cells_.end(), old_cell);
+    if (it != effect_cells_.end()) {
+        effect_cells_.erase(it);
+    }
+
+    // If type is NONE, create a basic cell using CellDirector
+    if (type == EffectType::NONE) {
+        Cell* new_cell = new Cell(CellDirector::createBasicCell(pos, old_cell->get_passability()));
+        new_cell->set_busy(!old_cell->is_empty());
+        new_cell->set_id_entity(old_cell->get_id_entity());
+        matrix(x, y).reset(new_cell);
+        return;
+    }
+
+    Cell* new_cell = nullptr;
+    switch (type) {
+        case EffectType::DAMAGE:
+            new_cell = new EffectCellDamage(CellDirector::createDamageCell(pos, effect_value, duration));
+            break;
+        case EffectType::SPEED:
+            new_cell = new EffectCellSpeed(CellDirector::createSpeedCell(pos, effect_value, duration));
+            break;
+        case EffectType::RANGE:
+            new_cell = new EffectCellRange(CellDirector::createRangeCell(pos, effect_value, duration));
+            break;
+        case EffectType::HEALTH:
+            new_cell = new EffectCellHP(CellDirector::createHPCell(pos, effect_value, duration));
+            break;
+    }
+
+    if (new_cell) {
+        // Preserve the busy state and entity ID from the old cell
+        new_cell->set_busy(!old_cell->is_empty());
+        new_cell->set_id_entity(old_cell->get_id_entity());
+
+        // Replace the old cell
+        matrix(x, y).reset(new_cell);
+        effect_cells_.push_back(new_cell);
+    }
 }
