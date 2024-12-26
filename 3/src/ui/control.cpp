@@ -51,36 +51,6 @@ Control::get_map_size() const {
     }
 }
 
-int
-Control::get_player_count() const {
-    int player_count = 2; // Default minimum players
-    auto& view = View::getInstance();
-
-    while (true) {
-        view.show_player_count_menu(player_count);
-        int ch = getch();
-
-        switch (ch) {
-            case 'q':
-            case 'Q':
-            case 27:      // ESC key
-                return 0; // Special value indicating exit
-            case KEY_UP:
-                if (player_count < 4) {
-                    player_count++;
-                }
-                break;
-            case KEY_DOWN:
-                if (player_count > 2) {
-                    player_count--;
-                }
-                break;
-            case '\n':
-            case KEY_ENTER: return player_count;
-        }
-    }
-}
-
 bool
 Control::handle_input() {
     int ch = getch();

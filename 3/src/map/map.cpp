@@ -61,6 +61,24 @@ Map::export_cell_types_matrix() const {
     return types_matrix;
 }
 
+Matrix<size_t>
+Map::export_entity_ids_matrix() const {
+    Matrix<size_t> ids_matrix(size.first, size.second);
+
+    for (size_t i = 0; i < size.first; ++i) {
+        for (size_t j = 0; j < size.second; ++j) {
+            auto cell = matrix(i, j);
+            if (cell->get_busy()) {
+                ids_matrix(i, j) = cell->get_id_entity();
+            } else {
+                ids_matrix(i, j) = 0; // 0 indicates no entity
+            }
+        }
+    }
+
+    return ids_matrix;
+}
+
 std::shared_ptr<Cell>&
 Map::get_cell(const Position& pos) {
     if (pos.get_x() < 0 || static_cast<size_t>(pos.get_x()) >= size.first || pos.get_y() < 0

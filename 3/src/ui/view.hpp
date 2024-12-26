@@ -16,7 +16,7 @@ class View {
     std::unordered_map<size_t, std::string> ability_icons;
 
     void init_colors();
-    void cleanup();
+    void cleanup(); // Remains private
     void draw_input_form(int width, int height, bool width_selected) const;
 
   public:
@@ -43,8 +43,6 @@ class View {
     void add_ability_icon(size_t ability_id, std::string icon);
     const std::string& get_ability_icon(size_t ability_id) const;
     bool has_ability_icon(size_t ability_id) const;
-
-    void show_player_count_menu(int current_count) const;
 
     void show_summoners_selection(const std::vector<std::reference_wrapper<const Ability>>& summoners,
                                   const std::vector<bool>& selected, int current_player, int current_selection) const;

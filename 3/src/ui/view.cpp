@@ -17,6 +17,7 @@ View::~View() { cleanup(); }
 
 void
 View::init() {
+    putenv((char*)"NCURSES_NO_UTF8_ACS=1");
     window = initscr();
     noecho();
     cbreak();
@@ -24,11 +25,15 @@ View::init() {
     curs_set(0);
     start_color();
     init_colors();
+    ESCDELAY = 0;
+    clear(); // Clear screen at init
+    refresh();
 }
 
 void
 View::init_colors() {
     init_pair(1, COLOR_WHITE, COLOR_BLACK); // Default/Menu
+    init_pair(2, COLOR_RED, COLOR_BLACK);   // For taken summoners
 }
 
 void
@@ -83,7 +88,8 @@ View::draw_input_form(int width, int height, bool width_selected) const {
 
 void
 View::clear_screen() const {
-    clear();
+    erase(); // Changed from clear() to erase()
+    refresh();
 }
 
 void
@@ -98,8 +104,11 @@ View::cleanup() {
     curs_set(1);         // Show cursor
     echo();              // Enable echo
     nocbreak();          // Disable cbreak mode
+    nl();                // Enable new-line translation
     endwin();            // End curses mode
-    printf("\033[?25h"); // Show cursor (ANSI escape sequence)
+    printf("\033[2J");   // Clear entire screen
+    printf("\033[H");    // Move cursor to home position
+    printf("\033[?25h"); // Show cursor
 }
 
 const char*
@@ -153,20 +162,6 @@ View::get_ability_icon(size_t ability_id) const {
 bool
 View::has_ability_icon(size_t ability_id) const {
     return ability_icons.find(ability_id) != ability_icons.end();
-}
-
-void
-View::show_player_count_menu(int current_count) const {
-    clear_screen();
-    int center_y = LINES / 2;
-    int center_x = COLS / 2;
-
-    mvprintw(center_y - 4, center_x - 15, "Select number of players");
-    attron(A_REVERSE);
-    mvprintw(center_y - 2, center_x - 5, "[ %d ]", current_count);
-    attroff(A_REVERSE);
-    mvprintw(center_y + 2, center_x - 25, "Use Up/Down to change, Enter to confirm");
-    refresh_display();
 }
 
 void

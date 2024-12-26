@@ -8,7 +8,6 @@ main() {
         game.start();
         return 0;
     } catch (const std::exception& e) {
-        endwin();
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }

@@ -2,13 +2,19 @@
 #define BOARD_HPP
 
 #include <ncurses.h>
-
 #include "map/map.hpp"
+#include "ui/view.hpp"
 
 class Board {
   private:
+    static const int CELL_WIDTH = 11; // Увеличиваем для многострочных иконок
+    static const int CELL_HEIGHT = 6; // Высота клетки для лучших пропорций
+    size_t offset_x = 0;              // Horizontal scroll offset
+    size_t offset_y = 0;              // Vertical scroll offset
+
     WINDOW* window;
     const Map& map;
+    View& view;
 
     void init_colors();
     void cleanup();
@@ -19,6 +25,10 @@ class Board {
 
     void draw();
     void refresh_display();
+    void scroll_up();
+    void scroll_down();
+    void scroll_left();
+    void scroll_right();
 };
 
 #endif // BOARD_HPP

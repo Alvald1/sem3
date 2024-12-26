@@ -36,6 +36,9 @@ class Map {
     Matrix<bool> export_passability_matrix() const;
     Matrix<int> export_cell_types_matrix() const;
 
+    // Add new method declaration
+    Matrix<size_t> export_entity_ids_matrix() const;
+
     // Get cell by position
     std::shared_ptr<Cell>& get_cell(const Position& pos);
     const std::shared_ptr<Cell>& get_cell(const Position& pos) const;

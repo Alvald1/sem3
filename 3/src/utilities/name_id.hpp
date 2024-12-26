@@ -9,7 +9,21 @@ class NameID {
     std::string name_;
 
   public:
+    // Конструктор
     NameID(size_t identifier, std::string name) : id_(identifier), name_(std::move(name)) {}
+
+    // Добавляем правильный конструктор копирования
+    NameID(const NameID& other) : id_(other.id_), name_(other.name_) {}
+
+    // Оператор присваивания
+    NameID&
+    operator=(const NameID& other) {
+        if (this != &other) {
+            id_ = other.id_;
+            name_ = other.name_;
+        }
+        return *this;
+    }
 
     [[nodiscard]] size_t
     get_id() const {
