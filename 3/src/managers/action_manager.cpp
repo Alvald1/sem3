@@ -2,6 +2,7 @@
 #include "entity_manager.hpp"
 #include "map_manager.hpp"
 
+#include "damage_manager.hpp"
 #include "summon_manager.hpp"
 #include "ui/control.hpp"
 #include "ui/view.hpp"
@@ -137,7 +138,7 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
                 if (map.can_entity_act(troop.get_id(), delta)) {
                     map.change_cell_type(target_pos, effect[0].first, troop.get_damage() * (effect[0].second ? 1 : -1),
                                          3);
-                    troop.spend_movement(1);
+                    troop.spend_movement(troop.get_speed());
                 }
                 break;
             }
@@ -147,7 +148,7 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
                 Position current_pos = *MapManager::getInstance().get_entity_position(troop.get_id());
                 Position delta = Control::getInstance()->get_position_choice();
                 Position target_pos(current_pos + delta);
-                if (troop.get_range() > 0 && target_pos.manhattan_distance(current_pos) > troop.get_range()
+                if ((troop.get_range() > 0 && target_pos.manhattan_distance(current_pos) > troop.get_range())
                     || target_pos.manhattan_distance(current_pos) > 1) {
                     throw OutOfRangeException();
                 }
@@ -156,15 +157,26 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
                     auto cell = map.get_cell(target_pos);
                     size_t target_id = cell->get_id_entity();
                     auto target = entity_manager.get_entity(target_id);
-                    target->modify_hp(-static_cast<int>(troop.get_damage()));
-                    troop.spend_movement(1);
+                    if (target == nullptr) {
+                        throw EntityNotFoundException();
+                    }
+                    try {
+                        DamageManager::getInstance().fight(troop, *target);
+                        troop.spend_movement(troop.get_speed());
+                    } catch (const FriendlyFireException& e) {
+                        throw; // Пробрасываем дальше для обработки на верхнем уровне
+                    } catch (const std::exception& e) {
+                        // Обработка других возможных исключений при бое
+                        throw GameLogicException(e.what());
+                    }
                 }
                 break;
             }
             case Control::TroopAction::SKIP_TURN:
                 // Do nothing, just skip the turn
+                troop.spend_movement(troop.get_speed());
                 break;
         }
-        troop.reset_movement();
     }
+    troop.reset_movement();
 }

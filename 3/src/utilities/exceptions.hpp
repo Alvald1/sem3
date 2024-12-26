@@ -12,7 +12,7 @@ class GameException : public std::runtime_error {
 
 // Logic exceptions
 class GameLogicException : public GameException {
-  protected:
+  public: // Change from protected to public
     explicit GameLogicException(const std::string& message) : GameException(message) {}
 };
 

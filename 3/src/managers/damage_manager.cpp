@@ -1,11 +1,8 @@
 #include "damage_manager.hpp"
-#include "utilities/exceptions.hpp"
-
 #include "entity_manager.hpp"
 #include "map_manager.hpp"
 #include "queue/entity/summoner.hpp"
-
-DamageManager* DamageManager::instance_ = nullptr;
+#include "utilities/exceptions.hpp"
 
 void
 DamageManager::fight(BaseTroop& attacker, Entity& defender) {
