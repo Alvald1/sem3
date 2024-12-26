@@ -1,39 +1,44 @@
 #include <iostream>
 #include "map/map.hpp"
 #include "ui/board.hpp"
+#include "ui/control.hpp"
+#include "ui/view.hpp"
 
 int
 main() {
     try {
-        // Create map 10x20
+        auto& view = View::getInstance();
+        auto& control = Control::getInstance();
+
+        // Show menu and get map size
+        view.show_menu();
+        auto [width, height] = control.get_map_size();
+
+        // Check if user wants to exit
+        if (width == 0 && height == 0) {
+            return 0;
+        }
+
+        // Create and initialize map
         Map game_map;
-        game_map.make_map({10, 10});
+        game_map.make_map({width, height});
 
-        // Create some walls and entities for demonstration
-        Matrix<bool> walls(10, 10, true); // Start with all passable
-
-        // Add some walls (false means impassable)
-        walls(2, 3) = false;
-        walls(2, 4) = false;
-        walls(3, 3) = false;
-
+        // Initialize with all passable cells
+        Matrix<bool> walls(width, height, true);
         game_map.load_from_passability_matrix(walls);
 
-        // Add some entities (set cells as busy)
-        game_map.get_matrix()(5, 5)->set_busy(true);
-        game_map.get_matrix()(1, 1)->set_busy(true);
-        game_map.get_matrix()(8, 9)->set_busy(true);
-
-        // Create and show board
+        // Create board for game display
         Board board(game_map);
-        board.draw();
-        board.refresh_display();
 
-        // Wait for any key before closing
-        getch();
+        // Main game loop
+        while (control.handle_input()) {
+            board.draw();
+            board.refresh_display();
+        }
 
         return 0;
     } catch (const std::exception& e) {
+        endwin();
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }

@@ -2,6 +2,7 @@
 #define CONTROL_HPP
 
 #include <functional>
+#include <utility>
 #include <vector>
 
 #include "schools/school/ability/ability.hpp"
@@ -30,6 +31,9 @@ class Control {
     [[nodiscard]] size_t get_ability_choice() const;
     [[nodiscard]] Position get_position_choice() const;
     [[nodiscard]] TroopAction get_troop_action() const;
+
+    std::pair<int, int> get_map_size() const;
+    bool handle_input();
 
     ~Control() = default;
 };
