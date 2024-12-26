@@ -6,12 +6,12 @@
 
 Control* Control::instance = nullptr;
 
-Control*
+Control&
 Control::getInstance() {
     if (instance == nullptr) {
         instance = new Control();
     }
-    return instance;
+    return *instance;
 }
 
 void

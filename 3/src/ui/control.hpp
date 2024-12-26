@@ -17,7 +17,7 @@ class Control {
     Control() = default;
 
   public:
-    static Control* getInstance();
+    static Control& getInstance();
 
     // Delete copy constructor and assignment operator
     Control(const Control&) = delete;

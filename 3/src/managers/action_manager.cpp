@@ -10,7 +10,7 @@
 
 void
 ActionManager::handle_summoner_action(Summoner& summoner) {
-    SummonerAction action = Control::getInstance()->get_summoner_action();
+    SummonerAction action = Control::getInstance().get_summoner_action();
 
     switch (action) {
         case Control::SummonerAction::SUMMON_TROOP: {
@@ -22,7 +22,7 @@ ActionManager::handle_summoner_action(Summoner& summoner) {
             }
             View::getInstance().send_abilities(available_abilities, View::AbilityDisplayType::AVAILABLE);
 
-            size_t chosen_ability_id = Control::getInstance()->get_ability_choice();
+            size_t chosen_ability_id = Control::getInstance().get_ability_choice();
 
             // Find the chosen ability in available abilities
             auto it = std::find_if(
@@ -33,7 +33,7 @@ ActionManager::handle_summoner_action(Summoner& summoner) {
                 const Ability& chosen_ability = it->get();
                 try {
                     summoner.spend_energy(chosen_ability.get_energy());
-                    Position target_pos = Control::getInstance()->get_position_choice();
+                    Position target_pos = Control::getInstance().get_position_choice();
                     SummonManager::getInstance().summon(summoner, chosen_ability, target_pos);
                 } catch (const NotEnoughEnergyException& e) {
                     throw;
@@ -59,7 +59,7 @@ ActionManager::handle_summoner_action(Summoner& summoner) {
             View::getInstance().send_abilities(upgradable_abilities, View::AbilityDisplayType::UPGRADABLE);
 
             if (!upgradable_abilities.empty()) {
-                size_t chosen_ability_id = Control::getInstance()->get_ability_choice();
+                size_t chosen_ability_id = Control::getInstance().get_ability_choice();
                 auto it = std::find_if(
                     upgradable_abilities.begin(), upgradable_abilities.end(),
                     [chosen_ability_id](const auto& ability) { return ability.get().get_id() == chosen_ability_id; });
@@ -95,12 +95,12 @@ void
 ActionManager::handle_troop_action(BaseTroop& troop) {
 
     while (troop.get_remaining_movement() != 0) {
-        auto action = Control::getInstance()->get_troop_action();
+        auto action = Control::getInstance().get_troop_action();
 
         switch (action) {
             case Control::TroopAction::MOVE: {
                 Position current_pos = *MapManager::getInstance().get_entity_position(troop.get_id());
-                Position delta = Control::getInstance()->get_position_choice();
+                Position delta = Control::getInstance().get_position_choice();
                 Position target_pos(current_pos + delta);
 
                 // Calculate required movement points
@@ -129,7 +129,7 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
                 }
 
                 Position current_pos = *MapManager::getInstance().get_entity_position(troop.get_id());
-                Position delta = Control::getInstance()->get_position_choice();
+                Position delta = Control::getInstance().get_position_choice();
                 Position target_pos(current_pos + delta);
                 if (target_pos.manhattan_distance(current_pos) > troop.get_range()) {
                     throw OutOfRangeException();
@@ -146,7 +146,7 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
                 auto& map = MapManager::getInstance();
                 auto& entity_manager = EntityManager::getInstance();
                 Position current_pos = *MapManager::getInstance().get_entity_position(troop.get_id());
-                Position delta = Control::getInstance()->get_position_choice();
+                Position delta = Control::getInstance().get_position_choice();
                 Position target_pos(current_pos + delta);
                 if ((troop.get_range() > 0 && target_pos.manhattan_distance(current_pos) > troop.get_range())
                     || target_pos.manhattan_distance(current_pos) > 1) {
