@@ -19,7 +19,9 @@ class Cell {
     size_t id_entity;
     static size_t next_id; // только объявление
 
-    friend class CellBuilder;
+    // Move constructor to private section
+
+    friend class CellBuilder; // This allows CellBuilder to access the private constructor
     friend class EffectCellSpeedBuilder;
     friend class EffectCellRangeBuilder;
     friend class EffectCellHPBuilder;
@@ -31,11 +33,11 @@ class Cell {
         id = next_id++;
     }
 
+  public:
     Cell(const Cell& other)
         : id(other.id), position(other.position), passability(other.passability), busy(other.busy),
           id_entity(other.id_entity) {}
 
-  public:
     Cell(Cell&& other) noexcept
         : id(other.id), position(std::move(other.position)), passability(other.passability), busy(other.busy),
           id_entity(other.id_entity) {}

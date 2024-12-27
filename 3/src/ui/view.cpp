@@ -176,7 +176,7 @@ View::send_abilities(size_t current_energy, size_t current_experience,
         const int BOX_HEIGHT = 11;
         const int BOX_WIDTH = INFO_PANEL_WIDTH - 4;
 
-                // Only display visible abilities
+        // Only display visible abilities
         for (size_t i = ability_scroll_offset; i < std::min(ability_scroll_offset + max_visible, abilities.size());
              ++i) {
             const auto& ability = abilities[i].get();
@@ -459,6 +459,65 @@ View::show_troop_info(const BaseTroop& troop) {
     }
 
     wrefresh(troop_info_window);
+}
+
+void
+View::show_save_confirmation() const {
+    // Calculate window dimensions and position
+    int width = 30;
+    int height = 5;
+    int starty = (LINES - height) / 2;
+    int startx = (COLS - width) / 2;
+
+    // Create a new window
+    WINDOW* confirm_win = newwin(height, width, starty, startx);
+    box(confirm_win, 0, 0);
+
+    // Add title
+    wattron(confirm_win, A_BOLD);
+    mvwprintw(confirm_win, 0, (width - 6) / 2, " SAVE ");
+    wattroff(confirm_win, A_BOLD);
+
+    // Add message
+    mvwprintw(confirm_win, 2, (width - 19) / 2, "Game saved to file!");
+
+    // Show the window
+    wrefresh(confirm_win);
+
+    // Wait briefly
+    napms(1500);
+
+    // Clean up
+    werase(confirm_win);
+    wrefresh(confirm_win);
+    delwin(confirm_win);
+
+    // Refresh the main display
+    refresh_display();
+}
+
+bool
+View::show_load_game_menu() const {
+    clear_screen();
+    int y = LINES / 2 - 2;
+    mvprintw(y, COLS / 2 - 12, "Welcome to the Game!");
+    mvprintw(y + 2, COLS / 2 - 15, "1. New Game");
+    mvprintw(y + 3, COLS / 2 - 15, "2. Load Game");
+    mvprintw(y + 5, COLS / 2 - 20, "Press 1 or 2 to choose, Q to exit");
+    refresh_display();
+
+    while (true) {
+        int ch = getch();
+        if (ch == '1') {
+            return false;
+        }
+        if (ch == '2') {
+            return true;
+        }
+        if (ch == 'q' || ch == 'Q' || ch == 27) {
+            exit(0);
+        }
+    }
 }
 
 // ...existing code for other methods...

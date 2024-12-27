@@ -20,6 +20,11 @@ class Map {
         return matrix;
     }
 
+    Matrix<std::shared_ptr<Cell>>&
+    get_matrix() {
+        return matrix;
+    }
+
     // Getters and setters for size
     std::pair<size_t, size_t>
     get_size() const {

@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "board.hpp"
+#include "game/game_saver.hpp"
 #include "managers/entity_manager.hpp"
 #include "managers/map_manager.hpp"
 #include "queue/entity/summoner.hpp"
@@ -88,6 +89,14 @@ Control::get_summoner_action() const {
             case '2': return SummonerAction::ACCUMULATE_ENERGY;
             case '3': return SummonerAction::UPGRADE_SCHOOL;
             case '4': return SummonerAction::SKIP_TURN;
+            case 'p': // Add save game functionality
+                try {
+                    GameSaver::getInstance().save_game("/home/alvald1/files/sem3/oop/3/data/game_save.json");
+                    View::getInstance().show_save_confirmation();
+                } catch (const std::exception& e) {
+                    View::getInstance().show_error(e.what());
+                }
+                break;
             default: continue; // Игнорируем другие клавиши
         }
         board.draw();

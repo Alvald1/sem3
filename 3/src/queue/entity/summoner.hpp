@@ -151,6 +151,12 @@ class Summoner : public Entity {
     get_levels() const noexcept {
         return levels;
     }
+
+    // Add non-const getter for levels
+    [[nodiscard]] std::unordered_map<size_t, size_t>&
+    get_levels_mutable() noexcept {
+        return levels;
+    }
 };
 
 #endif // SUMMONER_HPP

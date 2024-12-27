@@ -17,6 +17,16 @@ class EntityList {
     size_t find_by_cell(const std::shared_ptr<Cell>& cell) const;
     void append(size_t id, const std::shared_ptr<Cell>& cell);
     void remove(size_t id);
+
+    const std::unordered_map<size_t, std::shared_ptr<Cell>>
+    get_id_to_cell() const {
+        return id_to_cell;
+    }
+
+    const std::unordered_map<std::shared_ptr<Cell>, size_t>
+    get_cell_to_id() const {
+        return cell_to_id;
+    }
 };
 
 #endif // ENTITY_LIST_HPP

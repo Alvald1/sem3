@@ -45,6 +45,17 @@ class MapManager : public Map {
 
     EntityList entities_;
 
+    // Add getter for entities_
+    [[nodiscard]] const EntityList&
+    get_entities() const noexcept {
+        return entities_;
+    }
+
+    [[nodiscard]] EntityList&
+    get_entities() noexcept {
+        return entities_;
+    }
+
     MapManager(const MapManager&) = delete;
     MapManager& operator=(const MapManager&) = delete;
 

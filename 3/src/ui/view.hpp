@@ -70,6 +70,9 @@ class View {
     get_ability_scroll_offset() const {
         return ability_scroll_offset;
     }
+
+    void show_save_confirmation() const;
+    bool show_load_game_menu() const;
 };
 
 #endif // VIEW_HPP_

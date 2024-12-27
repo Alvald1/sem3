@@ -1,5 +1,7 @@
 #include "game.hpp"
 
+#include <string>
+#include "game_saver.hpp"
 #include "managers/entity_manager.hpp"
 #include "managers/map_manager.hpp"
 #include "queue/entity/builder/entity_director.hpp"
@@ -29,7 +31,57 @@ Game::start() {
     auto& entity_manager = EntityManager::getInstance();
     auto& map_manager = MapManager::getInstance();
 
-    // Show menu and get map size
+    // Check if save file exists
+    const std::string save_path = "/home/alvald1/files/sem3/oop/3/data/game_save.json";
+    std::ifstream save_file(save_path);
+    bool has_save = save_file.good();
+    save_file.close();
+
+    bool should_load = false;
+    if (has_save) {
+        should_load = view.show_load_game_menu();
+    }
+
+    if (should_load) {
+        try {
+            GameSaver::getInstance().load_game(save_path);
+            auto& board = Board::getInstance(map_manager);
+            bool game_running = true;
+
+            while (game_running) {
+                board.draw();
+                board.refresh_display();
+                try {
+                    GameManager::getInstance().do_step();
+                } catch (const std::exception& e) {
+                    view.show_error(e.what());
+                }
+
+                int ch = getch();
+
+                switch (ch) {
+                    case 'q': game_running = false; break;
+                    case KEY_UP: board.scroll_up(); break;
+                    case KEY_DOWN: board.scroll_down(); break;
+                    case KEY_LEFT: board.scroll_left(); break;
+                    case KEY_RIGHT: board.scroll_right(); break;
+                    case 'p': // Add save game functionality
+                        try {
+                            GameSaver::getInstance().save_game("/home/alvald1/files/sem3/oop/3/data/game_save.json");
+                            view.show_save_confirmation();
+                        } catch (const std::exception& e) {
+                            view.show_error(e.what());
+                        }
+                        break;
+                }
+            }
+            return;
+        } catch (const std::exception& e) {
+            view.show_error("Failed to load game: " + std::string(e.what()));
+        }
+    }
+
+    // Continue with new game if not loading or if load failed
     view.show_menu();
     auto [width, height] = control.get_map_size();
     if (width == 0 && height == 0) {
@@ -110,16 +162,24 @@ Game::start() {
         } catch (const std::exception& e) {
             view.show_error(e.what());
         }
-    }
 
-    int ch = getch();
+        int ch = getch();
 
-    switch (ch) {
-        case 'q': game_running = false; break;
-        case KEY_UP: board.scroll_up(); break;
-        case KEY_DOWN: board.scroll_down(); break;
-        case KEY_LEFT: board.scroll_left(); break;
-        case KEY_RIGHT: board.scroll_right(); break;
+        switch (ch) {
+            case 'q': game_running = false; break;
+            case KEY_UP: board.scroll_up(); break;
+            case KEY_DOWN: board.scroll_down(); break;
+            case KEY_LEFT: board.scroll_left(); break;
+            case KEY_RIGHT: board.scroll_right(); break;
+            case 'p': // Add save game functionality
+                try {
+                    GameSaver::getInstance().save_game("/home/alvald1/files/sem3/oop/3/data/game_save.json");
+                    view.show_save_confirmation();
+                } catch (const std::exception& e) {
+                    view.show_error(e.what());
+                }
+                break;
+        }
     }
 }
 
