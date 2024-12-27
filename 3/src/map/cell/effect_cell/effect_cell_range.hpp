@@ -32,6 +32,15 @@ class EffectCellRange : public Time, public Cell, public IEffectCell {
         set_time(time);
         delta_range = new_delta_range;
     }
+
+    bool
+    get_sing() {
+        if (delta_range > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 };
 
 #endif // EFFECT_CELL_RANGE_HPP

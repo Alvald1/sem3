@@ -1,6 +1,11 @@
 #include "board.hpp"
 #include <string>
 #include "managers/entity_manager.hpp"
+#include "managers/map_manager.hpp"
+#include "map/cell/effect_cell/effect_cell_damage.hpp"
+#include "map/cell/effect_cell/effect_cell_hp.hpp"
+#include "map/cell/effect_cell/effect_cell_range.hpp"
+#include "map/cell/effect_cell/effect_cell_speed.hpp"
 #include "queue/entity/summoner.hpp"
 #include "queue/entity/troop/base_troop.hpp"
 
@@ -202,27 +207,75 @@ Board::draw() {
         }
     }
 
-    // Draw the basic grid first
-    for (size_t y = offset_y; y <= row_end; y++) {
-        for (size_t x = offset_x; x <= col_end; x++) {
+    // Get effect cells from MapManager
+    const auto& effect_cells = MapManager::getInstance().get_effect_cells();
+
+    // Draw the basic grid and entities
+    for (size_t y = offset_y; y < row_end; y++) {
+        for (size_t x = offset_x; x < col_end; x++) {
             int grid_y = (y - offset_y) * CELL_HEIGHT;
             int grid_x = (x - offset_x) * CELL_WIDTH;
 
-            // Draw standard cell borders
-            if (x < map_width) {
-                mvwhline(window, grid_y, grid_x, ACS_HLINE, CELL_WIDTH);
-            }
-            if (y < map_height) {
-                mvwvline(window, grid_y, grid_x, ACS_VLINE, CELL_HEIGHT);
+            // Check if current cell has an effect
+            bool has_effect = false;
+            std::shared_ptr<Cell> effect_cell;
+            for (const auto& ec : effect_cells) {
+                if (ec->get_position() == Position(y, x)) {
+                    has_effect = true;
+                    effect_cell = ec;
+                    break;
+                }
             }
 
-            // Draw standard corners
-            if (x < map_width && y < map_height) {
-                mvwaddch(window, grid_y, grid_x,
-                         y == 0 && x == 0 ? ACS_ULCORNER
-                         : y == 0         ? ACS_TTEE
-                         : x == 0         ? ACS_LTEE
-                                          : ACS_PLUS);
+            // Draw cell with special border for effect cells
+            if (has_effect) {
+                wattron(window, COLOR_PAIR(4) | A_BOLD); // Yellow color for effect cells
+
+                // Draw special border for effect cells
+                mvwhline(window, grid_y, grid_x, ACS_HLINE, CELL_WIDTH);
+                mvwhline(window, grid_y + CELL_HEIGHT, grid_x, ACS_HLINE, CELL_WIDTH);
+                mvwvline(window, grid_y, grid_x, ACS_VLINE, CELL_HEIGHT);
+                mvwvline(window, grid_y, grid_x + CELL_WIDTH, ACS_VLINE, CELL_HEIGHT);
+
+                // Draw special corners for effect cells
+                mvwaddch(window, grid_y, grid_x, ACS_ULCORNER);
+                mvwaddch(window, grid_x + CELL_WIDTH, grid_x, ACS_URCORNER);
+                mvwaddch(window, grid_y + CELL_HEIGHT, grid_x, ACS_LLCORNER);
+                mvwaddch(window, grid_y + CELL_HEIGHT, grid_x + CELL_WIDTH, ACS_LRCORNER);
+
+                // Draw effect type and duration
+                if (auto hp_cell = std::dynamic_pointer_cast<EffectCellHP>(effect_cell)) {
+                    char sign = hp_cell->get_sing() ? '+' : '-';
+                    mvwprintw(window, grid_y + 1, grid_x + CELL_WIDTH - 6, "%cH(%zu)", sign, hp_cell->get_time());
+                } else if (auto damage_cell = std::dynamic_pointer_cast<EffectCellDamage>(effect_cell)) {
+                    char sign = damage_cell->get_sing() ? '+' : '-';
+                    mvwprintw(window, grid_y + 1, grid_x + CELL_WIDTH - 6, "%cD(%zu)", sign, damage_cell->get_time());
+                } else if (auto speed_cell = std::dynamic_pointer_cast<EffectCellSpeed>(effect_cell)) {
+                    char sign = speed_cell->get_sing() ? '+' : '-';
+                    mvwprintw(window, grid_y + 1, grid_x + CELL_WIDTH - 6, "%cS(%zu)", sign, speed_cell->get_time());
+                } else if (auto range_cell = std::dynamic_pointer_cast<EffectCellRange>(effect_cell)) {
+                    char sign = range_cell->get_sing() ? '+' : '-';
+                    mvwprintw(window, grid_y + 1, grid_x + CELL_WIDTH - 6, "%cR(%zu)", sign, range_cell->get_time());
+                }
+
+                wattroff(window, COLOR_PAIR(4) | A_BOLD);
+            } else {
+                // Draw standard cell borders
+                if (x < map_width) {
+                    mvwhline(window, grid_y, grid_x, ACS_HLINE, CELL_WIDTH);
+                }
+                if (y < map_height) {
+                    mvwvline(window, grid_y, grid_x, ACS_VLINE, CELL_HEIGHT);
+                }
+
+                // Draw standard corners
+                if (x < map_width && y < map_height) {
+                    mvwaddch(window, grid_y, grid_x,
+                             y == 0 && x == 0 ? ACS_ULCORNER
+                             : y == 0         ? ACS_TTEE
+                             : x == 0         ? ACS_LTEE
+                                              : ACS_PLUS);
+                }
             }
         }
     }

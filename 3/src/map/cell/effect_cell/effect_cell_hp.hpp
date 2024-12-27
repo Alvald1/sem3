@@ -32,6 +32,15 @@ class EffectCellHP : public Time, public Cell, public IEffectCell {
         set_time(time);
         delta_hp = new_delta_hp;
     }
+
+    bool
+    get_sing() {
+        if (delta_hp > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 };
 
 #endif // EFFECT_CELL_HP_HPP

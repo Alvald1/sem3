@@ -59,6 +59,7 @@ class MapManager : public Map {
     std::optional<Position> get_entity_position(size_t id) const;
     void change_cell_type(Position pos, EffectType type, int effect_value = 0, size_t duration = 0);
     bool can_entity_attack(size_t id, Position delta) const;
+    const std::vector<std::shared_ptr<Cell>>& get_effect_cells() const;
 };
 
 #endif // MAP_MANAGER_HPP

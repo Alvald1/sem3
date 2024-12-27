@@ -11,12 +11,13 @@ class BaseTroop : public Entity {
     size_t range;
     size_t type;
     size_t remaining_movement;
+    size_t experience;
 
   protected:
     explicit BaseTroop(const Ability& ability)
         : Entity(ability), speed(ability.get_creature().get_speed()), damage(ability.get_creature().get_damage()),
           range(ability.get_creature().get_range()), type(ability.get_creature().get_type()),
-          remaining_movement(ability.get_creature().get_speed()) {}
+          remaining_movement(ability.get_creature().get_speed()), experience(ability.get_experience()) {}
 
     size_t id_summoner_;
 
@@ -57,6 +58,11 @@ class BaseTroop : public Entity {
     [[nodiscard]] inline size_t
     get_id_summoner() const noexcept {
         return id_summoner_;
+    }
+
+    [[nodiscard]] inline size_t
+    get_experience() const noexcept {
+        return experience;
     }
 
     // Setters

@@ -127,9 +127,8 @@ MapManager::effect_cells() {
 
 void
 MapManager::process_effects(size_t start, size_t end, EntityManager& entity_manager) {
-    for (size_t i = start; i < end; ++i) {
-        auto cell = effect_cells_[i];
-        if (!cell->is_empty()) {
+    for (auto cell : effect_cells_) {
+        if (cell && !cell->is_empty()) {
             size_t entity_id = cell->get_id_entity();
             auto* entity = entity_manager.get_entity(entity_id);
 
@@ -149,12 +148,30 @@ MapManager::process_effects(size_t start, size_t end, EntityManager& entity_mana
                         troop->modify_range(range_cell->give_effect());
                     }
                 }
-            } catch (...) {
+            } catch (std::exception e) {
                 // Convert effect cell to basic cell using existing method
                 change_cell_type(cell->get_position(), EffectType::NONE);
 
                 // Since change_cell_type updates effect_cells_, adjust the counter
-                --i;
+            }
+        } else if (cell) {
+            try {
+                if (auto hp_cell = std::dynamic_pointer_cast<EffectCellHP>(cell)) {
+                    hp_cell->give_effect();
+                } else {
+                    if (auto damage_cell = std::dynamic_pointer_cast<EffectCellDamage>(cell)) {
+                        damage_cell->give_effect();
+                    } else if (auto speed_cell = std::dynamic_pointer_cast<EffectCellSpeed>(cell)) {
+                        speed_cell->give_effect();
+                    } else if (auto range_cell = std::dynamic_pointer_cast<EffectCellRange>(cell)) {
+                        range_cell->give_effect();
+                    }
+                }
+            } catch (std::exception e) {
+                // Convert effect cell to basic cell using existing method
+                change_cell_type(cell->get_position(), EffectType::NONE);
+
+                // Since change_cell_type updates effect_cells_, adjust the counter
             }
         }
     }
@@ -209,6 +226,7 @@ MapManager::change_cell_type(Position pos, EffectType type, int effect_value, si
     }
 
     // Preserve the busy state and entity ID
+
     new_cell->set_busy(!old_cell->is_empty());
     new_cell->set_id_entity(old_cell->get_id_entity());
 
@@ -245,4 +263,9 @@ MapManager::remove_entity(size_t id) {
 
     // Remove entity from entities list
     entities_.remove(id);
+}
+
+const std::vector<std::shared_ptr<Cell>>&
+MapManager::get_effect_cells() const {
+    return effect_cells_;
 }

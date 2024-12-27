@@ -32,6 +32,15 @@ class EffectCellDamage : public Time, public Cell, public IEffectCell {
         set_time(time);
         delta_damage = new_delta_damage;
     }
+
+    bool
+    get_sing() {
+        if (delta_damage > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 };
 
 #endif // EFFECT_CELL_DAMAGE_HPP

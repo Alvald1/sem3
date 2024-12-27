@@ -32,6 +32,15 @@ class EffectCellSpeed : public Time, public Cell, public IEffectCell {
         set_time(time);
         delta_speed = new_delta_speed;
     }
+
+    bool
+    get_sing() {
+        if (delta_speed > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 };
 
 #endif // EFFECT_CELL_SPEED_HPP

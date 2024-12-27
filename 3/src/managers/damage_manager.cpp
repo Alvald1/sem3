@@ -39,6 +39,9 @@ DamageManager::fight(BaseTroop& attacker, Entity& defender) {
                 map.remove_entity(entity_id);
                 entity_manager.remove_entity(entity_id);
             }
+        } else {
+            dynamic_cast<Summoner*>(EntityManager::getInstance().get_entity(attacker.get_id_summoner()))
+                ->add_experience(defender_troop->get_experience());
         }
 
         // Remove the defender itself

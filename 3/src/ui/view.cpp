@@ -1,6 +1,8 @@
 #include "view.hpp"
 #include <string>
 
+#include "utilities/type_system.hpp"
+
 View* View::instance = nullptr;
 
 View&
@@ -337,7 +339,6 @@ View::show_summoner_info(const Summoner& summoner) { // Remove const from method
 
 void
 View::show_troop_info(const BaseTroop& troop) {
-    // Создаем или пересоздаем окно справа от очереди
     if (troop_info_window) {
         delwin(troop_info_window);
     }
@@ -351,11 +352,32 @@ View::show_troop_info(const BaseTroop& troop) {
     mvwprintw(troop_info_window, 0, (TROOP_INFO_WIDTH - 11) / 2, " TROOP INFO ");
     wattroff(troop_info_window, A_BOLD);
 
-    // Выводим информацию
+    // Базовая информация
     mvwprintw(troop_info_window, 1, 2, "Damage: %zu", troop.get_damage());
     mvwprintw(troop_info_window, 2, 2, "Speed: %zu", troop.get_speed());
     mvwprintw(troop_info_window, 3, 2, "Range: %zu", troop.get_range());
     mvwprintw(troop_info_window, 4, 2, "Moves left: %zu", troop.get_remaining_movement());
+
+    // Получаем и выводим эффекты
+    auto effects = TypeSystem::get_effects(troop.get_type());
+    if (!effects.empty()) {
+        mvwprintw(troop_info_window, 6, 2, "Effects:");
+        int line = 7;
+        for (const auto& [effect_type, is_positive] : effects) {
+            const char* effect_name;
+            switch (effect_type) {
+                case EffectType::DAMAGE: effect_name = "Damage"; break;
+                case EffectType::SPEED: effect_name = "Speed"; break;
+                case EffectType::RANGE: effect_name = "Range"; break;
+                case EffectType::HEALTH: effect_name = "Health"; break;
+                default: effect_name = "Unknown"; break;
+            }
+
+            wattron(troop_info_window, COLOR_PAIR(is_positive ? 2 : 3));
+            mvwprintw(troop_info_window, line++, 4, "%s (%c)", effect_name, is_positive ? '+' : '-');
+            wattroff(troop_info_window, COLOR_PAIR(is_positive ? 2 : 3));
+        }
+    }
 
     wrefresh(troop_info_window);
 }
