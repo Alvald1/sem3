@@ -12,4 +12,5 @@ GameManager::do_step() {
         return;
     }
     ActionManager::getInstance().action(*cur_entity);
+    EntityManager::getInstance().next_turn();
 }

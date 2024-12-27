@@ -132,10 +132,12 @@ Control::get_ability_choice(const std::vector<std::reference_wrapper<const Abili
             case '\n':
             case KEY_ENTER:
                 if (abilities[current_ability_selection].get().get_energy() <= current_energy) {
+                    view.clear_ability_panel(); // Add this line
                     return abilities[current_ability_selection].get().get_id();
                 }
                 break;
-            case 27: // ESC
+            case 27:                        // ESC
+                view.clear_ability_panel(); // Add this line
                 return SIZE_MAX;
         }
         board.draw();
@@ -188,7 +190,7 @@ Control::get_position_choice(Position current_pos) const {
                 }
                 break;
             case '\n':
-            case KEY_ENTER: return cursor_pos;
+            case KEY_ENTER: board.clear_highlight(); return cursor_pos;
             case 27: // ESC
                 return Position(0, 0);
         }
@@ -201,8 +203,23 @@ Control::get_position_choice(Position current_pos) const {
 
 [[nodiscard]] Control::TroopAction
 Control::get_troop_action() const {
-    // TODO: Implement actual UI interaction
-    return TroopAction::SKIP_TURN; // Default return for now
+    auto& board = Board::getInstance(MapManager::getInstance());
+    while (true) {
+        int ch = getch();
+        switch (ch) {
+            case KEY_UP: board.scroll_up(); break;
+            case KEY_DOWN: board.scroll_down(); break;
+            case KEY_LEFT: board.scroll_left(); break;
+            case KEY_RIGHT: board.scroll_right(); break;
+            case '1': return TroopAction::MOVE;
+            case '2': return TroopAction::EFFECT;
+            case '3': return TroopAction::ATTACK;
+            case '4': return TroopAction::SKIP_TURN;
+            default: continue; // Игнорируем другие клавиши
+        }
+        board.draw();
+        board.refresh_display();
+    }
 }
 
 std::optional<size_t>

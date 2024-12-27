@@ -4,6 +4,7 @@
 
 #include "damage_manager.hpp"
 #include "summon_manager.hpp"
+#include "ui/board.hpp"
 #include "ui/control.hpp"
 #include "ui/view.hpp"
 #include "utilities/exceptions.hpp"
@@ -131,7 +132,7 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
 
                 Position current_pos = *MapManager::getInstance().get_entity_position(troop.get_id());
                 Position position = Control::getInstance().get_position_choice(current_pos);
-                if (position.manhattan_distance(current_pos) > troop.get_range()) {
+                if (position.manhattan_distance(current_pos) > troop.get_range() + 1) {
                     throw OutOfRangeException();
                 }
 
@@ -148,8 +149,9 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
                 Position current_pos = *MapManager::getInstance().get_entity_position(troop.get_id());
                 Position position = Control::getInstance().get_position_choice(current_pos);
 
-                if ((troop.get_range() > 0 && position.manhattan_distance(current_pos) > troop.get_range())
-                    || position.manhattan_distance(current_pos) > 1) {
+                if ((troop.get_range() > 0 && position.manhattan_distance(current_pos) > troop.get_range() + 1)) {
+                    throw OutOfRangeException();
+                } else if (troop.get_range() == 0 && position.manhattan_distance(current_pos) > 1) {
                     throw OutOfRangeException();
                 }
 
@@ -177,6 +179,8 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
                 troop.spend_movement(troop.get_speed());
                 break;
         }
+        Board::getInstance(MapManager::getInstance()).draw();
+        Board::getInstance(MapManager::getInstance()).refresh_display();
     }
     troop.reset_movement();
 }

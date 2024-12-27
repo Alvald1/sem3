@@ -56,54 +56,48 @@ SortQueue::insert(size_t entity_id) {
     }
 
     Node* new_node = new Node(entity_id);
+    auto new_initiative = entity_manager.get_entity(entity_id)->get_initiative();
 
+    // Если очередь пуста
     if (!head) {
         head = new_node;
-        head->next = head->prev = head;
+        head->next = head; // Зацикливаем на себя
         size = 1;
         return;
     }
 
-    // Идем влево пока не найдем элемент с меньшей инициативой
+    // Находим элемент с максимальной инициативой
     Node* max_node = head;
-    Node* current = head->prev;
-    auto max_initiative = entity_manager.get_entity(max_node->entity_id)->get_initiative();
+    Node* current = head->next;
+    auto max_initiative = entity_manager.get_entity(head->entity_id)->get_initiative();
 
     while (current != head) {
         auto curr_initiative = entity_manager.get_entity(current->entity_id)->get_initiative();
-        if (curr_initiative <= max_initiative) {
-            break; // Нашли первый элемент с меньшей инициативой
-        }
         if (curr_initiative > max_initiative) {
-            max_node = current;
             max_initiative = curr_initiative;
+            max_node = current;
         }
-        current = current->prev;
+        current = current->next;
     }
 
-    // Теперь идем вправо от максимального элемента, чтобы найти место для вставки
+    // Начиная с максимального элемента, ищем место для вставки
     current = max_node;
-    auto new_initiative = entity_manager.get_entity(entity_id)->get_initiative();
-
     do {
-        auto curr_initiative = entity_manager.get_entity(current->entity_id)->get_initiative();
-        if (new_initiative > curr_initiative) {
-            // Insert before current
-            link_nodes(current->prev, new_node);
-            link_nodes(new_node, current);
-            if (current == head) {
-                head = new_node;
-            }
+        auto next_initiative = entity_manager.get_entity(current->next->entity_id)->get_initiative();
+        if (new_initiative > next_initiative) {
+            // Вставляем после текущего элемента
+            new_node->next = current->next;
+            current->next = new_node;
+
             size++;
             return;
         }
         current = current->next;
     } while (current != max_node);
 
-    // Вставка после max_node если новый элемент имеет наименьший приоритет
-    auto last = max_node->next;
-    link_nodes(max_node, new_node);
-    link_nodes(new_node, last);
+    // Если мы здесь, значит нужно вставить после max_node
+    new_node->next = max_node->next;
+    max_node->next = new_node;
     size++;
 }
 
@@ -129,27 +123,39 @@ SortQueue::remove(size_t id) {
         throw std::runtime_error("Queue is empty");
     }
 
-    Node* current = head;
-
-    do {
-        if (current->entity_id == id) {
-            if (size == 1) {
-                delete head;
-                head = nullptr;
-            } else {
-                link_nodes(current->prev, current->next);
-                if (current == head) {
-                    head = head->next;
-                }
-                delete current;
+    // Если удаляем голову
+    if (head->entity_id == id) {
+        if (size == 1) {
+            delete head;
+            head = nullptr;
+        } else {
+            Node* last = head;
+            while (last->next != head) {
+                last = last->next;
             }
-            size--;
-            return;
+            Node* new_head = head->next;
+            delete head;
+            head = new_head;
+            last->next = head;
         }
-        current = current->next;
-    } while (current != head);
+        size--;
+        return;
+    }
 
-    throw std::runtime_error("Entity not found in queue");
+    // Ищем элемент для удаления
+    Node* current = head;
+    while (current->next != head && current->next->entity_id != id) {
+        current = current->next;
+    }
+
+    if (current->next == head) {
+        throw std::runtime_error("Entity not found in queue");
+    }
+
+    Node* to_delete = current->next;
+    current->next = to_delete->next;
+    delete to_delete;
+    size--;
 }
 
 std::vector<size_t>

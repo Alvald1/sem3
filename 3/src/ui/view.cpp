@@ -11,7 +11,7 @@ View::getInstance() {
     return *instance;
 }
 
-View::View() { init(); }
+View::View() : summoner_info_window(nullptr) { init(); }
 
 View::~View() { cleanup(); }
 
@@ -131,7 +131,7 @@ View::send_abilities(size_t current_energy, const std::vector<std::reference_wra
                      AbilityDisplayType type, size_t selected_index) const {
     if (!abilities.empty()) {
         int start_y = 6;
-        mvprintw(start_y - 2, COLS - INFO_PANEL_WIDTH + 2, "Current Energy: %zu", current_energy);
+        mvprintw(start_y - 2, COLS - INFO_PANEL_WIDTH + 2, "Current Energy: %zu\n", current_energy);
         mvprintw(start_y - 1, COLS - INFO_PANEL_WIDTH + 2, "%s", get_title(type));
 
         const int BOX_HEIGHT = 8;
@@ -179,6 +179,16 @@ View::send_abilities(size_t current_energy, const std::vector<std::reference_wra
         }
     } else {
         mvprintw(6, COLS - INFO_PANEL_WIDTH + 2, "%s", get_empty_message(type));
+    }
+    refresh_display();
+}
+
+void
+View::clear_ability_panel() const {
+    // Clear the entire right panel area from top to bottom
+    for (int y = 0; y < LINES; ++y) {
+        move(y, COLS - INFO_PANEL_WIDTH);
+        clrtoeol();
     }
     refresh_display();
 }
@@ -254,6 +264,100 @@ View::show_summoners_selection(const std::vector<std::reference_wrapper<const Ab
     }
 
     refresh_display();
+}
+
+void
+View::create_error_window(const std::string& message) const {
+    // Calculate window dimensions and position
+    int width = std::min(static_cast<int>(message.length()) + 4, COLS - 4);
+    int height = 5;
+    int starty = (LINES - height) / 2;
+    int startx = (COLS - width) / 2;
+
+    // Create a new window
+    WINDOW* error_win = newwin(height, width, starty, startx);
+    box(error_win, 0, 0);
+
+    // Add title
+    wattron(error_win, A_BOLD | COLOR_PAIR(2)); // Use red color for error
+    mvwprintw(error_win, 0, (width - 7) / 2, " ERROR ");
+    wattroff(error_win, A_BOLD | COLOR_PAIR(2));
+
+    // Add message
+    mvwprintw(error_win, 2, 2, "%s", message.c_str());
+
+    // Add instruction
+    mvwprintw(error_win, height - 2, (width - 23) / 2, "Press any key to close");
+
+    // Show the window
+    wrefresh(error_win);
+
+    // Wait for key
+    getch();
+
+    // Clean up
+    werase(error_win);
+    wrefresh(error_win);
+    delwin(error_win);
+
+    // Refresh the main display to restore it
+    refresh_display();
+}
+
+void
+View::show_error(const std::string& message) const {
+    create_error_window(message);
+}
+
+void
+View::show_summoner_info(const Summoner& summoner) { // Remove const from method
+
+    // Создаем или пересоздаем окно справа от очереди
+    if (summoner_info_window) {
+        delwin(summoner_info_window);
+    }
+
+    int start_x = COLS - INFO_PANEL_WIDTH - SUMMONER_INFO_WIDTH;
+    summoner_info_window = newwin(10, SUMMONER_INFO_WIDTH, 0, start_x);
+
+    // Рисуем рамку и заголовок
+    box(summoner_info_window, 0, 0);
+    wattron(summoner_info_window, A_BOLD);
+    mvwprintw(summoner_info_window, 0, (SUMMONER_INFO_WIDTH - 15) / 2, " SUMMONER INFO ");
+    wattroff(summoner_info_window, A_BOLD);
+
+    // Выводим информацию
+    mvwprintw(summoner_info_window, 1, 2, "Energy: %zu", summoner.get_energy());
+    mvwprintw(summoner_info_window, 2, 2, "Experience: %zu", summoner.get_experience());
+    mvwprintw(summoner_info_window, 3, 2, "Range: 2");
+    mvwprintw(summoner_info_window, 4, 2, "Accumulation: %zu", summoner.get_accum_index());
+
+    wrefresh(summoner_info_window);
+}
+
+void
+View::show_troop_info(const BaseTroop& troop) {
+    // Создаем или пересоздаем окно справа от очереди
+    if (troop_info_window) {
+        delwin(troop_info_window);
+    }
+
+    int start_x = COLS - INFO_PANEL_WIDTH - TROOP_INFO_WIDTH;
+    troop_info_window = newwin(10, TROOP_INFO_WIDTH, 0, start_x);
+
+    // Рисуем рамку и заголовок
+    box(troop_info_window, 0, 0);
+    wattron(troop_info_window, A_BOLD);
+    mvwprintw(troop_info_window, 0, (TROOP_INFO_WIDTH - 11) / 2, " TROOP INFO ");
+    wattroff(troop_info_window, A_BOLD);
+
+    // Выводим информацию
+    mvwprintw(troop_info_window, 1, 2, "Damage: %zu", troop.get_damage());
+    mvwprintw(troop_info_window, 2, 2, "Speed: %zu", troop.get_speed());
+    mvwprintw(troop_info_window, 3, 2, "Range: %zu", troop.get_range());
+    mvwprintw(troop_info_window, 4, 2, "Moves left: %zu", troop.get_remaining_movement());
+
+    wrefresh(troop_info_window);
 }
 
 // ...existing code for other methods...

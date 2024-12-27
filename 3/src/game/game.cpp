@@ -105,17 +105,21 @@ Game::start() {
     while (game_running) {
         board.draw();
         board.refresh_display();
-        GameManager::getInstance().do_step();
-
-        int ch = getch();
-
-        switch (ch) {
-            case 'q': game_running = false; break;
-            case KEY_UP: board.scroll_up(); break;
-            case KEY_DOWN: board.scroll_down(); break;
-            case KEY_LEFT: board.scroll_left(); break;
-            case KEY_RIGHT: board.scroll_right(); break;
+        try {
+            GameManager::getInstance().do_step();
+        } catch (const std::exception& e) {
+            view.show_error(e.what());
         }
+    }
+
+    int ch = getch();
+
+    switch (ch) {
+        case 'q': game_running = false; break;
+        case KEY_UP: board.scroll_up(); break;
+        case KEY_DOWN: board.scroll_down(); break;
+        case KEY_LEFT: board.scroll_left(); break;
+        case KEY_RIGHT: board.scroll_right(); break;
     }
 }
 

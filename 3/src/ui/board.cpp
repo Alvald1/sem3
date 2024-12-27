@@ -1,6 +1,8 @@
 #include "board.hpp"
 #include <string>
 #include "managers/entity_manager.hpp"
+#include "queue/entity/summoner.hpp"
+#include "queue/entity/troop/base_troop.hpp"
 
 Board* Board::instance = nullptr;
 
@@ -378,6 +380,16 @@ Board::draw() {
 
     // Draw info panel и сразу делаем refresh
     draw_info_panel();
+
+    // Show entity info based on type
+    if (auto current = EntityManager::getInstance().get_current_entity()) {
+        if (auto summoner = dynamic_cast<Summoner*>(current)) {
+            view.show_summoner_info(*summoner);
+        } else if (auto troop = dynamic_cast<BaseTroop*>(current)) {
+            view.show_troop_info(*troop);
+        }
+    }
+
     wrefresh(window);
 }
 
