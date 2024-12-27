@@ -55,7 +55,8 @@ Detail_info::encode(const string& id, const string& name, std::size_t count) {
  */
 void
 Detail_info::decode(const string& str) {
-    std::regex pattern(R"(\{'id':'([^']*)','name':'([^']*)','count':(\d+)\})");
+    std::regex pattern(
+        R"(\s*\{\s*'id'\s*:\s*'([^']*)'\s*,\s*'name'\s*:\s*'([^']*)'\s*,\s*'count'\s*:\s*(\d+)\s*\}\s*)");
     std::smatch matches;
     if (std::regex_search(str, matches, pattern)) {
         string id = matches[1];

@@ -1,0 +1,313 @@
+{
+    "map_size": [
+        6,
+        6
+    ],
+    "cells": [
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 2,
+            "busy": true,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": false,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": false,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": false,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 3,
+            "busy": true,
+            "type": "speed",
+            "effect_value": -4,
+            "duration": 0
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 3,
+            "busy": true,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 4,
+            "busy": true,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": false,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 1,
+            "busy": true,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        },
+        {
+            "passable": true,
+            "id_entity": 0,
+            "busy": false,
+            "type": "basic"
+        }
+    ],
+    "entities": [
+        {
+            "id": 1,
+            "name": "Necromancer",
+            "hp": 12,
+            "initiative": 9,
+            "type": "summoner",
+            "energy": 12,
+            "experience": 0,
+            "accum_index": 3,
+            "levels": {
+                "5": 1,
+                "4": 1,
+                "3": 1,
+                "2": 1,
+                "1": 1
+            },
+            "ownerships": [
+                3
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Demon Master",
+            "hp": 10,
+            "initiative": 9,
+            "type": "summoner",
+            "energy": 15,
+            "experience": 0,
+            "accum_index": 4,
+            "levels": {
+                "5": 1,
+                "4": 1,
+                "3": 1,
+                "2": 1,
+                "1": 1
+            },
+            "ownerships": [
+                4
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Raise Dead",
+            "hp": 2,
+            "initiative": 2,
+            "damage": 3,
+            "speed": 0,
+            "range": 0,
+            "type_id": 2,
+            "experience_troop": 100,
+            "type": "amoral_troop",
+            "id_summoner": 1
+        },
+        {
+            "id": 4,
+            "name": "Summon Imp",
+            "hp": 6,
+            "initiative": 6,
+            "damage": 4,
+            "speed": 6,
+            "range": 2,
+            "type_id": 18,
+            "experience_troop": 150,
+            "type": "amoral_troop",
+            "id_summoner": 2
+        }
+    ],
+    "positions": {
+        "3": [
+            2,
+            3
+        ],
+        "4": [
+            3,
+            4
+        ],
+        "2": [
+            0,
+            5
+        ],
+        "1": [
+            5,
+            0
+        ]
+    },
+    "current_entity_id": 2
+}

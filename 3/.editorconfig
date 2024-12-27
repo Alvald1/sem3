@@ -1,0 +1,42 @@
+# Top-most EditorConfig file
+root = true
+
+[*]
+# Общие настройки
+naming_style = snake_case
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Naming conventions
+# Please use snake_case for variable and function names.
+
+[*.cpp]
+# Отступы
+indent_style = space
+indent_size = 4
+continuation_indent_size = 4
+tab_width = 8
+
+# Форматирование
+max_line_length = 120
+spaces_around_operators = true
+align_consecutive_assignments = false
+align_trailing_comments = true
+brace_style = attach
+
+# Пробелы и скобки
+space_before_function_parentheses = false
+space_in_parentheses = false
+spaces_in_square_brackets = false
+spaces_in_angles = false
+
+# Импорты и включения
+sort_includes = true
+
+# Специальные макросы
+[*.h]
+align_consecutive_macros = true
