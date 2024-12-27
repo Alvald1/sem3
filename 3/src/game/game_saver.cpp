@@ -239,13 +239,9 @@ GameSaver::load_game(const std::string& filename) {
 std::shared_ptr<Cell>
 GameSaver::deserialize_cell(const rapidjson::Value& value, Position pos) const {
     bool passability = value["passable"].GetBool();
-    bool busy = value["busy"].GetBool();
-    size_t id_entity = value["id_entity"].GetUint64();
 
     std::string type = value["type"].GetString();
     if (type != "basic") {
-        int effect_value = value["effect_value"].GetInt();
-        size_t duration = value["duration"].GetUint64();
 
         if (type == "speed") {
             return std::make_shared<Cell>(CellDirector::createBasicCell(pos, passability));

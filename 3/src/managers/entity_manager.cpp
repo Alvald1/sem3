@@ -34,12 +34,20 @@ EntityManager::next_turn() {
 
 Entity*
 EntityManager::get_entity(size_t id) {
-    return entities_.at(id).get();
+    auto it = entities_.find(id);
+    if (it != entities_.end()) {
+        return it->second.get();
+    }
+    return nullptr;
 }
 
 const Entity*
 EntityManager::get_entity(size_t id) const {
-    return entities_.at(id).get();
+    auto it = entities_.find(id);
+    if (it != entities_.end()) {
+        return it->second.get();
+    }
+    return nullptr;
 }
 
 Entity*

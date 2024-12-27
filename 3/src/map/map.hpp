@@ -40,8 +40,6 @@ class Map {
     // Export map data as matrices
     Matrix<bool> export_passability_matrix() const;
     Matrix<int> export_cell_types_matrix() const;
-
-    // Add new method declaration
     Matrix<size_t> export_entity_ids_matrix() const;
 
     // Generate walls matrix based on size and wall percentage

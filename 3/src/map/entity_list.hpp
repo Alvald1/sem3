@@ -10,12 +10,16 @@
 class EntityList {
   private:
     std::unordered_map<size_t, std::shared_ptr<Cell>> id_to_cell;
-    std::unordered_map<std::shared_ptr<Cell>, size_t> cell_to_id;
+    std::unordered_map<std::shared_ptr<Cell>, size_t, std::hash<std::shared_ptr<Cell>>,
+                       std::equal_to<std::shared_ptr<Cell>>>
+        cell_to_id;
 
   public:
     std::shared_ptr<Cell> find_by_id(size_t id) const;
     size_t find_by_cell(const std::shared_ptr<Cell>& cell) const;
+
     void append(size_t id, const std::shared_ptr<Cell>& cell);
+
     void remove(size_t id);
 
     const std::unordered_map<size_t, std::shared_ptr<Cell>>

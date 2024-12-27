@@ -20,6 +20,12 @@ EntityList::find_by_cell(const std::shared_ptr<Cell>& cell) const {
 
 void
 EntityList::append(size_t id, const std::shared_ptr<Cell>& cell) {
+    auto existing_it = id_to_cell.find(id);
+    if (existing_it != id_to_cell.end()) {
+        cell_to_id.erase(existing_it->second);
+    }
+
+    // Append new mapping
     id_to_cell[id] = cell;
     cell_to_id[cell] = id;
 }

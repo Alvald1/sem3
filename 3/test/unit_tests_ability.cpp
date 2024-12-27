@@ -5,39 +5,47 @@
 
 class AbilityTest : public ::testing::Test {
   protected:
-    Creature test_creature = Director::buildCreature("Test Creature", 5, 10, 2, 1, 3);
-    Ability default_ability = Director::buildAbility("Test Ability", test_creature, 1, 50, 100, 200);
+    // Using data from Biomancy school
+    Creature creature = Director::buildCreature("Master Geneticist", 0, 2, 3, 13, 0);
+    Ability ability = Director::buildAbility("Bio-Engineer", creature, 0, 0, 0, 0);
 };
 
-TEST_F(AbilityTest, CreationWithValidParameters) {
-    EXPECT_EQ(default_ability.get_name(), "Test Ability");
-    EXPECT_EQ(default_ability.get_level(), 1);
-    EXPECT_EQ(default_ability.get_energy(), 50);
-    EXPECT_EQ(default_ability.get_experience(), 100);
-    EXPECT_EQ(default_ability.get_hp(), 200);
-    EXPECT_EQ(default_ability.get_creature().get_name(), "Test Creature");
+TEST_F(AbilityTest, Construction) {
+    EXPECT_EQ(ability.get_name(), "Bio-Engineer");
+    EXPECT_EQ(ability.get_creature().get_name(), "Master Geneticist");
+    EXPECT_EQ(ability.get_level(), 0);
+    EXPECT_EQ(ability.get_energy(), 0);
+    EXPECT_EQ(ability.get_experience(), 0);
+    EXPECT_EQ(ability.get_hp(), 0);
+}
+
+TEST_F(AbilityTest, Setters) {
+    // Using values from Biomancy's Bio-Engineer
+    ability.set_level(1);
+    ability.set_energy(10);
+    ability.set_experience(100);
+    ability.set_hp(15);
+
+    EXPECT_EQ(ability.get_level(), 1);
+    EXPECT_EQ(ability.get_energy(), 10);
+    EXPECT_EQ(ability.get_experience(), 100);
+    EXPECT_EQ(ability.get_hp(), 15);
 }
 
 TEST_F(AbilityTest, CanUpgrade) {
-    EXPECT_TRUE(default_ability.can_upgrade(100, 1));  // Exact match
-    EXPECT_TRUE(default_ability.can_upgrade(150, 2));  // More than required
-    EXPECT_FALSE(default_ability.can_upgrade(99, 1));  // Not enough experience
-    EXPECT_FALSE(default_ability.can_upgrade(100, 0)); // Not enough level
+    ability.set_level(3);
+    ability.set_experience(100);
+
+    EXPECT_TRUE(ability.can_upgrade(100, 3));
+    EXPECT_TRUE(ability.can_upgrade(150, 4));
+    EXPECT_FALSE(ability.can_upgrade(50, 3));
+    EXPECT_FALSE(ability.can_upgrade(100, 2));
 }
 
-TEST_F(AbilityTest, ModifyingParameters) {
-    Ability ability = default_ability;
-    Creature new_creature = Director::buildCreature("New Creature", 1, 1, 1, 1, 1);
+TEST_F(AbilityTest, CreatureModification) {
+    Creature creature = Director::buildCreature("Master Geneticist", 0, 2, 3, 18, 0);
+    ability.set_creature(creature);
 
-    ability.set_level(2);
-    ability.set_energy(75);
-    ability.set_experience(150);
-    ability.set_hp(300);
-    ability.set_creature(new_creature);
-
-    EXPECT_EQ(ability.get_level(), 2);
-    EXPECT_EQ(ability.get_energy(), 75);
-    EXPECT_EQ(ability.get_experience(), 150);
-    EXPECT_EQ(ability.get_hp(), 300);
-    EXPECT_EQ(ability.get_creature().get_name(), "New Creature");
+    EXPECT_EQ(ability.get_creature().get_name(), "Master Geneticist");
+    EXPECT_EQ(ability.get_creature().get_type(), 18);
 }

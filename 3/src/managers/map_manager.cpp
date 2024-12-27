@@ -127,7 +127,8 @@ MapManager::effect_cells() {
 
 void
 MapManager::process_effects(size_t start, size_t end, EntityManager& entity_manager) {
-    for (auto cell : effect_cells_) {
+    for (size_t i = start; i < end; ++i) {
+        auto cell = effect_cells_[i];
         if (cell && !cell->is_empty()) {
             size_t entity_id = cell->get_id_entity();
             auto* entity = entity_manager.get_entity(entity_id);
@@ -148,11 +149,9 @@ MapManager::process_effects(size_t start, size_t end, EntityManager& entity_mana
                         troop->modify_range(range_cell->give_effect());
                     }
                 }
-            } catch (std::exception e) {
+            } catch (const std::exception& e) {
                 // Convert effect cell to basic cell using existing method
                 change_cell_type(cell->get_position(), EffectType::NONE);
-
-                // Since change_cell_type updates effect_cells_, adjust the counter
             }
         } else if (cell) {
             try {
@@ -167,11 +166,9 @@ MapManager::process_effects(size_t start, size_t end, EntityManager& entity_mana
                         range_cell->give_effect();
                     }
                 }
-            } catch (std::exception e) {
+            } catch (const std::exception& e) {
                 // Convert effect cell to basic cell using existing method
                 change_cell_type(cell->get_position(), EffectType::NONE);
-
-                // Since change_cell_type updates effect_cells_, adjust the counter
             }
         }
     }
