@@ -3,6 +3,12 @@
 
 #include "queue/entity/entity.hpp"
 
+/**
+ * @brief Base class for all troop entities
+ * 
+ * Implements common functionality for all troops including movement,
+ * combat stats and experience tracking.
+ */
 class BaseTroop : public Entity {
 
   private:
@@ -14,6 +20,10 @@ class BaseTroop : public Entity {
     size_t experience;
 
   protected:
+    /**
+     * @brief Construct a new Base Troop
+     * @param ability The ability that defines troop's base stats
+     */
     explicit BaseTroop(const Ability& ability)
         : Entity(ability), speed(ability.get_creature().get_speed()), damage(ability.get_creature().get_damage()),
           range(ability.get_creature().get_range()), type(ability.get_creature().get_type()),
@@ -30,6 +40,10 @@ class BaseTroop : public Entity {
     ~BaseTroop() override = default;
 
     // Getters
+    /**
+     * @brief Get troop's movement speed
+     * @return Current speed value
+     */
     [[nodiscard]] inline size_t
     get_speed() const noexcept {
         return speed;
@@ -92,6 +106,10 @@ class BaseTroop : public Entity {
     }
 
     // Modifier methods
+    /**
+     * @brief Modify troop's speed by delta
+     * @param delta Amount to change speed by (can be negative)
+     */
     inline void
     modify_speed(int delta) noexcept {
         if (delta < 0 && static_cast<size_t>(-delta) > speed) {
@@ -123,11 +141,18 @@ class BaseTroop : public Entity {
         }
     }
 
+    /**
+     * @brief Use some of troop's movement points
+     * @param amount Amount of movement points to spend
+     */
     inline void
     spend_movement(size_t amount) noexcept {
         remaining_movement = (amount > remaining_movement) ? 0 : remaining_movement - amount;
     }
 
+    /**
+     * @brief Reset movement points to maximum
+     */
     inline void
     reset_movement() noexcept {
         remaining_movement = speed;

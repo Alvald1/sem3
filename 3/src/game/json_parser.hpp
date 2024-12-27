@@ -8,8 +8,24 @@
 #include "schools/schools.hpp"
 #include "ui/view.hpp"
 
+/**
+ * @class JsonParser
+ * @brief Parses JSON configuration files for game schools and abilities.
+ * 
+ * This class is responsible for reading and parsing JSON files that contain
+ * configuration data for schools, abilities, and creatures in the game.
+ */
 class JsonParser {
   public:
+    /**
+     * @brief Parses school configurations from a JSON file.
+     * 
+     * @param filename Path to the JSON configuration file
+     * @throws std::runtime_error If file cannot be opened or contains invalid data
+     * 
+     * This method reads a JSON file containing school configurations, including their
+     * abilities and associated creatures, and initializes the game's school system.
+     */
     void
     parse_schools(const std::string& filename) {
         std::ifstream ifs(filename);

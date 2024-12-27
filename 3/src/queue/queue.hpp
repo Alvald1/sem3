@@ -7,6 +7,11 @@
 // Forward declare EntityManager
 class EntityManager;
 
+/**
+ * @brief Circular queue implementation for entity turn order
+ * 
+ * Maintains a sorted circular queue of entities based on their initiative values.
+ */
 class SortQueue {
   private:
     struct Node {
@@ -39,9 +44,31 @@ class SortQueue {
     SortQueue(SortQueue&& other) noexcept;
     SortQueue& operator=(SortQueue&& other) noexcept;
 
+    /**
+     * @brief Insert new entity into the queue
+     * @param entity_id ID of entity to insert
+     * @throw std::invalid_argument if entity doesn't exist
+     */
     void insert(size_t entity_id);
+
+    /**
+     * @brief Get ID of entity at front of queue
+     * @return Entity ID
+     * @throw std::runtime_error if queue is empty
+     */
     [[nodiscard]] size_t front() const;
+
+    /**
+     * @brief Rotate queue to next entity
+     * @throw std::runtime_error if queue is empty
+     */
     void shift();
+
+    /**
+     * @brief Remove entity from queue
+     * @param id ID of entity to remove
+     * @throw std::runtime_error if entity not found or queue empty
+     */
     void remove(size_t id);
 
     [[nodiscard]] bool

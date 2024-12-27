@@ -12,15 +12,40 @@
 #include "ui/control.hpp"
 #include "ui/view.hpp"
 
+/**
+ * @class Game
+ * @brief Main game class that controls the game flow and initialization.
+ * 
+ * This class is responsible for initializing the game state, loading configurations,
+ * managing the game loop, and handling user input.
+ */
 class Game {
   private:
-    JsonParser parser_;
-    std::unique_ptr<Map> game_map_;
+    JsonParser parser_;             ///< Parser for game configurations
+    std::unique_ptr<Map> game_map_; ///< Game map instance
 
   public:
+    /**
+     * @brief Default constructor
+     */
     Game();
+
+    /**
+     * @brief Destructor
+     * Handles cleanup of game resources
+     */
     ~Game();
+
+    /**
+     * @brief Starts the game
+     * Initializes game components and runs the main game loop
+     */
     void start();
+
+    /**
+     * @brief Loads game configurations
+     * @throws std::runtime_error If loading configurations fails
+     */
     void load();
 };
 

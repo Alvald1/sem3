@@ -9,6 +9,11 @@
 #include "schools/schools.hpp"
 #include "summon_manager.hpp"
 
+/**
+ * @brief Main game controller that manages the game loop and turn sequence
+ *
+ * This singleton class coordinates all other managers and handles the main game logic flow.
+ */
 class GameManager {
   private:
     static GameManager* instance_;
@@ -17,6 +22,10 @@ class GameManager {
     GameManager() = default;
 
   public:
+    /**
+     * @brief Get the singleton instance of GameManager
+     * @return Reference to the GameManager instance
+     */
     static GameManager&
     getInstance() {
         if (instance_ == nullptr) {
@@ -25,6 +34,9 @@ class GameManager {
         return *instance_;
     }
 
+    /**
+     * @brief Destroy the singleton instance
+     */
     static void
     destroyInstance() {
         delete instance_;
@@ -35,6 +47,12 @@ class GameManager {
     GameManager& operator=(const GameManager&) = delete;
 
     ~GameManager() = default;
+
+    /**
+     * @brief Execute a single game step
+     *
+     * Processes cell effects, handles current entity's action, and advances to next turn
+     */
     void do_step();
 };
 

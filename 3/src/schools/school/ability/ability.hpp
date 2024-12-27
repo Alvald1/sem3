@@ -6,6 +6,12 @@
 #include "creature.hpp"
 #include "utilities/name_id.hpp"
 
+/**
+ * @brief Represents a magical ability
+ * 
+ * An ability is associated with a creature and has various attributes
+ * such as level, energy cost, experience requirements, and HP.
+ */
 class Ability : public NameID {
   private:
     Creature creature;
@@ -19,6 +25,11 @@ class Ability : public NameID {
     friend class AbilityBuilder;
 
   public:
+    /**
+     * @brief Constructs a new Ability
+     * @param name Name of the ability
+     * @param creature Associated creature
+     */
     explicit Ability(std::string name, Creature creature)
         : NameID(next_id++, std::move(name)), creature(std::move(creature)) {}
 
@@ -29,12 +40,19 @@ class Ability : public NameID {
     Ability& operator=(Ability&&) noexcept = default;
     ~Ability() = default;
 
-    // Getters
+    /**
+     * @brief Gets the associated creature
+     * @return Const reference to the creature
+     */
     [[nodiscard]] inline const Creature&
     get_creature() const noexcept {
         return creature;
     }
 
+    /**
+     * @brief Gets the ability's level requirement
+     * @return Required level
+     */
     [[nodiscard]] inline size_t
     get_level() const noexcept {
         return level;
@@ -81,6 +99,12 @@ class Ability : public NameID {
         hp = new_hp;
     }
 
+    /**
+     * @brief Checks if the ability can be upgraded
+     * @param exp Available experience points
+     * @param lvl Current level
+     * @return true if can be upgraded, false otherwise
+     */
     [[nodiscard]] constexpr bool
     can_upgrade(size_t exp, size_t lvl) const noexcept {
         return exp >= experience && lvl >= level;

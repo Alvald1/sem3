@@ -7,6 +7,12 @@
 #include "cell/cell.hpp"
 #include "matrix/matrix.hpp"
 
+/**
+ * @brief Class representing a 2D game map
+ * 
+ * The Map class manages a 2D grid of cells, handling map generation,
+ * cell access, and various map data export functions.
+ */
 class Map {
   protected:
     Matrix<std::shared_ptr<Cell>> matrix;
@@ -15,38 +21,76 @@ class Map {
     std::pair<size_t, size_t> size;
 
   public:
-    const Matrix<std::shared_ptr<Cell>>&
-    get_matrix() const {
-        return matrix;
-    }
+    /**
+     * @brief Get const reference to the underlying matrix
+     * @return Const reference to the matrix of cells
+     */
+    const Matrix<std::shared_ptr<Cell>>& get_matrix() const;
 
-    Matrix<std::shared_ptr<Cell>>&
-    get_matrix() {
-        return matrix;
-    }
+    /**
+     * @brief Get mutable reference to the underlying matrix
+     * @return Mutable reference to the matrix of cells
+     */
+    Matrix<std::shared_ptr<Cell>>& get_matrix();
 
-    // Getters and setters for size
-    std::pair<size_t, size_t>
-    get_size() const {
-        return size;
-    }
+    /**
+     * @brief Get the map dimensions
+     * @return Pair containing rows and columns count
+     */
+    std::pair<size_t, size_t> get_size() const;
 
-    // Map generation function
+    /**
+     * @brief Generate a new map with given dimensions
+     * @param size Pair containing desired rows and columns count
+     */
     void make_map(std::pair<size_t, size_t> size);
 
-    // Load map from passability matrix
+    /**
+     * @brief Load map from a boolean passability matrix
+     * @param passability_matrix Matrix indicating which cells are passable
+     */
     void load_from_passability_matrix(const Matrix<bool>& passability_matrix);
 
-    // Export map data as matrices
+    /**
+     * @brief Export map passability data
+     * @return Matrix of boolean values indicating cell passability
+     */
     Matrix<bool> export_passability_matrix() const;
+
+    /**
+     * @brief Export cell types as integer matrix
+     * @return Matrix where 0=empty, 1=wall, 2=occupied
+     */
     Matrix<int> export_cell_types_matrix() const;
+
+    /**
+     * @brief Export entity IDs as matrix
+     * @return Matrix containing entity IDs (0 for empty cells)
+     */
     Matrix<size_t> export_entity_ids_matrix() const;
 
-    // Generate walls matrix based on size and wall percentage
+    /**
+     * @brief Generate walls matrix with given density
+     * @param size Map dimensions
+     * @param wall_percentage Percentage of cells to be walls (0.0 to 1.0)
+     * @return Boolean matrix where false indicates wall presence
+     */
     Matrix<bool> generate_walls(std::pair<size_t, size_t> size, float wall_percentage);
 
-    // Get cell by position
+    /**
+     * @brief Get cell at specified position
+     * @param pos Position coordinates
+     * @return Reference to cell pointer
+     * @throws std::out_of_range if position is invalid
+     */
     std::shared_ptr<Cell>& get_cell(const Position& pos);
+
+    /**
+     * @brief Get const cell at specified position
+     * @param pos Position coordinates
+     * @return Const reference to cell pointer
+     * @throws std::out_of_range if position is invalid
+     */
     const std::shared_ptr<Cell>& get_cell(const Position& pos) const;
 };
 
