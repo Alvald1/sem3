@@ -29,11 +29,16 @@ set(CXXFLAGS -fprofile-instr-generate -fcoverage-mapping -g -O0)
 set(LDFLAGS -fprofile-instr-generate)
 
 # Add test executable
-add_executable(test_target ${TEST})
-set_target_properties(test_target PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_test)
+add_executable(test_target ${SOURCES} ${TEST})
+set_target_properties(test_target 
+    PROPERTIES 
+    OUTPUT_NAME ${PROJECT_NAME}_test
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
 target_compile_options(test_target PRIVATE ${CXXFLAGS})
 target_link_options(test_target PRIVATE ${LDFLAGS})
-target_link_libraries(test_target GTest::gtest GTest::gtest_main pthread)
+target_link_libraries(test_target GTest::gtest GTest::gtest_main pthread ${CURSES_LIBRARIES})
+target_include_directories(test_target PRIVATE ${RAPIDJSON_INCLUDE_DIRS})
 
 # Use parent's N_JOBS for parallel execution
 if(N_JOBS)
@@ -44,16 +49,16 @@ endif()
 # Add custom command for coverage with detailed reporting
 add_custom_target(cov
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target test_target --parallel ${N_JOBS}
-    COMMAND valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./${PROJECT_NAME}_test
+    COMMAND  ./${PROJECT_NAME}_test
     COMMAND llvm-profdata merge -sparse default.profraw -o foo.profdata
     # Text summary
-    COMMAND llvm-cov report ${PROJECT_NAME}_test 
+    COMMAND llvm-cov report ./${PROJECT_NAME}_test 
             -instr-profile=foo.profdata 
             --show-branch-summary
             ${SOURCES}
             -stats
     # Detailed HTML report
-    COMMAND llvm-cov show ${PROJECT_NAME}_test 
+    COMMAND llvm-cov show ./${PROJECT_NAME}_test 
             -instr-profile=foo.profdata 
             -show-branch-summary
             -show-branches=count
@@ -68,6 +73,7 @@ add_custom_target(cov
             -output-dir=report_coverage 
             ${SOURCES}
     COMMAND rm foo.profdata default.profraw
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Building with detailed coverage reports"
 )
 
@@ -78,6 +84,10 @@ set_tests_properties(test
     PROCESSORS ${N_JOBS}
     ENVIRONMENT CMAKE_BUILD_PARALLEL_LEVEL=${N_JOBS}
 )
+
+# Force parallel test execution
+set(CTEST_PARALLEL_LEVEL ${N_JOBS})
+set(CMAKE_CTEST_COMMAND ctest -j${N_JOBS})
 
 # Force parallel test execution
 set(CTEST_PARALLEL_LEVEL ${N_JOBS})

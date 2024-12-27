@@ -9,9 +9,12 @@ add_subdirectory(ui)
 add_subdirectory(managers)
 add_subdirectory(queue)
 
-# Собираем все исходные файлы
-set(PROJECT_SOURCES "")
+# Собираем все исходные файлы и делаем доступными в родительском скопе
 file(GLOB_RECURSE PROJECT_SOURCES *.cpp *.hpp)
+set(PROJECT_SOURCES ${PROJECT_SOURCES} PARENT_SCOPE)
+# Также экспортируем список исходников без main.cpp
+list(REMOVE_ITEM PROJECT_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+set(SOURCES ${PROJECT_SOURCES} PARENT_SCOPE)
 
 # Объявляем исходный main
 set(MAIN_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)

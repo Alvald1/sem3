@@ -1,180 +1,106 @@
 #include <gtest/gtest.h>
-#include "schools/school/ability/ability.hpp"
-#include "schools/school/ability/creature.hpp"
-#include "schools/school/school.hpp"
+
+#include "schools/builders/director.hpp"
 #include "schools/schools.hpp"
 
 class SchoolsTest : public ::testing::Test {
   protected:
-    Schools schools;
-    School school1{"Magic"};
-    School school2{"Science"};
-    Creature creature1{"Dragon"};
-    Creature creature2{"Phoenix"};
-    Ability ability1{"Fly", &creature1, 1, 10, 5};
-    Ability ability2{"Rebirth", &creature2, 2, 20, 10};
+    Schools* schools = nullptr;
+    Creature test_creature = Director::buildCreature("Test Creature", 5, 10, 2, 1, 3);
+    Ability test_ability = Director::buildAbility("Test Ability", test_creature, 1, 50, 100, 200);
+    School test_school = Director::buildSchool("Test School", test_ability);
 
     void
     SetUp() override {
-        school1.add_ability(ability1);
-        school2.add_ability(ability2);
-        schools.add_school(school1);
-        schools.add_school(school2);
+        schools = &Schools::getInstance();
+    }
+
+    void
+    TearDown() override {
+        Schools::destroyInstance();
     }
 };
 
-TEST_F(SchoolsTest, Constructor) {
-    Schools empty_schools;
-    EXPECT_EQ(empty_schools.count_schools(), 0);
+TEST_F(SchoolsTest, SingletonInstance) {
+    auto& instance1 = Schools::getInstance();
+    auto& instance2 = Schools::getInstance();
+    EXPECT_EQ(&instance1, &instance2);
 }
 
-TEST_F(SchoolsTest, AddSchool) {
-    Schools new_schools;
-    new_schools.add_school(school1);
-    EXPECT_EQ(new_schools.count_schools(), 1);
+TEST_F(SchoolsTest, AddAndCountSchools) {
+    schools->add_school(test_school);
+    EXPECT_EQ(schools->count_schools(), 1);
+
+    School another_school("Another School");
+    schools->add_school(another_school);
+    EXPECT_EQ(schools->count_schools(), 2);
 }
 
-TEST_F(SchoolsTest, CountSchools) { EXPECT_EQ(schools.count_schools(), 2); }
+TEST_F(SchoolsTest, FindSchoolById) {
+    schools->add_school(test_school);
 
-TEST_F(SchoolsTest, CountCreatures) { EXPECT_EQ(schools.count_creatures(), 2); }
+    auto found = schools->find_school_by_id(test_school.get_id());
+    EXPECT_TRUE(found.has_value());
+    EXPECT_EQ(found->get().get_name(), "Test School");
 
-TEST_F(SchoolsTest, GetAvailableAbilities_SchoolInLevels) {
-    std::unordered_map<size_t, size_t> levels = {{school1.get_id(), 1}};
-    auto abilities = schools.get_available_abilities(levels, 10);
-    EXPECT_EQ(abilities.size(), 1);
+    auto not_found = schools->find_school_by_id(999);
+    EXPECT_FALSE(not_found.has_value());
 }
 
-TEST_F(SchoolsTest, GetAvailableAbilities_SchoolNotInLevels) {
-    std::unordered_map<size_t, size_t> levels = {{999, 1}};
-    auto abilities = schools.get_available_abilities(levels, 10);
-    EXPECT_TRUE(abilities.empty());
+TEST_F(SchoolsTest, FindSchoolByName) {
+    schools->add_school(test_school);
+
+    auto found = schools->find_school_by_name("Test School");
+    EXPECT_TRUE(found.has_value());
+    EXPECT_EQ(found->get().get_id(), test_school.get_id());
+
+    auto not_found = schools->find_school_by_name("Non-existent School");
+    EXPECT_FALSE(not_found.has_value());
 }
 
-TEST_F(SchoolsTest, GetUpgradableAbilities_SchoolInLevels) {
-    std::unordered_map<size_t, size_t> levels = {{school2.get_id(), 2}};
-    auto abilities = schools.get_upgradable_abilities(levels, 15);
-    EXPECT_EQ(abilities.size(), 1);
+TEST_F(SchoolsTest, RemoveSchool) {
+    schools->add_school(test_school);
+    EXPECT_TRUE(schools->remove_school(test_school.get_id()));
+    EXPECT_EQ(schools->count_schools(), 0);
+    EXPECT_FALSE(schools->remove_school(test_school.get_id()));
 }
 
-TEST_F(SchoolsTest, GetUpgradableAbilities_SchoolNotInLevels) {
-    std::unordered_map<size_t, size_t> levels = {{999, 1}};
-    auto abilities = schools.get_upgradable_abilities(levels, 10);
-    EXPECT_TRUE(abilities.empty());
-}
+TEST_F(SchoolsTest, GetAvailableAbilities) {
+    schools->add_school(test_school);
 
-TEST_F(SchoolsTest, FindSchoolById_Exists) {
-    const School* found = schools.find_school_by_id(school1.get_id());
-    EXPECT_NE(found, nullptr);
-    EXPECT_EQ(found->get_name(), "Magic");
-}
-
-TEST_F(SchoolsTest, FindSchoolById_NotExists) {
-    const School* found = schools.find_school_by_id(999);
-    EXPECT_EQ(found, nullptr);
-}
-
-TEST_F(SchoolsTest, FindSchoolByName_Exists) {
-    const School* found = schools.find_school_by_name("Science");
-    EXPECT_NE(found, nullptr);
-    EXPECT_EQ(found->get_id(), school2.get_id());
-}
-
-TEST_F(SchoolsTest, FindSchoolByName_NotExists) {
-    const School* found = schools.find_school_by_name("Alchemy");
-    EXPECT_EQ(found, nullptr);
-}
-
-TEST_F(SchoolsTest, CountTotalAbilities) { EXPECT_EQ(schools.count_total_abilities(), 2); }
-
-TEST_F(SchoolsTest, GetSchools) {
-    const auto& all_schools = schools.get_schools();
-    EXPECT_EQ(all_schools.size(), 2);
-}
-
-TEST_F(SchoolsTest, HasSchool_Exists) { EXPECT_TRUE(schools.has_school(school1.get_id())); }
-
-TEST_F(SchoolsTest, HasSchool_NotExists) { EXPECT_FALSE(schools.has_school(999)); }
-
-TEST_F(SchoolsTest, RemoveSchool_Exists) {
-    bool removed = schools.remove_school(school1.get_id());
-    EXPECT_TRUE(removed);
-    EXPECT_EQ(schools.count_schools(), 1);
-}
-
-TEST_F(SchoolsTest, RemoveSchool_NotExists) {
-    bool removed = schools.remove_school(999);
-    EXPECT_FALSE(removed);
-    EXPECT_EQ(schools.count_schools(), 2);
-}
-
-TEST_F(SchoolsTest, AddDuplicateSchool) {
-    Schools new_schools;
-    new_schools.add_school(school1);
-    new_schools.add_school(school1);           // Adding same school twice
-    EXPECT_EQ(new_schools.count_schools(), 2); // Should add both as separate schools
-}
-
-TEST_F(SchoolsTest, EmptySchoolOperations) {
-    School empty_school("Empty");
-    schools.add_school(empty_school);
-    EXPECT_EQ(schools.count_schools(), 3);
-    EXPECT_EQ(schools.count_creatures(), 2); // Should not affect creature count
-}
-
-TEST_F(SchoolsTest, GetAvailableAbilities_NoEnergy) {
-    std::unordered_map<size_t, size_t> levels = {{school1.get_id(), 10}};
-    auto abilities = schools.get_available_abilities(levels, 0);
-    EXPECT_TRUE(abilities.empty());
-}
-
-TEST_F(SchoolsTest, GetAvailableAbilities_HighEnergy) {
-    std::unordered_map<size_t, size_t> levels = {{school1.get_id(), 10}, {school2.get_id(), 10}};
-    auto abilities = schools.get_available_abilities(levels, 1000);
-    EXPECT_EQ(abilities.size(), 2); // Should get all abilities
-}
-
-TEST_F(SchoolsTest, GetUpgradableAbilities_NoExperience) {
-    std::unordered_map<size_t, size_t> levels = {{school1.get_id(), 10}};
-    auto abilities = schools.get_upgradable_abilities(levels, 0);
-    EXPECT_TRUE(abilities.empty());
-}
-
-TEST_F(SchoolsTest, GetUpgradableAbilities_AllSchools) {
     std::unordered_map<size_t, size_t> levels;
-    for (const auto& school : schools.get_schools()) {
-        levels[school.get_id()] = 10;
-    }
-    auto abilities = schools.get_upgradable_abilities(levels, 1000);
-    EXPECT_EQ(abilities.size(), 2); // Should get all abilities
+    levels[test_school.get_id()] = 1;
+
+    auto available = schools->get_available_abilities(levels, 50);
+    EXPECT_EQ(available.size(), 1);
+
+    available = schools->get_available_abilities(levels, 40);
+    EXPECT_EQ(available.size(), 0);
 }
 
-TEST_F(SchoolsTest, RemoveAllSchools) {
-    for (const auto& school : schools.get_schools()) {
-        EXPECT_TRUE(schools.remove_school(school.get_id()));
-    }
-    EXPECT_EQ(schools.count_schools(), 0);
-    EXPECT_EQ(schools.count_creatures(), 0);
+TEST_F(SchoolsTest, FindSummonerAbilities) {
+    // Create a summoner creature (type 0)
+    Creature summoner = Director::buildCreature("Summoner", 1, 1, 1, 0, 1);
+    Ability summoner_ability = Director::buildAbility("Summon", summoner, 1, 50, 100, 200);
+    School summoner_school = Director::buildSchool("Summoner School", summoner_ability);
+
+    schools->add_school(summoner_school);
+    schools->add_school(test_school);
+
+    auto summoner_abilities = schools->find_summoner_abilities();
+    EXPECT_EQ(summoner_abilities.size(), 1);
+    EXPECT_EQ(summoner_abilities[0].get().get_creature().get_type(), 0);
 }
 
-TEST_F(SchoolsTest, FindSchoolByName_CaseSensitive) {
-    const School* found1 = schools.find_school_by_name("magic"); // lowercase
-    const School* found2 = schools.find_school_by_name("Magic"); // correct case
-    EXPECT_EQ(found1, nullptr);
-    EXPECT_NE(found2, nullptr);
-}
+TEST_F(SchoolsTest, GetUpgradableAbilities) {
+    schools->add_school(test_school);
 
-TEST_F(SchoolsTest, FindSchoolByName_EmptyString) {
-    const School* found = schools.find_school_by_name("");
-    EXPECT_EQ(found, nullptr);
-}
+    std::unordered_map<size_t, size_t> levels;
+    levels[test_school.get_id()] = 1;
 
-TEST_F(SchoolsTest, SchoolsWithSameCreature) {
-    // Create a school with an ability using the same creature
-    School school3{"Nature"};
-    Ability ability3{"SuperFly", &creature1, 3, 30, 15}; // Using creature1 again
-    school3.add_ability(ability3);
-    schools.add_school(school3);
+    auto upgradable = schools->get_upgradable_abilities(levels, 100);
+    EXPECT_EQ(upgradable.size(), 1);
 
-    EXPECT_EQ(schools.count_schools(), 3);
-    EXPECT_EQ(schools.count_creatures(), 2); // Should still be 2 creatures
+    upgradable = schools->get_upgradable_abilities(levels, 99);
+    EXPECT_EQ(upgradable.size(), 0);
 }

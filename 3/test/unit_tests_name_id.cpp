@@ -1,37 +1,39 @@
 #include <gtest/gtest.h>
-#include "utilities/name_id.hpp"
+#include "../src/utilities/name_id.hpp"
 
-class NameIDTest : public ::testing::Test {
-  protected:
-    NameID* test_obj;
-
-    void
-    SetUp() override {
-        test_obj = new NameID(1, "Test");
-    }
-
-    void
-    TearDown() override {
-        delete test_obj;
-    }
-};
-
-TEST_F(NameIDTest, ConstructorTest) {
-    NameID obj(42, "TestName");
-    EXPECT_EQ(obj.get_id(), 42);
-    EXPECT_EQ(obj.get_name(), "TestName");
+TEST(NameIDTest, Constructor) {
+    NameID id(1, "test");
+    EXPECT_EQ(id.get_id(), 1);
+    EXPECT_EQ(id.get_name(), "test");
 }
 
-TEST_F(NameIDTest, GetIdTest) { EXPECT_EQ(test_obj->get_id(), 1); }
+TEST(NameIDTest, CopyConstructor) {
+    NameID original(1, "test");
+    NameID copy(original);
 
-TEST_F(NameIDTest, GetNameTest) { EXPECT_EQ(test_obj->get_name(), "Test"); }
-
-TEST_F(NameIDTest, SetNameTest) {
-    test_obj->set_name("NewName");
-    EXPECT_EQ(test_obj->get_name(), "NewName");
+    EXPECT_EQ(copy.get_id(), original.get_id());
+    EXPECT_EQ(copy.get_name(), original.get_name());
 }
 
-TEST_F(NameIDTest, EmptyNameTest) {
-    test_obj->set_name("");
-    EXPECT_EQ(test_obj->get_name(), "");
+TEST(NameIDTest, AssignmentOperator) {
+    NameID id1(1, "test1");
+    NameID id2(2, "test2");
+
+    id2 = id1;
+    EXPECT_EQ(id2.get_id(), 1);
+    EXPECT_EQ(id2.get_name(), "test1");
+}
+
+TEST(NameIDTest, SetName) {
+    NameID id(1, "test");
+    id.set_name("new_test");
+    EXPECT_EQ(id.get_name(), "new_test");
+}
+
+TEST(NameIDTest, SelfAssignment) {
+    NameID id(1, "test");
+    id = id; // Should handle self-assignment gracefully
+
+    EXPECT_EQ(id.get_id(), 1);
+    EXPECT_EQ(id.get_name(), "test");
 }
