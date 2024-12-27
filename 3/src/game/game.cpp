@@ -61,7 +61,7 @@ Game::start() {
 
     // Create and initialize map
     map_manager.make_map({width, height});
-    Matrix<bool> walls(width, height, true);
+    Matrix<bool> walls = map_manager.generate_walls(map_manager.get_size(), 0.1f);
     map_manager.load_from_passability_matrix(walls);
 
     // Create fixed positions for 2 players

@@ -1,4 +1,6 @@
 #include "map.hpp"
+#include <cmath>
+#include <random>
 
 #include "map/cell/builders/cell_director.hpp"
 
@@ -95,4 +97,43 @@ Map::get_cell(const Position& pos) const {
         throw std::out_of_range("Position is out of map bounds");
     }
     return matrix(pos.get_y(), pos.get_x());
+}
+
+Matrix<bool>
+Map::generate_walls(std::pair<size_t, size_t> size, float wall_percentage) {
+    if (wall_percentage < 0.0f || wall_percentage > 1.0f) {
+        throw std::invalid_argument("Wall percentage must be between 0 and 1");
+    }
+
+    Matrix<bool> passability_matrix(size.first, size.second, true);
+
+    // Calculate number of walls needed
+    size_t total_cells = size.first * size.second;
+    size_t walls_needed = static_cast<size_t>(std::round(total_cells * wall_percentage));
+
+    // Set up random number generator
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<size_t> row_dist(0, size.first - 1);
+    std::uniform_int_distribution<size_t> col_dist(0, size.second - 1);
+
+    size_t walls_placed = 0;
+    while (walls_placed < walls_needed) {
+        size_t row = row_dist(gen);
+        size_t col = col_dist(gen);
+
+        // Skip corners to ensure they're passable for players
+        if ((row == 0 && col == size.second - 1) || // top-right corner
+            (row == size.first - 1 && col == 0)) {  // bottom-left corner
+            continue;
+        }
+
+        // If the cell is passable, make it a wall
+        if (passability_matrix(row, col)) {
+            passability_matrix(row, col) = false;
+            walls_placed++;
+        }
+    }
+
+    return passability_matrix;
 }

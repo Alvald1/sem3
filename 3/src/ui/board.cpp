@@ -337,6 +337,17 @@ Board::draw() {
             int grid_y = (y - offset_y) * CELL_HEIGHT;
             int grid_x = (x - offset_x) * CELL_WIDTH;
 
+            // Проверяем, является ли клетка непроходимой
+            if (!map.get_cell(Position(y, x))->get_passability()) {
+                // Заполняем клетку символом #
+                for (int i = 1; i < CELL_HEIGHT; i++) {
+                    for (int j = 1; j < CELL_WIDTH; j++) {
+                        mvwaddch(window, grid_y + i, grid_x + j, '#');
+                    }
+                }
+                continue;
+            }
+
             if (entity_ids(y, x) != 0) {
                 // Draw entity ID in top-left corner
                 wattron(window, COLOR_PAIR(4) | A_DIM);

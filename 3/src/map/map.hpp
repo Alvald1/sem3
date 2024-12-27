@@ -39,6 +39,9 @@ class Map {
     // Add new method declaration
     Matrix<size_t> export_entity_ids_matrix() const;
 
+    // Generate walls matrix based on size and wall percentage
+    Matrix<bool> generate_walls(std::pair<size_t, size_t> size, float wall_percentage);
+
     // Get cell by position
     std::shared_ptr<Cell>& get_cell(const Position& pos);
     const std::shared_ptr<Cell>& get_cell(const Position& pos) const;
