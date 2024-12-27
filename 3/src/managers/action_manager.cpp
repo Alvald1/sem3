@@ -85,6 +85,8 @@ ActionManager::handle_summoner_action(Summoner& summoner) {
                 } else {
                     throw AbilityNotFoundException();
                 }
+            } else {
+                throw NoUpgradableAbilitiesException();
             }
             break;
         }

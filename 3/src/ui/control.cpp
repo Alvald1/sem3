@@ -132,10 +132,9 @@ Control::get_ability_choice(const std::vector<std::reference_wrapper<const Abili
                 break;
             case '\n':
             case KEY_ENTER:
-                if (abilities[current_ability_selection].get().get_energy() <= current_energy) {
-                    view.clear_ability_panel(); // Add this line
-                    return abilities[current_ability_selection].get().get_id();
-                }
+                view.clear_ability_panel(); // Add this line
+                return abilities[current_ability_selection].get().get_id();
+
                 break;
             case 27:                        // ESC
                 view.clear_ability_panel(); // Add this line

@@ -61,6 +61,11 @@ class NoAvailableAbilitiesException : public ResourceException {
     NoAvailableAbilitiesException() : ResourceException("No abilities available for summoning") {}
 };
 
+class NoUpgradableAbilitiesException : public ResourceException {
+  public:
+    NoUpgradableAbilitiesException() : ResourceException("No abilities available for upgrade") {}
+};
+
 class NotEnoughResourceException : public ResourceException {
   protected:
     NotEnoughResourceException(const std::string& resource, size_t have, size_t need)
