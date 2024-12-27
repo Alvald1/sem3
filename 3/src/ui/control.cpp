@@ -116,28 +116,32 @@ Control::get_ability_choice(const std::vector<std::reference_wrapper<const Abili
             case KEY_DOWN: board.scroll_down(); break;
             case KEY_LEFT: board.scroll_left(); break;
             case KEY_RIGHT: board.scroll_right(); break;
-            case '\t': // Use Tab to navigate abilities instead
+            case '\t':
                 if (current_ability_selection < abilities.size() - 1) {
                     current_ability_selection++;
+                    if (current_ability_selection >= view.get_max_visible_abilities()) {
+                        view.scroll_abilities_down();
+                    }
                 } else {
                     current_ability_selection = 0;
+                    view.scroll_abilities_up(); // Reset scroll when wrapping to top
                 }
                 break;
-            case KEY_BTAB: // Shift+Tab for reverse navigation
+            case KEY_BTAB:
                 if (current_ability_selection > 0) {
                     current_ability_selection--;
+                    if (current_ability_selection < view.get_ability_scroll_offset()) {
+                        view.scroll_abilities_up();
+                    }
                 } else {
                     current_ability_selection = abilities.size() - 1;
+                    view.scroll_abilities_down(); // Scroll to bottom when wrapping to end
                 }
                 break;
             case '\n':
-            case KEY_ENTER:
-                view.clear_ability_panel(); // Add this line
-                return abilities[current_ability_selection].get().get_id();
-
-                break;
-            case 27:                        // ESC
-                view.clear_ability_panel(); // Add this line
+            case KEY_ENTER: view.clear_ability_panel(); return abilities[current_ability_selection].get().get_id();
+            case 27: // ESC
+                view.clear_ability_panel();
                 return SIZE_MAX;
         }
         board.draw();

@@ -21,6 +21,7 @@ class View {
     WINDOW* summoner_info_window;
     WINDOW* troop_info_window{nullptr}; // Add this member
     std::unordered_map<size_t, std::string> ability_icons;
+    mutable size_t ability_scroll_offset{0}; // Add this line
 
     void init_colors();
     void draw_input_form(int width, int height, bool width_selected) const;
@@ -60,6 +61,15 @@ class View {
     void show_error(const std::string& message) const;
     void show_summoner_info(const Summoner& summoner); // Remove const from method
     void show_troop_info(const BaseTroop& troop);
+
+    void scroll_abilities_up() const; // Add these methods
+    void scroll_abilities_down() const;
+    size_t get_max_visible_abilities() const;
+
+    [[nodiscard]] size_t
+    get_ability_scroll_offset() const {
+        return ability_scroll_offset;
+    }
 };
 
 #endif // VIEW_HPP_

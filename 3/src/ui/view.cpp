@@ -1,6 +1,7 @@
 #include "view.hpp"
 #include <string>
 
+#include "queue/entity/troop/moral_troop.hpp"
 #include "utilities/type_system.hpp"
 
 View* View::instance = nullptr;
@@ -128,23 +129,59 @@ View::get_empty_message(AbilityDisplayType type) const {
     }
 }
 
+size_t
+View::get_max_visible_abilities() const {
+    const int BOX_HEIGHT = 11;
+    const int HEADER_HEIGHT = 3;
+    return (LINES - HEADER_HEIGHT) / (BOX_HEIGHT + 1);
+}
+
+void
+View::scroll_abilities_up() const {
+    if (ability_scroll_offset > 0) {
+        --ability_scroll_offset;
+    }
+}
+
+void
+View::scroll_abilities_down() const {
+    ++ability_scroll_offset;
+}
+
 void
 View::send_abilities(size_t current_energy, size_t current_experience,
                      const std::vector<std::reference_wrapper<const Ability>>& abilities, AbilityDisplayType type,
                      size_t selected_index) const {
     if (!abilities.empty()) {
+        size_t max_visible = get_max_visible_abilities();
+
+        // Adjust scroll offset if selected item would be out of view
+        if (selected_index >= ability_scroll_offset + max_visible) {
+            ability_scroll_offset = selected_index - max_visible + 1;
+        }
+        if (selected_index < ability_scroll_offset) {
+            ability_scroll_offset = selected_index;
+        }
+
+        // Ensure we don't scroll past the end
+        if (ability_scroll_offset + max_visible > abilities.size()) {
+            ability_scroll_offset = abilities.size() > max_visible ? abilities.size() - max_visible : 0;
+        }
+
         int start_y = 6;
         mvprintw(start_y - 3, COLS - INFO_PANEL_WIDTH + 2, "Current Experience: %zu\n", current_experience);
         mvprintw(start_y - 2, COLS - INFO_PANEL_WIDTH + 2, "Current Energy: %zu\n", current_energy);
         mvprintw(start_y - 1, COLS - INFO_PANEL_WIDTH + 2, "%s", get_title(type));
 
-        const int BOX_HEIGHT = 10; // Increased height to accommodate effects
+        const int BOX_HEIGHT = 11;
         const int BOX_WIDTH = INFO_PANEL_WIDTH - 4;
 
-        for (size_t i = 0; i < abilities.size(); ++i) {
+                // Only display visible abilities
+        for (size_t i = ability_scroll_offset; i < std::min(ability_scroll_offset + max_visible, abilities.size());
+             ++i) {
             const auto& ability = abilities[i].get();
             const auto& creature = ability.get_creature();
-            int box_y = start_y + i * (BOX_HEIGHT + 1);
+            int box_y = start_y + (i - ability_scroll_offset) * (BOX_HEIGHT + 1);
 
             // Draw box with yellow border for selected ability
             if (i == selected_index) {
@@ -179,14 +216,23 @@ View::send_abilities(size_t current_energy, size_t current_experience,
             mvprintw(box_y + 6, COLS - INFO_PANEL_WIDTH + 4, "Damage: %zu", creature.get_damage());
             mvprintw(box_y + 7, COLS - INFO_PANEL_WIDTH + 4, "Speed: %zu", creature.get_speed());
             mvprintw(box_y + 8, COLS - INFO_PANEL_WIDTH + 4, "Range: %zu", creature.get_range());
+            auto type = TypeSystem::getTroopType(creature.get_type());
+            const char* type_name;
+
+            switch (type) {
+                case TroopType::MORAL: type_name = "Moral"; break;
+                case TroopType::AMORAL: type_name = "Amoral"; break;
+                default: type_name = "Summoner"; break;
+            }
+            mvprintw(box_y + 9, COLS - INFO_PANEL_WIDTH + 4, "Type: %s", type_name);
 
             // Display effects
             auto effects = TypeSystem::get_effects(creature.get_type());
             if (!effects.empty()) {
                 int effect_x = COLS - INFO_PANEL_WIDTH + 4;
-                int effect_y = box_y + 9;
+                int effect_y = box_y + 10;
                 mvprintw(effect_y, effect_x, "Effects: ");
-                effect_x += 9;
+                effect_x += 10;
 
                 for (const auto& [effect_type, is_positive] : effects) {
                     const char* effect_name;
@@ -387,6 +433,10 @@ View::show_troop_info(const BaseTroop& troop) {
     mvwprintw(troop_info_window, 2, 2, "Speed: %zu", troop.get_speed());
     mvwprintw(troop_info_window, 3, 2, "Range: %zu", troop.get_range());
     mvwprintw(troop_info_window, 4, 2, "Moves left: %zu", troop.get_remaining_movement());
+
+    if (const auto* moral_troop = dynamic_cast<const MoralTroop*>(&troop)) {
+        mvwprintw(troop_info_window, 5, 2, "Moral: %d", moral_troop->get_moral());
+    }
 
     // Получаем и выводим эффекты
     auto effects = TypeSystem::get_effects(troop.get_type());

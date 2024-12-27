@@ -3,6 +3,7 @@
 #include "map_manager.hpp"
 
 #include "damage_manager.hpp"
+#include "queue/entity/troop/moral_troop.hpp"
 #include "summon_manager.hpp"
 #include "ui/board.hpp"
 #include "ui/control.hpp"
@@ -98,7 +99,9 @@ ActionManager::handle_summoner_action(Summoner& summoner) {
 
 void
 ActionManager::handle_troop_action(BaseTroop& troop) {
-
+    if (auto moral_ = dynamic_cast<MoralTroop*>(&troop)) {
+        moral_->balance_morale(1);
+    }
     while (troop.get_remaining_movement() != 0) {
         auto action = Control::getInstance().get_troop_action();
 
@@ -184,5 +187,6 @@ ActionManager::handle_troop_action(BaseTroop& troop) {
         Board::getInstance(MapManager::getInstance()).draw();
         Board::getInstance(MapManager::getInstance()).refresh_display();
     }
+
     troop.reset_movement();
 }

@@ -2,6 +2,8 @@
 #include "entity_manager.hpp"
 #include "map_manager.hpp"
 #include "queue/entity/summoner.hpp"
+#include "queue/entity/troop/amoral_troop.hpp"
+#include "queue/entity/troop/moral_troop.hpp"
 #include "utilities/exceptions.hpp"
 
 void
@@ -18,16 +20,26 @@ DamageManager::fight(BaseTroop& attacker, Entity& defender) {
     }
 
     // Calculate and apply damage from attacker to defender
-    int damage = attacker.get_damage();
+    int bonus = 0;
+    auto moral_at = dynamic_cast<MoralTroop*>(&attacker);
+    auto moral_def = dynamic_cast<MoralTroop*>(&defender);
+    if (moral_at) {
+        bonus = moral_at->get_moral();
+    }
+    int damage = attacker.get_damage() + bonus;
+
     defender.modify_hp(-damage);
 
     // If defender is still alive and is a BaseTroop, perform counterattack
     if (defender.is_alive() && attacker.get_range() == 0) {
+        moral_def->decrease_morale(1);
         if (defender_troop != nullptr) {
             int counter_damage = defender_troop->get_damage();
             attacker.modify_hp(-counter_damage);
+            moral_at->decrease_morale(1);
         }
     } else if (!defender.is_alive()) {
+        moral_at->increase_morale(2);
         auto& map = MapManager::getInstance();
         auto& entity_manager = EntityManager::getInstance();
 
