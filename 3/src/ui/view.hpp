@@ -45,10 +45,9 @@ class View {
 
     const char* get_title(AbilityDisplayType type) const;
     const char* get_empty_message(AbilityDisplayType type) const;
-    void send_abilities(size_t current_energy, const std::vector<std::reference_wrapper<const Ability>>& abilities,
-                        AbilityDisplayType type) const;
-    void send_abilities(size_t current_energy, const std::vector<std::reference_wrapper<const Ability>>& abilities,
-                        AbilityDisplayType type, size_t selected_index) const;
+    void send_abilities(size_t current_energy, size_t current_experience,
+                        const std::vector<std::reference_wrapper<const Ability>>& abilities, AbilityDisplayType type,
+                        size_t selected_index) const;
 
     void add_ability_icon(size_t ability_id, std::string icon);
     const std::string& get_ability_icon(size_t ability_id) const;

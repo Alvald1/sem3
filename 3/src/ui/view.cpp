@@ -129,14 +129,16 @@ View::get_empty_message(AbilityDisplayType type) const {
 }
 
 void
-View::send_abilities(size_t current_energy, const std::vector<std::reference_wrapper<const Ability>>& abilities,
-                     AbilityDisplayType type, size_t selected_index) const {
+View::send_abilities(size_t current_energy, size_t current_experience,
+                     const std::vector<std::reference_wrapper<const Ability>>& abilities, AbilityDisplayType type,
+                     size_t selected_index) const {
     if (!abilities.empty()) {
         int start_y = 6;
+        mvprintw(start_y - 3, COLS - INFO_PANEL_WIDTH + 2, "Current Experience: %zu\n", current_experience);
         mvprintw(start_y - 2, COLS - INFO_PANEL_WIDTH + 2, "Current Energy: %zu\n", current_energy);
         mvprintw(start_y - 1, COLS - INFO_PANEL_WIDTH + 2, "%s", get_title(type));
 
-        const int BOX_HEIGHT = 8;
+        const int BOX_HEIGHT = 10; // Increased height to accommodate effects
         const int BOX_WIDTH = INFO_PANEL_WIDTH - 4;
 
         for (size_t i = 0; i < abilities.size(); ++i) {
@@ -171,13 +173,41 @@ View::send_abilities(size_t current_energy, const std::vector<std::reference_wra
             }
             mvprintw(box_y + 1, COLS - INFO_PANEL_WIDTH + 4, "Name: %s", ability.get_name().c_str());
             mvprintw(box_y + 2, COLS - INFO_PANEL_WIDTH + 4, "Energy Cost: %zu", ability.get_energy());
-            mvprintw(box_y + 3, COLS - INFO_PANEL_WIDTH + 4, "ID: %zu", ability.get_id());
+            mvprintw(box_y + 3, COLS - INFO_PANEL_WIDTH + 4, "Experience Cost: %zu", ability.get_experience());
+            mvprintw(box_y + 4, COLS - INFO_PANEL_WIDTH + 4, "ID: %zu", ability.get_id());
+            mvprintw(box_y + 5, COLS - INFO_PANEL_WIDTH + 4, "HP: %zu", ability.get_hp());
+            mvprintw(box_y + 6, COLS - INFO_PANEL_WIDTH + 4, "Damage: %zu", creature.get_damage());
+            mvprintw(box_y + 7, COLS - INFO_PANEL_WIDTH + 4, "Speed: %zu", creature.get_speed());
+            mvprintw(box_y + 8, COLS - INFO_PANEL_WIDTH + 4, "Range: %zu", creature.get_range());
 
-            // Rest of the content
-            mvprintw(box_y + 4, COLS - INFO_PANEL_WIDTH + 4, "HP: %zu", ability.get_hp());
-            mvprintw(box_y + 5, COLS - INFO_PANEL_WIDTH + 4, "Damage: %zu", creature.get_damage());
-            mvprintw(box_y + 6, COLS - INFO_PANEL_WIDTH + 4, "Speed: %zu", creature.get_speed());
-            mvprintw(box_y + 7, COLS - INFO_PANEL_WIDTH + 4, "Range: %zu", creature.get_range());
+            // Display effects
+            auto effects = TypeSystem::get_effects(creature.get_type());
+            if (!effects.empty()) {
+                int effect_x = COLS - INFO_PANEL_WIDTH + 4;
+                int effect_y = box_y + 9;
+                mvprintw(effect_y, effect_x, "Effects: ");
+                effect_x += 9;
+
+                for (const auto& [effect_type, is_positive] : effects) {
+                    const char* effect_name;
+                    switch (effect_type) {
+                        case EffectType::DAMAGE: effect_name = "DMG"; break;
+                        case EffectType::SPEED: effect_name = "SPD"; break;
+                        case EffectType::RANGE: effect_name = "RNG"; break;
+                        case EffectType::HEALTH: effect_name = "HP"; break;
+                        default: effect_name = "???"; break;
+                    }
+
+                    attron(COLOR_PAIR(is_positive ? 2 : 3));
+                    mvprintw(effect_y, effect_x, "%s%c ", effect_name, is_positive ? '+' : '-');
+                    attroff(COLOR_PAIR(is_positive ? 2 : 3));
+                    effect_x += 5;
+                }
+            }
+
+            if (ability.get_energy() > current_energy) {
+                attroff(COLOR_PAIR(2));
+            }
         }
     } else {
         mvprintw(6, COLS - INFO_PANEL_WIDTH + 2, "%s", get_empty_message(type));
@@ -361,7 +391,6 @@ View::show_troop_info(const BaseTroop& troop) {
     // Получаем и выводим эффекты
     auto effects = TypeSystem::get_effects(troop.get_type());
     if (!effects.empty()) {
-        mvwprintw(troop_info_window, 6, 2, "Effects:");
         int line = 7;
         for (const auto& [effect_type, is_positive] : effects) {
             const char* effect_name;

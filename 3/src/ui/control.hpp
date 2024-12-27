@@ -31,7 +31,7 @@ class Control {
     void update();
     [[nodiscard]] SummonerAction get_summoner_action() const;
     [[nodiscard]] size_t get_ability_choice(const std::vector<std::reference_wrapper<const Ability>>& abilities,
-                                            size_t current_energy);
+                                            size_t current_energy, size_t current_experience);
     [[nodiscard]] Position get_position_choice(Position current_pos) const;
     [[nodiscard]] TroopAction get_troop_action() const;
 

@@ -22,8 +22,8 @@ ActionManager::handle_summoner_action(Summoner& summoner) {
                 throw NoAvailableAbilitiesException();
             }
 
-            size_t chosen_ability_id =
-                Control::getInstance().get_ability_choice(available_abilities, summoner.get_energy());
+            size_t chosen_ability_id = Control::getInstance().get_ability_choice(
+                available_abilities, summoner.get_energy(), summoner.get_experience());
 
             // Find the chosen ability in available abilities
             auto it = std::find_if(
@@ -61,8 +61,8 @@ ActionManager::handle_summoner_action(Summoner& summoner) {
                 Schools::getInstance().get_upgradable_abilities(summoner.get_levels(), summoner.get_experience());
 
             if (!upgradable_abilities.empty()) {
-                size_t chosen_ability_id =
-                    Control::getInstance().get_ability_choice(upgradable_abilities, summoner.get_experience());
+                size_t chosen_ability_id = Control::getInstance().get_ability_choice(
+                    upgradable_abilities, summoner.get_energy(), summoner.get_experience());
                 auto it = std::find_if(
                     upgradable_abilities.begin(), upgradable_abilities.end(),
                     [chosen_ability_id](const auto& ability) { return ability.get().get_id() == chosen_ability_id; });

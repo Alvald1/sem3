@@ -96,8 +96,8 @@ Control::get_summoner_action() const {
 }
 
 [[nodiscard]] size_t
-Control::get_ability_choice(const std::vector<std::reference_wrapper<const Ability>>& abilities,
-                            size_t current_energy) {
+Control::get_ability_choice(const std::vector<std::reference_wrapper<const Ability>>& abilities, size_t current_energy,
+                            size_t current_experience) {
     auto& view = View::getInstance();
     auto& board = Board::getInstance(MapManager::getInstance());
     current_ability_selection = 0;
@@ -107,7 +107,8 @@ Control::get_ability_choice(const std::vector<std::reference_wrapper<const Abili
     }
 
     while (true) {
-        view.send_abilities(current_energy, abilities, View::AbilityDisplayType::AVAILABLE, current_ability_selection);
+        view.send_abilities(current_energy, current_experience, abilities, View::AbilityDisplayType::AVAILABLE,
+                            current_ability_selection);
 
         int ch = getch();
         switch (ch) {
