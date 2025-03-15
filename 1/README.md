@@ -1,117 +1,112 @@
-# Detail Management System
+# Detail Info Library
 
-## Описание проекта
+This project implements a C++ library for handling detail information with JSON-like encoding and decoding capabilities.
 
-Этот проект представляет собой систему управления деталями, включающую возможности кодирования и декодирования данных, написанную на C++. Проект поддерживает интеграцию с различными инструментами анализа, такими как Valgrind, AddressSanitizer, MemorySanitizer, а также предоставляет модульные тесты с использованием Google Test.
+## Overview
 
-## Требования
+The `Detail_info` class provides functionality to store, encode, and decode information about parts/details, including:
+- ID (string)
+- Name (string)
+- Count (numeric)
 
-- **C++ компилятор**: Поддержка стандарта C++23.
-- **CMake**: Версия 3.10 или выше.
-- **Google Test**: Для выполнения модульных тестов.
-- **Valgrind**: Для анализа утечек памяти (если поддерживается).
-- **LLVM**: Для анализа покрытия кода и статического анализа.
+## Project Structure
 
-## Сборка и запуск
+```
+.
+├── detail.cpp       # Implementation of Detail_info class
+├── detail.hpp       # Header defining Detail_info class
+├── main.cpp         # CLI application for using Detail_info
+├── main.hpp         # Header for utility functions
+├── CMakeLists.txt   # Main build configuration
+└── test/            # Test directory
+    ├── unit_tests.cpp  # Google Test unit tests
+    └── CMakeLists.txt  # Test build configuration
+```
 
-1. **Клонирование репозитория**
+## Features
 
-   ```bash
-   git clone https://github.com/Alvald1/sem3.git
-   cd sem3/1
-   ```
-2. **Сборка проекта**
+- Encode detail information to JSON-like string format
+- Decode JSON-like strings to extract detail information
+- Command-line interface for interactive use
+- Comprehensive unit testing with Google Test
+- Code coverage analysis
 
-   Создайте директорию для сборки и выполните сборку:
-   ```bash
-   mkdir build
-   cd build
-   cmake ..
-   make
-   ```
-3. **Цели сборки**
+## Build Instructions
+
+This project uses CMake for building. First, create a build directory:
+
+```bash
+mkdir build && cd build
+```
+
+Then configure and build the project:
+
+```bash
+cmake ..
+make
+```
+
+## Available Build Targets
+
+- `lab1` - Main application binary
+- `debug` - Debug build with debugging symbols
+- `asan` - Build with AddressSanitizer for memory error detection
+- `msan` - Build with MemorySanitizer
+- `valgrind` - Runs the application with Valgrind for memory leak detection
+- `static` - Performs static code analysis
+- `test_target` - Runs unit tests
+- `cov` - Generates code coverage reports
+
+## Testing
+
+Run the tests with:
+
+```bash
+cd build
+make test
+```
+
+To generate a code coverage report:
+
+```bash
+cd build
+make cov
+```
+
+The coverage report will be available in HTML format in the `report_coverage` directory.
+
+## Usage
+
+The main application provides a command-line interface with two primary functions:
+
+1. **Encode**: Convert detail information (ID, name, count) to a JSON-like string
+   - Command: `e`
    
-   В проекте предусмотрено несколько целей:
-   - lab1: Основная цель сборки. Это исполняемый файл, который реализует основную логику программы.
-   - debug: Отладочная сборка с отладочной информацией.
-   - asan: Сборка с поддержкой AddressSanitizer.
-   - msan: Сборка с поддержкой MemorySanitizer.
-   - test: Модульные тесты с поддержкой Google Test.
-   - valgrind: Цель для запуска программы через Valgrind для поиска утечек памяти.
-   - static: Статический анализ с помощью clang.
+2. **Decode**: Parse a JSON-like string to extract detail information
+   - Command: `d`
 
-4. **Запуск программы**
+### Example
 
-   Для запуска программы используйте следующую команду:
-   ```bash
-   ./lab1
-   ```
-   Программа предложит ввести данные для кодирования или декодирования JSON-строк.
+```
+(d) - decode
+(e) - encode
+e
+id: 001
+name: Bolt
+count: 50
+{'id':'001','name':'Bolt','count':50}
+```
 
-5. **Запуск тестов**
+## JSON Format
 
-   Для запуска тестов выполните:
+The JSON-like format used for encoding/decoding is:
 
-   ```bash
-   ./lab1_test
-   ```
-6. **Анализ покрытия**
+```
+{'id':'<id>','name':'<name>','count':<count>}
+```
 
-   При сборке тестов также генерируется отчет покрытия:
+## Requirements
 
-   ```bash
-   make test
-   ```
-   Отчет о покрытии кода будет сохранен в директории `report_coverage/` в формате HTML.
-
-7. **Статический анализ**
-
-   Для запуска статического анализа используйте:
-
-   ```bash
-   make static
-   ```
-   Отчеты статического анализа будут созданы в формате HTML.
-
-8. **Запуск Valgrind**
-
-   Если на вашей системе установлен Valgrind, запустите его с целью:
-
-   ```bash
-   make valgrind
-   ```
-
-## Генерация документации
-
-Для генерации документации с использованием Doxygen выполните следующие шаги:
-
-1. Установите Doxygen, если он ещё не установлен.
-
-   - Debian/Ubuntu:
-
-      ```bash
-      sudo apt-get install doxygen
-      ```
-   - macOS (через Homebrew):
-
-      ```bash
-      brew install doxygen
-      ```
-
-
-2. Сгенерируйте файл конфигурации Doxygen (если он ещё не сгенерирован):
-
-      ```bash
-      doxygen -g
-      ```
-
-   Настройте файл Doxyfile и запустите генерацию документации:
-
-   ```bash
-   doxygen Doxyfile
-   ```
-      
-   Документация будет сгенерирована в директории `docs/`
-
-
-
+- C++23 compatible compiler (clang++ recommended)
+- CMake 3.10+
+- Google Test framework

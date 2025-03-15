@@ -1,36 +1,123 @@
-<<<<<<< HEAD
-# sem3
-=======
-# Загрузка работ на git.dozen.mephi.ru
-Все работы необходимо загрузить на git.dozen.mephi.ru.
+# Object-Oriented Programming Projects
 
-Для допуска к экзамену ВСЕ сданные вами работы должны быть загружены.
+This repository contains three C++ projects implementing different applications using object-oriented programming principles.
 
-Выгрузка работ будет проводиться программой, поэтому необходимо строго соблюдать следующий шаблон:
-- внутри репозитория каталоги называются по номеру работы (1, 2, 3);
-- исходный код доп. задания "прикладная программа" по ЛР 2 загружать в каталог 2ex;
-- исходный код доп. задания "плагин" по ЛР 3 загружать в каталог 3ex;
-- внутри каждой из директорий должен лежать код только соответствующей работы;
-- если какой-то из работ нету, то каталог с этой работой не создавайте (или оставьте пустой);
-- внутри каталогов с работами допускается наличие поддиректорий;
-- все файлы исходного кода должны иметь расширение .c .h .cpp .hpp .tcc .cc .c++ или .cxx;
-- вместе с файлами исходного кода допускается наличие прочих файлов (исходные данные, рисунки, файлы автосборки), которые имеют расширение строго НЕ из списка, приведенного выше; эти файлы не будут участвовать в проверке на плагиат;
-- в репозитории должны отсутствовать большие файлы (размер одной ЛР не должен превышать 10MB);
-- в репозитории должны отсутствовать чужие исходные коды (если пользуетесь CMake, ОБЯЗАТЕЛЬНО удаляйте директорию cmake-build-debug, так как в ней есть свои исходники);
-- для продвинутых: допускается использование сабмодулей для аггрегации кода в одном репозитории или из сторонних систем контроля версий.
+## Projects Overview
 
-Внимание!!! Для самостоятельной проверки правильности загрузки работы рекоммендуется использовать следующую команду на сервере samos.dozen.mephi.ru:
+### [Detail Info Library](./1/)
+
+A library for handling detail information with JSON-like encoding and decoding capabilities.
+
+**Key Features:**
+- Encode/decode detail information to/from JSON-like strings
+- Command-line interface for interactive use
+- Comprehensive unit testing with Google Test
+
+[View Detail Info Library README](./1/README.md)
+
+### [Signal Processing Library](./2/)
+
+A library for working with digital signals, including basic signal processing capabilities and complex signal composition.
+
+**Key Features:**
+- Signal creation and manipulation
+- Complex signal composition
+- Signal visualization
+- Custom memory allocation
+
+[View Signal Processing Library README](./2/README.md)
+
+### [Fantasy Strategy Game](./3/)
+
+A turn-based tactical strategy game implemented in C++ using the ncurses library for the console interface.
+
+**Key Features:**
+- Grid-based movement and positioning
+- Resource management (energy and experience)
+- Unit summoning and combat
+- School-based progression system
+
+[View Fantasy Strategy Game README](./3/README.md)
+
+## Object-Oriented Programming Principles
+
+These projects demonstrate core OOP principles across different applications:
+
+1. **Encapsulation**
+   - Private data with accessor methods
+   - Information hiding and data protection
+   - Well-defined interfaces
+
+2. **Inheritance**
+   - Class hierarchies for specialized behavior
+   - Base and derived class relationships
+   - Code reuse through inheritance
+
+3. **Polymorphism**
+   - Virtual functions allowing for different behaviors
+   - Runtime type determination
+   - Interface-based programming
+
+4. **Abstraction**
+   - High-level interfaces hiding implementation details
+   - Abstract base classes and pure virtual functions
+   - Separation of concerns
+
+## Design Patterns Used
+
+The projects implement various design patterns including:
+- Singleton Pattern
+- Builder Pattern
+- Factory Method Pattern
+- Command Pattern
+- Strategy Pattern
+
+## Common Build Instructions
+
+All projects use CMake for building. General build steps:
+
 ```bash
-check_oop_labs.sh <Путь к каталогу репозитория>
+# Navigate to project directory
+cd ./[project-number]
+
+# Create build directory
+mkdir -p build && cd build
+
+# Generate build files
+cmake ..
+
+# Build the project
+cmake --build .
 ```
-Например:
+
+## Common Build Targets
+
+All projects include several specialized build targets:
+
+- **debug**: Builds with debugging symbols
+- **asan**: Builds with AddressSanitizer for memory error detection
+- **msan**: Builds with MemorySanitizer for uninitialized memory detection
+- **valgrind**: Runs the program with Valgrind for memory leak detection
+- **static**: Runs static analysis on the code
+- **test**: Runs unit tests
+- **cov**: Runs tests and generates coverage reports
+
+## Testing
+
+All projects include comprehensive unit testing using Google Test framework:
+
 ```bash
-check_oop_labs.sh ~/oop2024
+# Navigate to project build directory
+cd ./[project-number]/build
+
+# Run tests
+cmake --build . --target test
 ```
 
-Шаблон для репозитория: https://git.dozen.mephi.ru/oop2024/oop2024_template, его можно скопировать или использовать в качестве шаблона чтобы точно не ошибиться.
+## Project-Specific Instructions
 
-Любые отклонения от шаблона эквивалентны отсутствию работы. Ошибочная загрузка не той работы также эквивалентна её отсутствию.
+For detailed instructions on each project, see their individual README files:
 
-Перечень работ (названия директорий): 1, 2, 2ex, 3, 3ex.
->>>>>>> lab2
+- [Detail Info Library Instructions](./1/README.md)
+- [Signal Processing Library Instructions](./2/README.md)
+- [Fantasy Strategy Game Instructions](./3/README.md)
